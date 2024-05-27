@@ -3,40 +3,8 @@
   "WorkspaceRootPath": "C:\\Users\\VC\\Desktop\\Flight_Management_System\\FlightManagementSystemSolution\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{2C7487EC-B568-46A5-845A-E7772B216272}|FlightManagementSystemAPI\\FlightManagementSystemAPI.csproj|c:\\users\\vc\\desktop\\flight_management_system\\flightmanagementsystemsolution\\flightmanagementsystemapi\\repositories\\flightrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{2C7487EC-B568-46A5-845A-E7772B216272}|FlightManagementSystemAPI\\FlightManagementSystemAPI.csproj|solutionrelative:flightmanagementsystemapi\\repositories\\flightrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{2C7487EC-B568-46A5-845A-E7772B216272}|FlightManagementSystemAPI\\FlightManagementSystemAPI.csproj|c:\\users\\vc\\desktop\\flight_management_system\\flightmanagementsystemsolution\\flightmanagementsystemapi\\exceptions\\flightexception.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{2C7487EC-B568-46A5-845A-E7772B216272}|FlightManagementSystemAPI\\FlightManagementSystemAPI.csproj|solutionrelative:flightmanagementsystemapi\\exceptions\\flightexception.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{2C7487EC-B568-46A5-845A-E7772B216272}|FlightManagementSystemAPI\\FlightManagementSystemAPI.csproj|c:\\users\\vc\\desktop\\flight_management_system\\flightmanagementsystemsolution\\flightmanagementsystemapi\\exceptions\\flightnotfoundexception.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{2C7487EC-B568-46A5-845A-E7772B216272}|FlightManagementSystemAPI\\FlightManagementSystemAPI.csproj|solutionrelative:flightmanagementsystemapi\\exceptions\\flightnotfoundexception.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{2C7487EC-B568-46A5-845A-E7772B216272}|FlightManagementSystemAPI\\FlightManagementSystemAPI.csproj|c:\\users\\vc\\desktop\\flight_management_system\\flightmanagementsystemsolution\\flightmanagementsystemapi\\exceptions\\usernotfoundexception.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{2C7487EC-B568-46A5-845A-E7772B216272}|FlightManagementSystemAPI\\FlightManagementSystemAPI.csproj|solutionrelative:flightmanagementsystemapi\\exceptions\\usernotfoundexception.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{2C7487EC-B568-46A5-845A-E7772B216272}|FlightManagementSystemAPI\\FlightManagementSystemAPI.csproj|c:\\users\\vc\\desktop\\flight_management_system\\flightmanagementsystemsolution\\flightmanagementsystemapi\\model\\dtos\\registerreturndto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{2C7487EC-B568-46A5-845A-E7772B216272}|FlightManagementSystemAPI\\FlightManagementSystemAPI.csproj|solutionrelative:flightmanagementsystemapi\\model\\dtos\\registerreturndto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{2C7487EC-B568-46A5-845A-E7772B216272}|FlightManagementSystemAPI\\FlightManagementSystemAPI.csproj|c:\\users\\vc\\desktop\\flight_management_system\\flightmanagementsystemsolution\\flightmanagementsystemapi\\model\\dtos\\registerdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{2C7487EC-B568-46A5-845A-E7772B216272}|FlightManagementSystemAPI\\FlightManagementSystemAPI.csproj|solutionrelative:flightmanagementsystemapi\\model\\dtos\\registerdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{2C7487EC-B568-46A5-845A-E7772B216272}|FlightManagementSystemAPI\\FlightManagementSystemAPI.csproj|c:\\users\\vc\\desktop\\flight_management_system\\flightmanagementsystemsolution\\flightmanagementsystemapi\\model\\dtos\\loginreturndto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{2C7487EC-B568-46A5-845A-E7772B216272}|FlightManagementSystemAPI\\FlightManagementSystemAPI.csproj|solutionrelative:flightmanagementsystemapi\\model\\dtos\\loginreturndto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{2C7487EC-B568-46A5-845A-E7772B216272}|FlightManagementSystemAPI\\FlightManagementSystemAPI.csproj|c:\\users\\vc\\desktop\\flight_management_system\\flightmanagementsystemsolution\\flightmanagementsystemapi\\model\\dtos\\logindto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{2C7487EC-B568-46A5-845A-E7772B216272}|FlightManagementSystemAPI\\FlightManagementSystemAPI.csproj|solutionrelative:flightmanagementsystemapi\\model\\dtos\\logindto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{2C7487EC-B568-46A5-845A-E7772B216272}|FlightManagementSystemAPI\\FlightManagementSystemAPI.csproj|c:\\users\\vc\\desktop\\flight_management_system\\flightmanagementsystemsolution\\flightmanagementsystemapi\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{2C7487EC-B568-46A5-845A-E7772B216272}|FlightManagementSystemAPI\\FlightManagementSystemAPI.csproj|solutionrelative:flightmanagementsystemapi\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{2C7487EC-B568-46A5-845A-E7772B216272}|FlightManagementSystemAPI\\FlightManagementSystemAPI.csproj|c:\\users\\vc\\desktop\\flight_management_system\\flightmanagementsystemsolution\\flightmanagementsystemapi\\repositories\\cancellationrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2C7487EC-B568-46A5-845A-E7772B216272}|FlightManagementSystemAPI\\FlightManagementSystemAPI.csproj|solutionrelative:flightmanagementsystemapi\\repositories\\cancellationrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -46,120 +14,20 @@
       "DocumentGroups": [
         {
           "DockedHeight": 200,
-          "SelectedChildIndex": 3,
+          "SelectedChildIndex": 0,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "FlightNotFoundException.cs",
-              "DocumentMoniker": "C:\\Users\\VC\\Desktop\\Flight_Management_System\\FlightManagementSystemSolution\\FlightManagementSystemAPI\\Exceptions\\FlightNotFoundException.cs",
-              "RelativeDocumentMoniker": "FlightManagementSystemAPI\\Exceptions\\FlightNotFoundException.cs",
-              "ToolTip": "C:\\Users\\VC\\Desktop\\Flight_Management_System\\FlightManagementSystemSolution\\FlightManagementSystemAPI\\Exceptions\\FlightNotFoundException.cs",
-              "RelativeToolTip": "FlightManagementSystemAPI\\Exceptions\\FlightNotFoundException.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAQAAAA+AAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-05-27T02:25:08.621Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "UserNotFoundException.cs",
-              "DocumentMoniker": "C:\\Users\\VC\\Desktop\\Flight_Management_System\\FlightManagementSystemSolution\\FlightManagementSystemAPI\\Exceptions\\UserNotFoundException.cs",
-              "RelativeDocumentMoniker": "FlightManagementSystemAPI\\Exceptions\\UserNotFoundException.cs",
-              "ToolTip": "C:\\Users\\VC\\Desktop\\Flight_Management_System\\FlightManagementSystemSolution\\FlightManagementSystemAPI\\Exceptions\\UserNotFoundException.cs",
-              "RelativeToolTip": "FlightManagementSystemAPI\\Exceptions\\UserNotFoundException.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-05-27T02:24:39.609Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "FlightException.cs",
-              "DocumentMoniker": "C:\\Users\\VC\\Desktop\\Flight_Management_System\\FlightManagementSystemSolution\\FlightManagementSystemAPI\\Exceptions\\FlightException.cs",
-              "RelativeDocumentMoniker": "FlightManagementSystemAPI\\Exceptions\\FlightException.cs",
-              "ToolTip": "C:\\Users\\VC\\Desktop\\Flight_Management_System\\FlightManagementSystemSolution\\FlightManagementSystemAPI\\Exceptions\\FlightException.cs",
-              "RelativeToolTip": "FlightManagementSystemAPI\\Exceptions\\FlightException.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAoAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-05-27T02:11:21.871Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "FlightRepository.cs",
-              "DocumentMoniker": "C:\\Users\\VC\\Desktop\\Flight_Management_System\\FlightManagementSystemSolution\\FlightManagementSystemAPI\\Repositories\\FlightRepository.cs",
-              "RelativeDocumentMoniker": "FlightManagementSystemAPI\\Repositories\\FlightRepository.cs",
-              "ToolTip": "C:\\Users\\VC\\Desktop\\Flight_Management_System\\FlightManagementSystemSolution\\FlightManagementSystemAPI\\Repositories\\FlightRepository.cs",
-              "RelativeToolTip": "FlightManagementSystemAPI\\Repositories\\FlightRepository.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAABAAAAAJAAAA",
+              "Title": "CancellationRepository.cs",
+              "DocumentMoniker": "C:\\Users\\VC\\Desktop\\Flight_Management_System\\FlightManagementSystemSolution\\FlightManagementSystemAPI\\Repositories\\CancellationRepository.cs",
+              "RelativeDocumentMoniker": "FlightManagementSystemAPI\\Repositories\\CancellationRepository.cs",
+              "ToolTip": "C:\\Users\\VC\\Desktop\\Flight_Management_System\\FlightManagementSystemSolution\\FlightManagementSystemAPI\\Repositories\\CancellationRepository.cs",
+              "RelativeToolTip": "FlightManagementSystemAPI\\Repositories\\CancellationRepository.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABgAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-05-27T02:04:04.879Z",
+              "WhenOpened": "2024-05-27T05:09:44.179Z",
               "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "RegisterReturnDTO.cs",
-              "DocumentMoniker": "C:\\Users\\VC\\Desktop\\Flight_Management_System\\FlightManagementSystemSolution\\FlightManagementSystemAPI\\Model\\DTOs\\RegisterReturnDTO.cs",
-              "RelativeDocumentMoniker": "FlightManagementSystemAPI\\Model\\DTOs\\RegisterReturnDTO.cs",
-              "ToolTip": "C:\\Users\\VC\\Desktop\\Flight_Management_System\\FlightManagementSystemSolution\\FlightManagementSystemAPI\\Model\\DTOs\\RegisterReturnDTO.cs",
-              "RelativeToolTip": "FlightManagementSystemAPI\\Model\\DTOs\\RegisterReturnDTO.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-05-26T18:01:33.997Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "RegisterDTO.cs",
-              "DocumentMoniker": "C:\\Users\\VC\\Desktop\\Flight_Management_System\\FlightManagementSystemSolution\\FlightManagementSystemAPI\\Model\\DTOs\\RegisterDTO.cs",
-              "RelativeDocumentMoniker": "FlightManagementSystemAPI\\Model\\DTOs\\RegisterDTO.cs",
-              "ToolTip": "C:\\Users\\VC\\Desktop\\Flight_Management_System\\FlightManagementSystemSolution\\FlightManagementSystemAPI\\Model\\DTOs\\RegisterDTO.cs",
-              "RelativeToolTip": "FlightManagementSystemAPI\\Model\\DTOs\\RegisterDTO.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-05-26T18:01:32.293Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "LoginReturnDTO.cs",
-              "DocumentMoniker": "C:\\Users\\VC\\Desktop\\Flight_Management_System\\FlightManagementSystemSolution\\FlightManagementSystemAPI\\Model\\DTOs\\LoginReturnDTO.cs",
-              "RelativeDocumentMoniker": "FlightManagementSystemAPI\\Model\\DTOs\\LoginReturnDTO.cs",
-              "ToolTip": "C:\\Users\\VC\\Desktop\\Flight_Management_System\\FlightManagementSystemSolution\\FlightManagementSystemAPI\\Model\\DTOs\\LoginReturnDTO.cs",
-              "RelativeToolTip": "FlightManagementSystemAPI\\Model\\DTOs\\LoginReturnDTO.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-05-26T18:01:29.767Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "LoginDTO.cs",
-              "DocumentMoniker": "C:\\Users\\VC\\Desktop\\Flight_Management_System\\FlightManagementSystemSolution\\FlightManagementSystemAPI\\Model\\DTOs\\LoginDTO.cs",
-              "RelativeDocumentMoniker": "FlightManagementSystemAPI\\Model\\DTOs\\LoginDTO.cs",
-              "ToolTip": "C:\\Users\\VC\\Desktop\\Flight_Management_System\\FlightManagementSystemSolution\\FlightManagementSystemAPI\\Model\\DTOs\\LoginDTO.cs",
-              "RelativeToolTip": "FlightManagementSystemAPI\\Model\\DTOs\\LoginDTO.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-05-26T18:01:27.602Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 8,
-              "Title": "Program.cs",
-              "DocumentMoniker": "C:\\Users\\VC\\Desktop\\Flight_Management_System\\FlightManagementSystemSolution\\FlightManagementSystemAPI\\Program.cs",
-              "RelativeDocumentMoniker": "FlightManagementSystemAPI\\Program.cs",
-              "ToolTip": "C:\\Users\\VC\\Desktop\\Flight_Management_System\\FlightManagementSystemSolution\\FlightManagementSystemAPI\\Program.cs",
-              "RelativeToolTip": "FlightManagementSystemAPI\\Program.cs",
-              "ViewState": "AQIAACUAAAAAAAAAAAAQwAAAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-05-26T18:00:21.695Z"
             }
           ]
         }

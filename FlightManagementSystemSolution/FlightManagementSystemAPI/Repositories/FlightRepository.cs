@@ -1,5 +1,6 @@
 ﻿using FlightManagementSystemAPI.Contexts;
 using FlightManagementSystemAPI.Exceptions;
+using FlightManagementSystemAPI.Interfaces;
 using FlightManagementSystemAPI.Model;
 using Microsoft.EntityFrameworkCore;
 
@@ -91,12 +92,12 @@ namespace FlightManagementSystemAPI.Repositories
             }
             catch (FlightNotFoundException ex)
             {
-                throw new FlightException("Error occurred while getting flights. " + ex.Message, ex);
+                throw new FlightException("Error occurred while updating flights. " + ex.Message, ex);
             }
             catch (Exception ex)
             {
 
-                throw new FlightException("Error occurred while getting flights. " + ex.Message, ex);
+                throw new FlightException("Error occurred while updating flights. " + ex.Message, ex);
             }
         }
         }

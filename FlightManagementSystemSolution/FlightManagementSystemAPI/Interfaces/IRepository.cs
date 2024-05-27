@@ -1,4 +1,4 @@
-﻿namespace FlightManagementSystemAPI.Repositories
+﻿namespace FlightManagementSystemAPI.Interfaces
 {
     public interface IRepository<K, T> where T : class
     {
