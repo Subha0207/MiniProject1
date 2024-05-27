@@ -1,37 +1,12 @@
 {
   "Version": 1,
   "WorkspaceRootPath": "C:\\Users\\VC\\Desktop\\Flight_Management_System\\FlightManagementSystemSolution\\",
-  "Documents": [
-    {
-      "AbsoluteMoniker": "D:0:0:{2C7487EC-B568-46A5-845A-E7772B216272}|FlightManagementSystemAPI\\FlightManagementSystemAPI.csproj|c:\\users\\vc\\desktop\\flight_management_system\\flightmanagementsystemsolution\\flightmanagementsystemapi\\repositories\\cancellationrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{2C7487EC-B568-46A5-845A-E7772B216272}|FlightManagementSystemAPI\\FlightManagementSystemAPI.csproj|solutionrelative:flightmanagementsystemapi\\repositories\\cancellationrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    }
-  ],
+  "Documents": [],
   "DocumentGroupContainers": [
     {
       "Orientation": 1,
       "VerticalTabListWidth": 256,
-      "DocumentGroups": [
-        {
-          "DockedHeight": 200,
-          "SelectedChildIndex": 0,
-          "Children": [
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "CancellationRepository.cs",
-              "DocumentMoniker": "C:\\Users\\VC\\Desktop\\Flight_Management_System\\FlightManagementSystemSolution\\FlightManagementSystemAPI\\Repositories\\CancellationRepository.cs",
-              "RelativeDocumentMoniker": "FlightManagementSystemAPI\\Repositories\\CancellationRepository.cs",
-              "ToolTip": "C:\\Users\\VC\\Desktop\\Flight_Management_System\\FlightManagementSystemSolution\\FlightManagementSystemAPI\\Repositories\\CancellationRepository.cs",
-              "RelativeToolTip": "FlightManagementSystemAPI\\Repositories\\CancellationRepository.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAABgAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-05-27T05:09:44.179Z",
-              "EditorCaption": ""
-            }
-          ]
-        }
-      ]
+      "DocumentGroups": []
     }
   ]
 }
