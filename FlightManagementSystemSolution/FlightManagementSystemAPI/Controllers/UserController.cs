@@ -12,7 +12,6 @@ namespace FlightManagementSystemAPI.Controllers
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
-        private readonly ILogger<UserController> _logger;
 
         public UserController(IUserService userService)
         {

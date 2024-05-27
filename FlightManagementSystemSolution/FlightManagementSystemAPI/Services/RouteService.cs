@@ -9,17 +9,27 @@ namespace FlightManagementSystemAPI.Services
     public class RouteService : IRouteService
     {
         private readonly IRepository<int, FlightRoute> _routeRepository;
+        private readonly IRepository<int, Flight> _flightRepository;
 
-        public RouteService(IRepository<int, FlightRoute> routeRepository)
+        public RouteService(IRepository<int, FlightRoute> routeRepository, IRepository<int, Flight> flightRepository)
         {
             
             _routeRepository = routeRepository;
+            _flightRepository = flightRepository;
         }
 
         public async Task<RouteReturnDTO> AddRoute(RouteDTO routeDTO)
         {
             try
             {
+
+                var flight = await _flightRepository.Get(routeDTO.FlightId);
+                if (flight == null)
+                {
+                    throw new FlightNotFoundException("No flight with the given ID exists.");
+                }
+
+
                 FlightRoute route = MapRouteDTOToRoute(routeDTO);
 
                 FlightRoute AddedRoute = await _routeRepository.Add(route);
@@ -28,13 +38,18 @@ namespace FlightManagementSystemAPI.Services
 
                 return routeReturnDTO;
             }
-            catch (FlightException fr)
+
+            catch (FlightNotFoundException fnf)
+            {
+                throw;
+            }
+            catch (RouteException fr)
             {
                 throw;
             }
             catch (Exception ex)
             {
-                throw new FlightServiceException("Cannot add Route due to some error", ex);
+                throw new RouteServiceException("Cannot add Route due to some error", ex);
             }
         }
 

@@ -18,7 +18,8 @@ namespace FlightManagementSystemAPI.Repositories
         public async Task<FlightRoute> Add(FlightRoute item)
         {
             try
-            {
+            {   
+
                  _context.Add(item);
                 await _context.SaveChangesAsync();
                 return item;

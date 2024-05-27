@@ -9,11 +9,17 @@ namespace FlightManagementSystemAPI.Services
     public class SubRouteService : ISubRouteService
     {
         private readonly IRepository<int, SubRoute> _subrouteRepository;
+        private readonly IRepository<int, FlightRoute> _routeRepository;
+        private readonly IRepository<int, Flight> _flightRepository;
 
-        public SubRouteService(IRepository<int, SubRoute> subrouteRepository)
+        public SubRouteService(IRepository<int, SubRoute> subrouteRepository, IRepository<int, Flight> flightRepository, IRepository<int, FlightRoute> routeRepository)
         {
 
             _subrouteRepository = subrouteRepository;
+            _routeRepository = routeRepository;
+            _flightRepository = flightRepository;
+
+
         }
 
 
@@ -21,21 +27,44 @@ namespace FlightManagementSystemAPI.Services
         {
             try
             {
-                SubRoute subroute = MapSubRouteDTOToSubRoute(subrouteDTO);
 
-                SubRoute AddedRoute = await _subrouteRepository.Add(subroute);
+                var flight = await _flightRepository.Get(subrouteDTO.FlightId);
+                if (flight == null)
+                {
+                    throw new FlightNotFoundException("No flight with the given ID exists.");
+                }
 
-                SubRouteReturnDTO subrouteReturnDTO = MapSubRouteToSubRouteReturnDTO(AddedRoute);
+                var route = await _routeRepository.Get(subrouteDTO.RouteId);
+                if (route == null)
+                {
+                    throw new RouteNotFoundException("No route  with the given ID exists.");
+                }
+        
+                if (route.NoOfStops>0) 
+                {
+                    SubRoute subroute = MapSubRouteDTOToSubRoute(subrouteDTO);
 
-                return subrouteReturnDTO;
+                    SubRoute AddedRoute = await _subrouteRepository.Add(subroute);
+
+                    SubRouteReturnDTO subrouteReturnDTO = MapSubRouteToSubRouteReturnDTO(AddedRoute);
+
+                    return subrouteReturnDTO;
+                }
+                throw new SubRouteNotFoundException("No SubRoutes for the given route");
+                
             }
-            catch (FlightException fr)
+
+            catch (SubRouteNotFoundException ex)
+            {
+                throw;
+            }
+            catch (SubRouteException ex)
             {
                 throw;
             }
             catch (Exception ex)
             {
-                throw new FlightServiceException("Cannot add SubRoute due to some error", ex);
+                throw new SubRouteServiceException("Cannot add SubRoute due to some error", ex);
             }
         }
 

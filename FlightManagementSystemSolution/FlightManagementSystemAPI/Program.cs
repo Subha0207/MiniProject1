@@ -46,14 +46,22 @@ namespace FlightManagementSystemAPI
             #region Repositories
 
             builder.Services.AddScoped<IRepository<int, User>, UserRepository>();
-
             builder.Services.AddScoped<IRepository<int, UserInfo>, UserInfoRepository>();
+            builder.Services.AddScoped<IRepository<int, Flight>, FlightRepository>();
+            builder.Services.AddScoped<IRepository<int, FlightRoute>, RouteRepository>();
+
+            builder.Services.AddScoped<IRepository<int, SubRoute>, SubRouteRepository>();
 
             #endregion
 
             #region Services
             builder.Services.AddScoped<ITokenService, TokenService>();
             builder.Services.AddScoped<IUserService, UserService>();
+            builder.Services.AddScoped<IFlightService, FlightService>();
+
+            builder.Services.AddScoped<IRouteService, RouteService>();
+
+            builder.Services.AddScoped<ISubRouteService, SubRouteService>();
 
             #endregion
 
