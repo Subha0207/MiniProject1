@@ -134,6 +134,30 @@ namespace FlightManagementSystemAPI.Migrations
                     b.ToTable("Routes");
                 });
 
+            modelBuilder.Entity("FlightManagementSystemAPI.Model.Payment", b =>
+                {
+                    b.Property<int>("PaymentId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PaymentId"), 1L, 1);
+
+                    b.Property<float>("Amount")
+                        .HasColumnType("real");
+
+                    b.Property<int>("BookingId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("isSuccess")
+                        .HasColumnType("bit");
+
+                    b.HasKey("PaymentId");
+
+                    b.HasIndex("BookingId");
+
+                    b.ToTable("Payments");
+                });
+
             modelBuilder.Entity("FlightManagementSystemAPI.Model.Refund", b =>
                 {
                     b.Property<int>("RefundId")
@@ -142,7 +166,7 @@ namespace FlightManagementSystemAPI.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RefundId"), 1L, 1);
 
-                    b.Property<int>("CancellationId")
+                    b.Property<int>("PaymentId")
                         .HasColumnType("int");
 
                     b.Property<string>("RefundStatus")
@@ -151,7 +175,7 @@ namespace FlightManagementSystemAPI.Migrations
 
                     b.HasKey("RefundId");
 
-                    b.HasIndex("CancellationId");
+                    b.HasIndex("PaymentId");
 
                     b.ToTable("Refunds");
                 });
@@ -293,15 +317,26 @@ namespace FlightManagementSystemAPI.Migrations
                     b.Navigation("Flight");
                 });
 
-            modelBuilder.Entity("FlightManagementSystemAPI.Model.Refund", b =>
+            modelBuilder.Entity("FlightManagementSystemAPI.Model.Payment", b =>
                 {
-                    b.HasOne("FlightManagementSystemAPI.Model.Cancellation", "Cancellation")
-                        .WithMany("Refunds")
-                        .HasForeignKey("CancellationId")
+                    b.HasOne("FlightManagementSystemAPI.Model.Booking", "Booking")
+                        .WithMany("Payments")
+                        .HasForeignKey("BookingId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.Navigation("Cancellation");
+                    b.Navigation("Booking");
+                });
+
+            modelBuilder.Entity("FlightManagementSystemAPI.Model.Refund", b =>
+                {
+                    b.HasOne("FlightManagementSystemAPI.Model.Payment", "Payment")
+                        .WithMany("Refunds")
+                        .HasForeignKey("PaymentId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Payment");
                 });
 
             modelBuilder.Entity("FlightManagementSystemAPI.Model.SubRoute", b =>
@@ -337,11 +372,8 @@ namespace FlightManagementSystemAPI.Migrations
             modelBuilder.Entity("FlightManagementSystemAPI.Model.Booking", b =>
                 {
                     b.Navigation("Cancellations");
-                });
 
-            modelBuilder.Entity("FlightManagementSystemAPI.Model.Cancellation", b =>
-                {
-                    b.Navigation("Refunds");
+                    b.Navigation("Payments");
                 });
 
             modelBuilder.Entity("FlightManagementSystemAPI.Model.Flight", b =>
@@ -356,6 +388,11 @@ namespace FlightManagementSystemAPI.Migrations
                     b.Navigation("Bookings");
 
                     b.Navigation("SubRoutes");
+                });
+
+            modelBuilder.Entity("FlightManagementSystemAPI.Model.Payment", b =>
+                {
+                    b.Navigation("Refunds");
                 });
 #pragma warning restore 612, 618
         }

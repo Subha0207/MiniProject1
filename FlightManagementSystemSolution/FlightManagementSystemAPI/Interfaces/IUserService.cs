@@ -16,5 +16,12 @@ namespace FlightManagementSystemAPI.Interfaces
         /// <param name="userRegisterDTO"></param>
         /// <returns></returns>
         public Task<RegisterReturnDTO> Register(RegisterDTO userRegisterDTO);
+
+        /// <summary>
+        /// User Activation by admin after registeration
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        public Task<int> UserActivation(int userId);
     }
 }

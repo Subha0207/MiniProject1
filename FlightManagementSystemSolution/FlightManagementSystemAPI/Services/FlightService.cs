@@ -1,4 +1,5 @@
-﻿using FlightManagementSystemAPI.Exceptions;
+﻿using FlightManagementSystemAPI.Exceptions.FlightExceptions;
+using FlightManagementSystemAPI.Exceptions.UserExceptions;
 using FlightManagementSystemAPI.Interfaces;
 using FlightManagementSystemAPI.Model;
 using FlightManagementSystemAPI.Model.DTOs;

@@ -20,23 +20,23 @@ namespace FlightManagementSystemAPI.Interfaces
        /// </summary>
        /// <param name="subrouteId"></param>
        /// <returns></returns>
-       public Task<SubRouteReturnDTO> DeleteRoute(int subrouteId); 
+       public Task<SubRouteReturnDTO> DeleteSubRoute(int subrouteId); 
        /// <summary>
        /// Used to get all sub routes for a given route
        /// </summary>
        /// <returns></returns>
-       public Task<List<SubRouteReturnDTO>> GetAllRoutes();
+       public Task<List<SubRouteReturnDTO>> GetAllSubRoutes();
        /// <summary>
        /// Used to get subroute for a given subroute id
        /// </summary>
        /// <param name="subrouteId"></param>
        /// <returns></returns>
-       public Task<SubRouteReturnDTO> GetRoute(int subrouteId);
+       public Task<SubRouteReturnDTO> GetSubRoute(int subrouteId);
        /// <summary>
        /// Used to update the subroute details
        /// </summary>
        /// <param name="subrouteReturnDTO"></param>
        /// <returns></returns>
-       public Task<SubRouteReturnDTO> UpdateRoute(SubRouteReturnDTO subrouteReturnDTO);
+       public Task<SubRouteReturnDTO> UpdateSubRoute(SubRouteReturnDTO subrouteReturnDTO);
     }
 }

@@ -1,4 +1,4 @@
-﻿using FlightManagementSystemAPI.Exceptions;
+﻿using FlightManagementSystemAPI.Exceptions.UserExceptions;
 using FlightManagementSystemAPI.Interfaces;
 using FlightManagementSystemAPI.Model;
 using FlightManagementSystemAPI.Model.DTOs;
@@ -78,7 +78,26 @@ namespace FlightManagementSystemAPI.Controllers
                 return BadRequest(new ErrorModel(400, ex.Message));
             }
         }
-
+        [HttpPut("admin/UpdateUserActivation")]
+        [ProducesResponseType(typeof(ReturnUserActivationDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<ReturnUserActivationDTO>> UserActivation([FromBody] UserActivationDTO userActivationDTO)
+        {
+            try
+            {
+                var result = await _userService.UserActivation(userActivationDTO.userId);
+                var returnUserActivationDTO = new ReturnUserActivationDTO
+                {
+                    userId = result,
+                    status = "active"
+                };
+                return Ok(returnUserActivationDTO);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ErrorModel(501, ex.Message));
+            }
+        }
 
     }
 }

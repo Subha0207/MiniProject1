@@ -1,5 +1,5 @@
 ﻿using FlightManagementSystemAPI.Contexts;
-using FlightManagementSystemAPI.Exceptions;
+using FlightManagementSystemAPI.Exceptions.FlightExceptions;
 using FlightManagementSystemAPI.Interfaces;
 using FlightManagementSystemAPI.Model;
 using Microsoft.EntityFrameworkCore;

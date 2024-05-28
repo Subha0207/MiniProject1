@@ -3,8 +3,8 @@ using FlightManagementSystemAPI.Model.DTOs;
 using FlightManagementSystemAPI.Model;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using FlightManagementSystemAPI.Exceptions;
 using Microsoft.AspNetCore.Authorization;
+using FlightManagementSystemAPI.Exceptions.FlightExceptions;
 
 namespace FlightManagementSystemAPI.Controllers
 {

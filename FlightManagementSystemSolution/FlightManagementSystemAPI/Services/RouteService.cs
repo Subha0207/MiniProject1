@@ -1,4 +1,5 @@
-﻿using FlightManagementSystemAPI.Exceptions;
+﻿using FlightManagementSystemAPI.Exceptions.FlightExceptions;
+using FlightManagementSystemAPI.Exceptions.RouteExceptions;
 using FlightManagementSystemAPI.Interfaces;
 using FlightManagementSystemAPI.Model;
 using FlightManagementSystemAPI.Model.DTOs;
@@ -148,6 +149,7 @@ namespace FlightManagementSystemAPI.Services
             {
                 throw new RouteServiceException("Unable to get all Routes: " + ex.Message, ex);
             }
+
         }
 
         public Task<RouteReturnDTO> UpdateRoute(RouteReturnDTO routeReturnDTO)

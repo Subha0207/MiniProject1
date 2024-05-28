@@ -26,7 +26,7 @@ namespace FlightManagementSystemAPI.Contexts
         public DbSet<SubRoute> SubRoutes { get; set; }
         public DbSet<Flight> Flights { get; set; }
 
-        
+        public DbSet<Payment> Payments { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -35,6 +35,7 @@ namespace FlightManagementSystemAPI.Contexts
 
             modelBuilder.Entity<User>().HasKey(u => u.UserId);
 
+            modelBuilder.Entity<Payment>().HasKey(f => f.PaymentId);
 
             modelBuilder.Entity<Flight>().HasKey(f => f.FlightId);
 
@@ -45,9 +46,6 @@ namespace FlightManagementSystemAPI.Contexts
             modelBuilder.Entity<Refund>().HasKey(rf => rf.RefundId);
 
             modelBuilder.Entity<Cancellation>().HasKey(c => c.CancellationId);
-
-        
-
 
                modelBuilder.Entity<Booking>()
                .HasOne(b => b.Flight)
@@ -61,23 +59,23 @@ namespace FlightManagementSystemAPI.Contexts
                 .HasForeignKey(b => b.RouteId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-
-
-
-            modelBuilder.Entity<Refund>()
-            .HasOne(rf => rf.Cancellation)
-            .WithMany(c => c.Refunds)
-            .HasForeignKey(rf => rf.CancellationId)
-            .OnDelete(DeleteBehavior.Restrict);
-
             modelBuilder.Entity<Cancellation>()
             .HasOne(c => c.Booking)
             .WithMany(b => b.Cancellations)
-            .HasForeignKey(c=> c.BookingId)
+            .HasForeignKey(c => c.BookingId)
             .OnDelete(DeleteBehavior.Restrict);
 
+            modelBuilder.Entity<Refund>()
+            .HasOne(p => p.Payment)
+            .WithMany(rf => rf.Refunds)
+            .HasForeignKey(p => p.PaymentId)
+            .OnDelete(DeleteBehavior.Restrict);
 
-
+            modelBuilder.Entity<Payment>()
+            .HasOne(b=> b.Booking)
+            .WithMany(p=>p.Payments)
+            .HasForeignKey(b => b.BookingId)
+            .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<SubRoute>()
             .HasOne(s => s.Flight)

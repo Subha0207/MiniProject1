@@ -1,4 +1,4 @@
-﻿using FlightManagementSystemAPI.Exceptions;
+﻿using FlightManagementSystemAPI.Exceptions.UserExceptions;
 using FlightManagementSystemAPI.Interfaces;
 using FlightManagementSystemAPI.Model;
 using FlightManagementSystemAPI.Model.DTOs;
@@ -64,7 +64,6 @@ namespace FlightManagementSystemAPI.Services
             }
             return true;
         }
-
         public async Task<LoginReturnDTO> Login(LoginDTO loginDTO)
         {
             try
@@ -76,10 +75,20 @@ namespace FlightManagementSystemAPI.Services
                 if (isPasswordSame)
                 {
                     var user = await _userRepo.Get(loginDTO.UserId);
-                    LoginReturnDTO loginReturnDTO = MapUserToLoginReturnDTO(user);
-                    return loginReturnDTO;
+
+                    if (userDb.Status=="active")
+                    {
+                        LoginReturnDTO loginReturnDTO = MapUserToLoginReturnDTO(user);
+                        return loginReturnDTO;
+                    }
+                    throw new UserNotActiveException("Your account is not activated");
+                   
                 }
                 throw new UnAuthorizedUserException("Invalid UserName or Password");
+            }
+            catch (UserNotActiveException)
+            {
+                throw;
             }
             catch (UnAuthorizedUserException)
             {
@@ -98,7 +107,6 @@ namespace FlightManagementSystemAPI.Services
                 throw new UnableToLoginException("Not Able to Register User at this moment", ex);
             }
         }
-
         private User GenerateUser(RegisterDTO registerDTO)
         {
             User user = new User();
@@ -140,7 +148,29 @@ namespace FlightManagementSystemAPI.Services
             return returnDTO;
         }
 
-        
+        public async Task<int> UserActivation(int userId)
+        {
+            try
+            {
+                var user = await _userInfoRepo.Get(userId);
+                if (user != null)
+                {
+                    user.Status = "active";
+                    var updatedUser = await _userInfoRepo.Update(user);
+                    if (updatedUser != null)
+                    {
+                        return updatedUser.UserId;
+                    }
+                    throw new Exception("Cannot get the updated user details");
+                }
+                throw new Exception("Cannot get the user");
 
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                throw new Exception("Error in updating status of the user");
+            }
+        }
     }
 }

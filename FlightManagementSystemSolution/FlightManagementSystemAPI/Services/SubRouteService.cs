@@ -1,4 +1,6 @@
-﻿using FlightManagementSystemAPI.Exceptions;
+﻿using FlightManagementSystemAPI.Exceptions.FlightExceptions;
+using FlightManagementSystemAPI.Exceptions.RouteExceptions;
+using FlightManagementSystemAPI.Exceptions.SubRouteExceptions;
 using FlightManagementSystemAPI.Interfaces;
 using FlightManagementSystemAPI.Model;
 using FlightManagementSystemAPI.Model.DTOs;
@@ -80,6 +82,12 @@ namespace FlightManagementSystemAPI.Services
         {
             SubRouteReturnDTO subrouteReturnDTO = new SubRouteReturnDTO();
             subrouteReturnDTO.SubRouteId = subRoute.SubRouteId;
+            subrouteReturnDTO.FlightId = subRoute.FlightId;
+            subrouteReturnDTO.ArrivalLocation = subRoute.ArrivalLocation;
+            subrouteReturnDTO.ArrivalDateTime = subRoute.ArrivalDateTime;
+            subrouteReturnDTO.DepartureLocation = subRoute.DepartureLocation;
+            subrouteReturnDTO.DepartureDateTime = subRoute.DepartureDateTime;
+            subrouteReturnDTO.RouteId = subRoute.RouteId;
             return subrouteReturnDTO;
         }
         private SubRoute MapSubRouteDTOToSubRoute(SubRouteDTO subrouteDTO)
@@ -94,6 +102,77 @@ namespace FlightManagementSystemAPI.Services
             subroute.DepartureLocation = subrouteDTO.DepartureLocation;
             return subroute;
 
+        }
+
+        public async Task<SubRouteReturnDTO> DeleteSubRoute(int subrouteId)
+        {
+            try
+            {
+                var subroute = await _subrouteRepository.Delete(subrouteId);
+                SubRouteReturnDTO routeReturnDTO = MapSubRouteToSubRouteReturnDTO(subroute);
+                return routeReturnDTO;
+            }
+            catch (UnableToDeleteSubRouteException ex)
+            {
+                throw new SubRouteServiceException(ex.Message, ex);
+            }
+            catch (SubRouteException)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                throw new SubRouteServiceException("Unable to delete Route: " + ex.Message, ex);
+            }
+        }
+
+        public async Task<List<SubRouteReturnDTO>> GetAllSubRoutes()
+        {
+            try
+            {
+
+                var subroutes = await _subrouteRepository.GetAll();
+
+                List<SubRouteReturnDTO> subrouteReturnDTOs = new List<SubRouteReturnDTO>();
+                foreach (SubRoute subroute in subroutes)
+                {
+                    subrouteReturnDTOs.Add(MapSubRouteToSubRouteReturnDTO(subroute));
+                }
+                return subrouteReturnDTOs;
+
+            }
+            catch (SubRouteException)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                throw new SubRouteServiceException("Unable to get all SubRoutes: " + ex.Message, ex);
+            }
+
+        }
+
+        public async Task<SubRouteReturnDTO> GetSubRoute(int subrouteId)
+        {
+            try
+            {
+                var subroute = await _subrouteRepository.Get(subrouteId);
+                SubRouteReturnDTO subrouteReturnDTO = MapSubRouteToSubRouteReturnDTO(subroute);
+                return subrouteReturnDTO;
+            }
+            catch (SubRouteException)
+            {
+                throw;
+            }
+            catch (Exception e)
+            {
+                throw new SubRouteServiceException("Unable to get the SubRoute: " + e.Message, e);
+            }
+        }
+
+        public Task<SubRouteReturnDTO> UpdateSubRoute(SubRouteReturnDTO subrouteReturnDTO)
+        {
+            throw new NotImplementedException();
         }
     }
 }

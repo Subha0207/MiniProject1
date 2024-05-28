@@ -12,5 +12,7 @@ namespace FlightManagementSystemAPI.Model
         public int NoOfPersons { get; set; }
         public float TotalAmount { get; set; }
         public ICollection<Cancellation> Cancellations { get; set; }
+
+        public ICollection<Payment> Payments { get; set; }
     }
 }
