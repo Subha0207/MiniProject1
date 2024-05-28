@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FlightManagementSystemAPI.Migrations
 {
     [DbContext(typeof(FlightManagementContext))]
-    [Migration("20240527020206_initial")]
-    partial class initial
+    [Migration("20240527213904_new")]
+    partial class @new
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -32,23 +32,21 @@ namespace FlightManagementSystemAPI.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("BookingId"), 1L, 1);
 
-                    b.Property<DateTime>("BookingDateTime")
-                        .HasColumnType("datetime2");
-
                     b.Property<int>("FlightId")
                         .HasColumnType("int");
 
-                    b.Property<int>("PaymentId")
+                    b.Property<int>("NoOfPersons")
                         .HasColumnType("int");
 
                     b.Property<int>("RouteId")
                         .HasColumnType("int");
 
+                    b.Property<float>("TotalAmount")
+                        .HasColumnType("real");
+
                     b.HasKey("BookingId");
 
                     b.HasIndex("FlightId");
-
-                    b.HasIndex("PaymentId");
 
                     b.HasIndex("RouteId");
 
@@ -65,9 +63,6 @@ namespace FlightManagementSystemAPI.Migrations
 
                     b.Property<int>("BookingId")
                         .HasColumnType("int");
-
-                    b.Property<DateTime>("CancellationDate")
-                        .HasColumnType("datetime2");
 
                     b.Property<string>("Reason")
                         .IsRequired()
@@ -108,31 +103,28 @@ namespace FlightManagementSystemAPI.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RouteId"), 1L, 1);
 
-                    b.Property<DateTime>("ArrivalDate")
+                    b.Property<DateTime>("ArrivalDateTime")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("ArrivalLocation")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("ArrivalTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("DepartureDate")
+                    b.Property<DateTime>("DepartureDateTime")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("DepartureLocation")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("DepartureTime")
-                        .HasColumnType("datetime2");
-
                     b.Property<int>("FlightId")
                         .HasColumnType("int");
 
                     b.Property<int>("NoOfStops")
                         .HasColumnType("int");
+
+                    b.Property<float>("PricePerPerson")
+                        .HasColumnType("real");
 
                     b.Property<int>("SeatsAvailable")
                         .HasColumnType("int");
@@ -142,26 +134,6 @@ namespace FlightManagementSystemAPI.Migrations
                     b.HasIndex("FlightId");
 
                     b.ToTable("Routes");
-                });
-
-            modelBuilder.Entity("FlightManagementSystemAPI.Model.Payment", b =>
-                {
-                    b.Property<int>("PaymentId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PaymentId"), 1L, 1);
-
-                    b.Property<int>("Amount")
-                        .HasColumnType("int");
-
-                    b.Property<string>("PaymentMode")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("PaymentId");
-
-                    b.ToTable("Payments");
                 });
 
             modelBuilder.Entity("FlightManagementSystemAPI.Model.Refund", b =>
@@ -273,6 +245,10 @@ namespace FlightManagementSystemAPI.Migrations
                         .IsRequired()
                         .HasColumnType("varbinary(max)");
 
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("UserId");
 
                     b.ToTable("UserInfos");
@@ -286,12 +262,6 @@ namespace FlightManagementSystemAPI.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("FlightManagementSystemAPI.Model.Payment", "Payment")
-                        .WithMany("Bookings")
-                        .HasForeignKey("PaymentId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
                     b.HasOne("FlightManagementSystemAPI.Model.FlightRoute", "FlightRoute")
                         .WithMany("Bookings")
                         .HasForeignKey("RouteId")
@@ -301,8 +271,6 @@ namespace FlightManagementSystemAPI.Migrations
                     b.Navigation("Flight");
 
                     b.Navigation("FlightRoute");
-
-                    b.Navigation("Payment");
                 });
 
             modelBuilder.Entity("FlightManagementSystemAPI.Model.Cancellation", b =>
@@ -390,11 +358,6 @@ namespace FlightManagementSystemAPI.Migrations
                     b.Navigation("Bookings");
 
                     b.Navigation("SubRoutes");
-                });
-
-            modelBuilder.Entity("FlightManagementSystemAPI.Model.Payment", b =>
-                {
-                    b.Navigation("Bookings");
                 });
 #pragma warning restore 612, 618
         }

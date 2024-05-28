@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace FlightManagementSystemAPI.Migrations
 {
-    public partial class initial : Migration
+    public partial class @new : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -21,20 +21,6 @@ namespace FlightManagementSystemAPI.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Flights", x => x.FlightId);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Payments",
-                columns: table => new
-                {
-                    PaymentId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Amount = table.Column<int>(type: "int", nullable: false),
-                    PaymentMode = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Payments", x => x.PaymentId);
                 });
 
             migrationBuilder.CreateTable(
@@ -62,13 +48,12 @@ namespace FlightManagementSystemAPI.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     FlightId = table.Column<int>(type: "int", nullable: false),
                     ArrivalLocation = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ArrivalDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ArrivalTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ArrivalDateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     DepartureLocation = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    DepartureDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    DepartureTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DepartureDateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     SeatsAvailable = table.Column<int>(type: "int", nullable: false),
-                    NoOfStops = table.Column<int>(type: "int", nullable: false)
+                    NoOfStops = table.Column<int>(type: "int", nullable: false),
+                    PricePerPerson = table.Column<float>(type: "real", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -88,7 +73,8 @@ namespace FlightManagementSystemAPI.Migrations
                     UserId = table.Column<int>(type: "int", nullable: false),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Password = table.Column<byte[]>(type: "varbinary(max)", nullable: false),
-                    PasswordHashKey = table.Column<byte[]>(type: "varbinary(max)", nullable: false)
+                    PasswordHashKey = table.Column<byte[]>(type: "varbinary(max)", nullable: false),
+                    Status = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -109,8 +95,8 @@ namespace FlightManagementSystemAPI.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     FlightId = table.Column<int>(type: "int", nullable: false),
                     RouteId = table.Column<int>(type: "int", nullable: false),
-                    BookingDateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    PaymentId = table.Column<int>(type: "int", nullable: false)
+                    NoOfPersons = table.Column<int>(type: "int", nullable: false),
+                    TotalAmount = table.Column<float>(type: "real", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -120,12 +106,6 @@ namespace FlightManagementSystemAPI.Migrations
                         column: x => x.FlightId,
                         principalTable: "Flights",
                         principalColumn: "FlightId",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Bookings_Payments_PaymentId",
-                        column: x => x.PaymentId,
-                        principalTable: "Payments",
-                        principalColumn: "PaymentId",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Bookings_Routes_RouteId",
@@ -172,8 +152,7 @@ namespace FlightManagementSystemAPI.Migrations
                     CancellationId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     BookingId = table.Column<int>(type: "int", nullable: false),
-                    Reason = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CancellationDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    Reason = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -210,11 +189,6 @@ namespace FlightManagementSystemAPI.Migrations
                 name: "IX_Bookings_FlightId",
                 table: "Bookings",
                 column: "FlightId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Bookings_PaymentId",
-                table: "Bookings",
-                column: "PaymentId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Bookings_RouteId",
@@ -266,9 +240,6 @@ namespace FlightManagementSystemAPI.Migrations
 
             migrationBuilder.DropTable(
                 name: "Bookings");
-
-            migrationBuilder.DropTable(
-                name: "Payments");
 
             migrationBuilder.DropTable(
                 name: "Routes");

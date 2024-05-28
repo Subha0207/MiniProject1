@@ -2,6 +2,7 @@
 using FlightManagementSystemAPI.Interfaces;
 using FlightManagementSystemAPI.Model;
 using FlightManagementSystemAPI.Model.DTOs;
+using FlightManagementSystemAPI.Repositories;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -105,11 +106,13 @@ namespace FlightManagementSystemAPI.Services
             user.Email = registerDTO.Email;
             user.ConfirmPassword = registerDTO.ConfirmPassword;
             user.Password = registerDTO.Password;
+            user.Role = registerDTO.Role;
             return user;
         }
         private UserInfo MapRegisterDTOToUserInfo(RegisterDTO registerDTO)
         {
             UserInfo userInfo = new UserInfo();
+            userInfo.Status = "Disabled";
             HMACSHA512 hMACSHA512 = new HMACSHA512();
             userInfo.PasswordHashKey = hMACSHA512.Key;
             userInfo.Email = registerDTO.Email;
@@ -123,6 +126,7 @@ namespace FlightManagementSystemAPI.Services
             returnDTO.UserId = user.UserId;
             returnDTO.Email = user.Email;
             returnDTO.Name = user.Name;
+            returnDTO.Role = user.Role;
            
             return returnDTO;
         }
@@ -135,6 +139,8 @@ namespace FlightManagementSystemAPI.Services
             returnDTO.Token = _tokenService.GenerateToken(user);
             return returnDTO;
         }
+
+        
 
     }
 }

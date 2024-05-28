@@ -16,7 +16,7 @@ namespace FlightManagementSystemAPI.Services
         {
 
             _subrouteRepository = subrouteRepository;
-            _routeRepository = routeRepository;
+            _routeRepository   = routeRepository;
             _flightRepository = flightRepository;
 
 
@@ -53,7 +53,14 @@ namespace FlightManagementSystemAPI.Services
                 throw new SubRouteNotFoundException("No SubRoutes for the given route");
                 
             }
-
+            catch (FlightNotFoundException)
+            {
+                throw;
+            }
+            catch (RouteNotFoundException)
+            {
+                throw;
+            }
             catch (SubRouteNotFoundException ex)
             {
                 throw;

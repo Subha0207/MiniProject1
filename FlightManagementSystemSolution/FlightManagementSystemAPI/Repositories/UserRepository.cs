@@ -18,7 +18,7 @@ namespace FlightManagementSystemAPI.Repositories
         public async Task<User> Add(User item)
         {
             try
-            {
+            {   
                 var existingUserByEmail = await _context.Users.FirstOrDefaultAsync(u => u.Email == item.Email);
                 if (existingUserByEmail != null)
                 {

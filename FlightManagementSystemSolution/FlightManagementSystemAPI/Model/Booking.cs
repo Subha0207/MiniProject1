@@ -9,9 +9,8 @@ namespace FlightManagementSystemAPI.Model
         public int FlightId { get; set; }
         public FlightRoute FlightRoute { get; set; }
         public int RouteId { get; set; }
-       public DateTime BookingDateTime { get; set; }
-        public Payment Payment { get; set; }
-        public int PaymentId { get; set; }
+        public int NoOfPersons { get; set; }
+        public float TotalAmount { get; set; }
         public ICollection<Cancellation> Cancellations { get; set; }
     }
 }

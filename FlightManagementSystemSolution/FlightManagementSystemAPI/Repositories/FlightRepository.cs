@@ -86,6 +86,7 @@ namespace FlightManagementSystemAPI.Repositories
             try
             {
                 var flight = await Get(item.FlightId);
+                _context.Entry(flight).State = EntityState.Detached;
                 _context.Update(item);
                 await _context.SaveChangesAsync(true);
                 return item;

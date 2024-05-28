@@ -26,7 +26,7 @@ namespace FlightManagementSystemAPI.Contexts
         public DbSet<SubRoute> SubRoutes { get; set; }
         public DbSet<Flight> Flights { get; set; }
 
-        public DbSet<Payment> Payments { get; set; }
+        
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -46,7 +46,7 @@ namespace FlightManagementSystemAPI.Contexts
 
             modelBuilder.Entity<Cancellation>().HasKey(c => c.CancellationId);
 
-            modelBuilder.Entity<Payment>().HasKey(p => p.PaymentId);
+        
 
 
                modelBuilder.Entity<Booking>()
@@ -62,11 +62,6 @@ namespace FlightManagementSystemAPI.Contexts
                 .OnDelete(DeleteBehavior.Restrict);
 
 
-            modelBuilder.Entity<Booking>()
-            .HasOne(b => b.Payment)
-            .WithMany(p => p.Bookings)
-            .HasForeignKey(b => b.PaymentId)
-            .OnDelete(DeleteBehavior.Restrict);
 
 
             modelBuilder.Entity<Refund>()

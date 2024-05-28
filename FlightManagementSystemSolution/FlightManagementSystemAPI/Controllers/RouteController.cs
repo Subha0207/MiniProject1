@@ -43,7 +43,84 @@ namespace FlightManagementSystemAPI.Controllers
                 return StatusCode(500, new ErrorModel(500, ex.Message));
             }
         }
+        [HttpGet("GetAllRoutes")]
+        [ProducesResponseType(typeof(List<RouteReturnDTO>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<List<RouteReturnDTO>>> GetAllRoutes()
+        {
+            try
+            {
+                List<RouteReturnDTO> routes = await _routeService.GetAllRoutes();
+                return Ok(routes);
+            }
+            catch (RouteException ex)
+            {
+                return StatusCode(500, new ErrorModel(500, ex.Message));
+            }
+            catch (RouteServiceException ex)
+            {
+                return StatusCode(500, new ErrorModel(500, ex.Message));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new ErrorModel(500, ex.Message));
+            }
+        }
 
-        
+        [HttpDelete("DeleteRoute/{routeId}")]
+        [ProducesResponseType(typeof(RouteReturnDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<RouteReturnDTO>> DeleteRoute(int routeId)
+        {
+            try
+            {
+                RouteReturnDTO route = await _routeService.DeleteRoute(routeId);
+                return Ok(route);
+            }
+            catch (UnableToDeleteRouteException ex)
+            {
+                return BadRequest(new ErrorModel(400, ex.Message));
+            }
+            catch (RouteException ex)
+            {
+                return NotFound(new ErrorModel(404, ex.Message));
+            }
+            catch (RouteServiceException ex)
+            {
+                return StatusCode(500, new ErrorModel(500, ex.Message));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new ErrorModel(500, ex.Message));
+            }
+        }
+
+        [HttpGet("GetRoute/{routeId}")]
+        [ProducesResponseType(typeof(RouteReturnDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<RouteReturnDTO>> GetRoute(int routeId)
+        {
+            try
+            {
+                RouteReturnDTO route = await _routeService.GetRoute(routeId);
+                return Ok(route);
+            }
+            catch (RouteException ex)
+            {
+                return NotFound(new ErrorModel(404, ex.Message));
+            }
+            catch (RouteServiceException ex)
+            {
+                return StatusCode(500, new ErrorModel(500, ex.Message));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new ErrorModel(500, ex.Message));
+            }
+        }
+
     }
 }

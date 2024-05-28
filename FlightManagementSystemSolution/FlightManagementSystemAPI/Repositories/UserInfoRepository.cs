@@ -20,6 +20,7 @@ namespace FlightManagementSystemAPI.Repositories
         {
             try
             {
+                item.Status = "Disabled";
                 var existingUserByEmail = await _context.UserInfos.FirstOrDefaultAsync(u => u.Email == item.Email);
                 if (existingUserByEmail != null)
                 {

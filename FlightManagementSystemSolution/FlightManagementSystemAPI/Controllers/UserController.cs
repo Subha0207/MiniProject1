@@ -2,6 +2,7 @@
 using FlightManagementSystemAPI.Interfaces;
 using FlightManagementSystemAPI.Model;
 using FlightManagementSystemAPI.Model.DTOs;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -77,5 +78,7 @@ namespace FlightManagementSystemAPI.Controllers
                 return BadRequest(new ErrorModel(400, ex.Message));
             }
         }
+
+
     }
 }

@@ -29,7 +29,7 @@ namespace FlightManagementSystemAPI.Services
             }
             catch (Exception ex)
             {
-                throw new FlightServiceException("Cannot add Flight this Moment some unwanted error occured :", ex);
+                throw new FlightServiceException("Error Occured,Unable to Add Flight", ex);
             }
         }
 
@@ -46,6 +46,96 @@ namespace FlightManagementSystemAPI.Services
             Flight flight = new Flight();
             flight.FlightName = flightDTO.FlightName;
             flight.SeatCapacity = flightDTO.SeatCapacity;
+            return flight;
+        }
+
+        public async Task<FlightReturnDTO> UpdateFlight(FlightReturnDTO FlightReturnDTO)
+        {
+            try
+            {
+                Flight flight = MapFlightReturnDTOWithFlight(FlightReturnDTO);
+                Flight UpdatedFlight = await _flightRepository.Update(flight);
+                FlightReturnDTO flightReturnDTO = MapFlightToFlightReturnDTO(UpdatedFlight);
+                return flightReturnDTO;
+            }
+            catch (UserException)
+            {
+                throw;
+            }
+            catch (Exception e)
+            {
+                throw new FlightServiceException("Error Occured,Unable to Update Flight" + e.Message, e);
+            }
+        }
+
+        public async Task<FlightReturnDTO> DeleteFlight(int flightId)
+        {
+            try
+            {
+                Flight flight = await _flightRepository.Delete(flightId);
+                FlightReturnDTO flightReturnDTO = MapFlightToFlightReturnDTO(flight);
+                return flightReturnDTO;
+            }
+            catch (FlightException)
+            {
+                throw;
+            }
+            catch (FlightServiceException)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                throw new FlightServiceException("Error occurred while deleting the flight: " + ex.Message, ex);
+            }
+        }
+
+        public async Task<FlightReturnDTO> GetFlight(int flightId)
+        {
+            try
+            {
+                Flight flight = await _flightRepository.Get(flightId);
+                FlightReturnDTO flightReturnDTO = MapFlightToFlightReturnDTO(flight);
+                return flightReturnDTO;
+            }
+            catch (UserException)
+            {
+                throw;
+            }
+            catch (Exception e)
+            {
+                throw new FlightServiceException("Error Occured,Unable to Get Flight" + e.Message, e);
+            }
+        }
+
+        public async Task<List<FlightReturnDTO>> GetAllFlight()
+        {
+            try
+            {
+                var flights = await _flightRepository.GetAll();
+                List<FlightReturnDTO> flightReturnDTOs = new List<FlightReturnDTO>();
+                foreach (Flight flight in flights)
+                {
+                    flightReturnDTOs.Add(MapFlightToFlightReturnDTO(flight));
+                }
+                return flightReturnDTOs;
+            }
+            catch (UserException)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                throw new FlightServiceException("Error Occured While Getting All the Flight" + ex.Message, ex);
+            }
+        }
+
+        private Flight MapFlightReturnDTOWithFlight(FlightReturnDTO flightReturnDTO)
+        {
+            Flight flight = new Flight();
+            flight.FlightId = flightReturnDTO.FlightId;
+            flight.FlightName = flightReturnDTO.FlightName;
+            flight.SeatCapacity= flightReturnDTO.SeatCapacity;
             return flight;
         }
     }
