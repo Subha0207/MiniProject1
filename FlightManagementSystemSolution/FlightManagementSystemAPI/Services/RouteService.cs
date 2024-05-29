@@ -22,7 +22,7 @@ namespace FlightManagementSystemAPI.Services
         public async Task<RouteReturnDTO> AddRoute(RouteDTO routeDTO)
         {
             try
-            {
+            {  
 
                 var flight = await _flightRepository.Get(routeDTO.FlightId);
                 if (flight == null)
@@ -30,7 +30,16 @@ namespace FlightManagementSystemAPI.Services
                     throw new FlightNotFoundException("No flight with the given ID exists.");
                 }
 
+                if (routeDTO.ArrivalLocation == routeDTO.DepartureLocation)
+                {
+                    throw new RouteException("Arrival location and departure location cannot be the same.");
+                }
 
+                // Add validation for arrival and departure date time
+                if (routeDTO.ArrivalDateTime <= routeDTO.DepartureDateTime)
+                {
+                    throw new RouteException("Arrival date time must be greater than departure date time.");
+                }
                 FlightRoute route = MapRouteDTOToRoute(routeDTO);
 
                 FlightRoute AddedRoute = await _routeRepository.Add(route);
@@ -152,9 +161,44 @@ namespace FlightManagementSystemAPI.Services
 
         }
 
-        public Task<RouteReturnDTO> UpdateRoute(RouteReturnDTO routeReturnDTO)
+        public async Task<RouteReturnDTO> UpdateRoute(RouteReturnDTO routeReturnDTO)
         {
-            throw new NotImplementedException();
+            try
+            {
+                // Get the existing route
+                var existingRoute = await _routeRepository.Get(routeReturnDTO.RouteId);
+                if (existingRoute == null)
+                {
+                    throw new RouteException("No route with the given ID exists.");
+                }
+
+                // Map the updated fields from the DTO to the existing route
+                existingRoute.FlightId = routeReturnDTO.FlightId;
+                existingRoute.ArrivalDateTime = routeReturnDTO.ArrivalDateTime;
+                existingRoute.ArrivalLocation = routeReturnDTO.ArrivalLocation;
+                existingRoute.DepartureDateTime = routeReturnDTO.DepartureDateTime;
+                existingRoute.DepartureLocation = routeReturnDTO.DepartureLocation;
+                existingRoute.NoOfStops = routeReturnDTO.NoOfStops;
+                existingRoute.SeatsAvailable = routeReturnDTO.SeatsAvailable;
+                existingRoute.PricePerPerson = routeReturnDTO.PricePerPerson;
+
+                // Update the route in the repository
+                var updatedRoute = await _routeRepository.Update(existingRoute);
+
+                // Map the updated route to a DTO to return
+                RouteReturnDTO updatedRouteReturnDTO = MapRouteToRouteReturnDTO(updatedRoute);
+
+                return updatedRouteReturnDTO;
+            }
+            catch (RouteException re)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                throw new RouteServiceException("Unable to update route", ex);
+            }
         }
+
     }
 }

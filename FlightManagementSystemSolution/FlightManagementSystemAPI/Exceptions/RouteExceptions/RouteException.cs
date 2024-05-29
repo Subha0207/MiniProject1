@@ -2,6 +2,9 @@
 {
     public class RouteException : Exception
     {
+        public RouteException(string? message) : base(message)
+        {
+        }
 
         public RouteException(string? msg, string message) : base(msg)
         {

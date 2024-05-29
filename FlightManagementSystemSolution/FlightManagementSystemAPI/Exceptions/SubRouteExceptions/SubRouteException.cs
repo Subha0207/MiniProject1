@@ -3,6 +3,9 @@
 
     public class SubRouteException : Exception
     {
+        public SubRouteException(string? message) : base(message)
+        {
+        }
 
         public SubRouteException(string? msg, string message) : base(msg)
         {

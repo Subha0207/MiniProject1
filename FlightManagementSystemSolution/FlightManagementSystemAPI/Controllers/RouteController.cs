@@ -4,6 +4,7 @@ using FlightManagementSystemAPI.Model;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using FlightManagementSystemAPI.Exceptions.RouteExceptions;
+using FlightManagementSystemAPI.Services;
 
 namespace FlightManagementSystemAPI.Controllers
 {
@@ -121,6 +122,33 @@ namespace FlightManagementSystemAPI.Controllers
                 return StatusCode(500, new ErrorModel(500, ex.Message));
             }
         }
+
+        [HttpPut("UpdateRoute")]
+        [ProducesResponseType(typeof(RouteReturnDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<RouteReturnDTO>> UpdateRoute(RouteReturnDTO routeReturnDTO)
+        {
+            try
+            {
+                RouteReturnDTO updatedRoute = await _routeService.UpdateRoute(routeReturnDTO);
+                return Ok(updatedRoute);
+            }
+            catch (RouteException ex)
+            {
+                return BadRequest(new ErrorModel(400, ex.Message));
+            }
+            catch (RouteServiceException ex)
+            {
+                return StatusCode(500, new ErrorModel(500, ex.Message));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new ErrorModel(500, ex.Message));
+            }
+        }
+
+
 
     }
 }

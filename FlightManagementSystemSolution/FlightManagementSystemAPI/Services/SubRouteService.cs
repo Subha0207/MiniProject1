@@ -49,6 +49,16 @@ namespace FlightManagementSystemAPI.Services
                 if (route.NoOfStops > 0)
                 {
                     var subroutes = MapSubRouteDTOToSubRoutes(subrouteDTO);
+                    if (route.ArrivalLocation != subroutes.Last().ArrivalLocation)
+                    {
+                        throw new Exception("The arrival location of the route does not match with the last stop's arrival location");
+                    }
+
+                    // Validate the departure location of the route matches with the first stop's departure location
+                    if (route.DepartureLocation != subroutes.First().DepartureLocation)
+                    {
+                        throw new Exception("The departure location of the route does not match with the first stop's departure location");
+                    }
                     if (route.NoOfStops == 1 && subroutes.Length != 2)
                     {
                         throw new Exception("You need to add one more stop detail");
@@ -87,36 +97,38 @@ namespace FlightManagementSystemAPI.Services
             return subrouteReturnDTO;
         }
 
+
+
         private SubRoute[] MapSubRouteDTOToSubRoutes(SubRouteDTO subrouteDTO)
         {
             List<SubRoute> subroutes = new List<SubRoute>();
             SubRoute previousSubroute = null;
 
+
+
             foreach (var stop in subrouteDTO.Stops)
             {
-                if (stop.ArrivalDateTime <= stop.DepartureDateTime)
-                {
-                    throw new Exception("Arrival date time must be greater than departure date time");
-                }
+             
 
-                // Validate arrival and departure location names are different
                 if (stop.ArrivalLocation == stop.DepartureLocation)
                 {
-                    throw new Exception("Arrival and departure location names must be different");
+                    throw new SubRouteException("Arrival and departure location names must be different");
                 }
-
-                // Check if the arrival location of this subroute matches the departure location of the previous subroute
-                if (previousSubroute != null && previousSubroute.DepartureLocation != stop.ArrivalLocation)
+                // Validate the departure time is before the arrival time
+                if (stop.DepartureDateTime >= stop.ArrivalDateTime)
                 {
-                    throw new Exception("The arrival location of this subroute does not match the departure location of the previous subroute");
+                    throw new SubRouteException("Departure time must be before arrival time");
                 }
 
-                // Check if the departure time of this subroute is later than the arrival time of the previous subroute
-                if (previousSubroute != null && previousSubroute.DepartureDateTime >= stop.ArrivalDateTime)
+                // Validate the arrival time of the current stop is after the departure time of the previous stop
+                if (previousSubroute != null && stop.ArrivalDateTime <= previousSubroute.DepartureDateTime)
                 {
-                    throw new Exception("The departure time of this subroute is not later than the arrival time of the previous subroute");
+                    throw new SubRouteException("Arrival time of the current stop must be after the departure time of the previous stop");
                 }
-
+                if (subrouteDTO.Stops.Length == 2 && subroutes[0].ArrivalLocation != subroutes[1].DepartureLocation)
+                {
+                    throw new SubRouteException("The arrival location of the first stop must be the same as the departure location of the second stop");
+                }
                 SubRoute subroute = new SubRoute
                 {
                     FlightId = subrouteDTO.FlightId,
