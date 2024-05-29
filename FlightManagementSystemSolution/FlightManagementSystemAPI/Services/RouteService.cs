@@ -34,6 +34,11 @@ namespace FlightManagementSystemAPI.Services
                 {
                     throw new RouteException("Arrival location and departure location cannot be the same.");
                 }
+                if (routeDTO.PricePerPerson == 0)
+                {
+                    throw new RouteException("Please enter the amount");
+                }
+
 
                 // Add validation for arrival and departure date time
                 if (routeDTO.ArrivalDateTime <= routeDTO.DepartureDateTime)

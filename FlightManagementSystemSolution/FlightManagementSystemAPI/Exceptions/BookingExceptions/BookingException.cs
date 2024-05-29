@@ -2,6 +2,9 @@
 {
     public class BookingException:Exception
     {
+        public BookingException(string? message) : base(message)
+        {
+        }
 
         public BookingException(string? msg, string message) : base(msg)
         {

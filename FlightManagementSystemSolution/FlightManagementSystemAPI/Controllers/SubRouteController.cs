@@ -72,35 +72,7 @@ namespace FlightManagementSystemAPI.Controllers
             }
         }
 
-        [HttpDelete("DeleteSubRoute/{subrouteId}")]
-        [ProducesResponseType(typeof(SubRouteReturnDTO), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status404NotFound)]
-        [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<SubRouteReturnDTO>> DeleteSubRoute(int routeId)
-        {
-            try
-            {
-                SubRouteReturnDTO route = await _subrouteService.DeleteSubRoute(routeId);
-                return Ok(route);
-            }
-            catch (UnableToDeleteSubRouteException ex)
-            {
-                return BadRequest(new ErrorModel(400, ex.Message));
-            }
-            catch (SubRouteException ex)
-            {
-                return NotFound(new ErrorModel(404, ex.Message));
-            }
-            catch (SubRouteServiceException ex)
-            {
-                return StatusCode(500, new ErrorModel(500, ex.Message));
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new ErrorModel(500, ex.Message));
-            }
-        }
+       
 
         [HttpGet("GetSubRoute/{subrouteId}")]
         [ProducesResponseType(typeof(SubRouteReturnDTO), StatusCodes.Status200OK)]
@@ -126,7 +98,6 @@ namespace FlightManagementSystemAPI.Controllers
                 return StatusCode(500, new ErrorModel(500, ex.Message));
             }
         }
-
 
         
     }

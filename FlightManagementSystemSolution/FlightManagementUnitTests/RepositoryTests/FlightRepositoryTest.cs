@@ -32,6 +32,7 @@ namespace FlightBookingSystemTest.RepositoryTests
         }
 
 
+        [Test]
         public async Task Add_Success()
         {
             // Arrange
@@ -41,15 +42,12 @@ namespace FlightBookingSystemTest.RepositoryTests
                 SeatCapacity = 150
             };
 
-            int initialFlightCount = _context.Flights.Count();
-
             // Act
             var result = await _flightRepository.Add(newFlight);
 
             // Assert
             Assert.NotNull(result);
-            int expectedFlightId = initialFlightCount + 1;
-            Assert.AreEqual(expectedFlightId, result.FlightId);
+            Assert.AreEqual(1, result.FlightId);
         }
 
         [Test]
@@ -197,12 +195,11 @@ namespace FlightBookingSystemTest.RepositoryTests
             // Act & Assert
             Assert.ThrowsAsync<FlightException>(() => _flightRepository.GetAll());
         }
-
         [TearDown]
         public void TearDown()
         {
+            _context.Database.EnsureDeleted();
             _context.Dispose();
         }
-
     }
 }

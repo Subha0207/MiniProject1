@@ -26,6 +26,11 @@ namespace FlightManagementSystemAPI.Repositories
             try
             {
                 _logger.LogInformation("Adding new booking.");
+
+                if (item == null )
+                {
+                    throw new BookingException("Invalid Booking object");
+                }
                 _context.Add(item);
                 await _context.SaveChangesAsync();
                 _logger.LogInformation("Booking added successfully.");

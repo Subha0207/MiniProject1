@@ -147,24 +147,55 @@ namespace FlightManagementSystemAPI.Services
             return subroutes.ToArray();
         }
 
-        public Task<SubRouteReturnDTO> UpdateSubRoute(SubRouteReturnDTO subrouteReturnDTO)
+        public async Task<List<SubRouteReturnDTO>> GetAllSubRoutes()
         {
-            throw new NotImplementedException();
+            var subroutes = await _subrouteRepository.GetAll();
+            return subroutes.Select(MapSubRouteToSubRouteReturnDTO).ToList();
         }
 
-        public Task<SubRouteReturnDTO> DeleteSubRoute(int subrouteId)
+        public async Task<SubRouteReturnDTO> GetSubRoute(int subrouteId)
         {
-            throw new NotImplementedException();
+            var subroute = await _subrouteRepository.Get(subrouteId);
+            if (subroute == null)
+            {
+                throw new SubRouteNotFoundException("No subroute with given id");
+            }
+            return MapSubRouteToSubRouteReturnDTO(subroute);
         }
 
-        public Task<List<SubRouteReturnDTO>> GetAllSubRoutes()
+        public async Task<SubRouteReturnDTO> DeleteSubRoute(int subrouteId)
         {
-            throw new NotImplementedException();
+            var subroute = await _subrouteRepository.Delete(subrouteId);
+            if (subroute == null)
+            {
+                throw new SubRouteNotFoundException("No subroute with given id");
+            }
+            return MapSubRouteToSubRouteReturnDTO(subroute);
         }
 
-        public Task<SubRouteReturnDTO> GetSubRoute(int subrouteId)
+        public async Task<SubRouteReturnDTO> UpdateSubRoute(SubRouteReturnDTO subrouteReturnDTO)
         {
-            throw new NotImplementedException();
+            var subroute = await _subrouteRepository.Update(MapSubRouteReturnDTOToSubRoute(subrouteReturnDTO));
+            if (subroute == null)
+            {
+                throw new SubRouteNotFoundException("No subroute with given id");
+            }
+            return MapSubRouteToSubRouteReturnDTO(subroute);
         }
+
+        private SubRoute MapSubRouteReturnDTOToSubRoute(SubRouteReturnDTO subrouteReturnDTO)
+        {
+            return new SubRoute
+            {
+                SubRouteId = subrouteReturnDTO.SubRouteId,
+                FlightId = subrouteReturnDTO.FlightId,
+                ArrivalLocation = subrouteReturnDTO.ArrivalLocation,
+                ArrivalDateTime = subrouteReturnDTO.ArrivalDateTime,
+                DepartureLocation = subrouteReturnDTO.DepartureLocation,
+                DepartureDateTime = subrouteReturnDTO.DepartureDateTime,
+                RouteId = subrouteReturnDTO.RouteId
+            };
+        }
+
     }
 }
