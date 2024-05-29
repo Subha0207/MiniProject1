@@ -78,7 +78,9 @@ namespace FlightManagementSystemAPI
             builder.Services.AddScoped<IRepository<int, FlightRoute>, RouteRepository>();
             builder.Services.AddScoped<IRepository<int, SubRoute>, SubRouteRepository>();
             builder.Services.AddScoped<IRepository<int, Booking>, BookingRepository>();
-            builder.Services.AddScoped<IRepository<int, Cancellation>, CancellationRepository>();
+           builder.Services.AddScoped<IRepository<int, Cancellation>, CancellationRepository>();
+            builder.Services.AddScoped<IRepository<int, Payment>, PaymentRepository>();
+            builder.Services.AddScoped<IRepository<int, Refund>, RefundRepository>();
             #endregion
 
             #region Services
@@ -89,6 +91,8 @@ namespace FlightManagementSystemAPI
             builder.Services.AddScoped<ISubRouteService, SubRouteService>();
             builder.Services.AddScoped<IBookingService, BookingService>();
             builder.Services.AddScoped<ICancellationService, CancellationService>();
+            builder.Services.AddScoped<IPaymentService, PaymentService>();
+            builder.Services.AddScoped<IRefundService, RefundService>();
             #endregion
 
             var app = builder.Build();

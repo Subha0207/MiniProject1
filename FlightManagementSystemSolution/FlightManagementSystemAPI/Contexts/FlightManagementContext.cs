@@ -65,10 +65,17 @@ namespace FlightManagementSystemAPI.Contexts
             .HasForeignKey(c => c.BookingId)
             .OnDelete(DeleteBehavior.Restrict);
 
+
+            modelBuilder.Entity<Cancellation>()
+           .HasOne(c => c.Payment)
+           .WithMany(p => p.Cancellations)
+           .HasForeignKey(c => c.PaymentId)
+           .OnDelete(DeleteBehavior.Restrict);
+
             modelBuilder.Entity<Refund>()
-            .HasOne(p => p.Payment)
-            .WithMany(rf => rf.Refunds)
-            .HasForeignKey(p => p.PaymentId)
+            .HasOne(rf => rf.Cancellation)
+            .WithMany(c => c.Refunds)
+            .HasForeignKey(rf => rf.CancellationId)
             .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Payment>()

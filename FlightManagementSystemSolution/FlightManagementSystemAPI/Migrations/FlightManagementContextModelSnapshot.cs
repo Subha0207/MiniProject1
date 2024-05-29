@@ -62,6 +62,9 @@ namespace FlightManagementSystemAPI.Migrations
                     b.Property<int>("BookingId")
                         .HasColumnType("int");
 
+                    b.Property<int>("PaymentId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Reason")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -69,6 +72,8 @@ namespace FlightManagementSystemAPI.Migrations
                     b.HasKey("CancellationId");
 
                     b.HasIndex("BookingId");
+
+                    b.HasIndex("PaymentId");
 
                     b.ToTable("Cancellations");
                 });
@@ -167,7 +172,10 @@ namespace FlightManagementSystemAPI.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RefundId"), 1L, 1);
 
-                    b.Property<int>("PaymentId")
+                    b.Property<int>("CancellationId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("PaymentId")
                         .HasColumnType("int");
 
                     b.Property<string>("RefundStatus")
@@ -175,6 +183,8 @@ namespace FlightManagementSystemAPI.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("RefundId");
+
+                    b.HasIndex("CancellationId");
 
                     b.HasIndex("PaymentId");
 
@@ -307,7 +317,15 @@ namespace FlightManagementSystemAPI.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("FlightManagementSystemAPI.Model.Payment", "Payment")
+                        .WithMany("Cancellations")
+                        .HasForeignKey("PaymentId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.Navigation("Booking");
+
+                    b.Navigation("Payment");
                 });
 
             modelBuilder.Entity("FlightManagementSystemAPI.Model.FlightRoute", b =>
@@ -334,13 +352,17 @@ namespace FlightManagementSystemAPI.Migrations
 
             modelBuilder.Entity("FlightManagementSystemAPI.Model.Refund", b =>
                 {
-                    b.HasOne("FlightManagementSystemAPI.Model.Payment", "Payment")
+                    b.HasOne("FlightManagementSystemAPI.Model.Cancellation", "Cancellation")
                         .WithMany("Refunds")
-                        .HasForeignKey("PaymentId")
+                        .HasForeignKey("CancellationId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.Navigation("Payment");
+                    b.HasOne("FlightManagementSystemAPI.Model.Payment", null)
+                        .WithMany("Refunds")
+                        .HasForeignKey("PaymentId");
+
+                    b.Navigation("Cancellation");
                 });
 
             modelBuilder.Entity("FlightManagementSystemAPI.Model.SubRoute", b =>
@@ -380,6 +402,11 @@ namespace FlightManagementSystemAPI.Migrations
                     b.Navigation("Payments");
                 });
 
+            modelBuilder.Entity("FlightManagementSystemAPI.Model.Cancellation", b =>
+                {
+                    b.Navigation("Refunds");
+                });
+
             modelBuilder.Entity("FlightManagementSystemAPI.Model.Flight", b =>
                 {
                     b.Navigation("Bookings");
@@ -398,6 +425,8 @@ namespace FlightManagementSystemAPI.Migrations
 
             modelBuilder.Entity("FlightManagementSystemAPI.Model.Payment", b =>
                 {
+                    b.Navigation("Cancellations");
+
                     b.Navigation("Refunds");
                 });
 #pragma warning restore 612, 618

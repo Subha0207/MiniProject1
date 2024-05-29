@@ -6,10 +6,10 @@ namespace FlightManagementSystemAPI.Model
     {
         public int PaymentId { get; set; }
         public float Amount { get; set; }
-       public string PaymentMethod { get; set; }
+        public string PaymentMethod { get; set; }
         public int BookingId { get; set; }
         public Booking Booking { get; set; }
-
+        public ICollection<Cancellation> Cancellations { get; set; }
         public ICollection<Refund> Refunds { get; set; }
     }
 }

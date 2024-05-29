@@ -145,7 +145,7 @@ namespace FlightManagementSystemAPI.Services
             return flight;
         }
 
-        
+
 
         public async Task<Dictionary<int, Dictionary<int, List<SubRoute>>>> GetAllFlightsRoutesAndSubroutes()
         {
@@ -165,15 +165,7 @@ namespace FlightManagementSystemAPI.Services
                     if (route.FlightId == flight.FlightId)
                     {
                         flightRoutes.Add(route);
-                        var routeSubroutes = new List<SubRoute>();
-
-                        foreach (var subroute in allSubroutes)
-                        {
-                            if (subroute.RouteId == route.RouteId)
-                            {
-                                routeSubroutes.Add(subroute);
-                            }
-                        }
+                        var routeSubroutes = allSubroutes.Where(subroute => subroute.RouteId == route.RouteId).ToList();
 
                         routesAndSubroutes.Add(route.RouteId, routeSubroutes);
                     }
@@ -184,7 +176,6 @@ namespace FlightManagementSystemAPI.Services
 
             return flightsRoutesAndSubroutes;
         }
-
 
     }
 
