@@ -4,6 +4,10 @@
     {
         public UserAlreadyExistsException(string? message) : base(message)
         {
+        }
+
+        public UserAlreadyExistsException(string? message, UserAlreadyExistsException ex) : base(message)
+        {
 
         }
 
