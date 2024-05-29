@@ -13,5 +13,6 @@
         public FlightRoute FlightRoute { get; set; }
 
         public Flight Flight { get; set; }
+        public int SubFlightId { get; set; }
     }
 }

@@ -1,4 +1,5 @@
-﻿using FlightManagementSystemAPI.Model.DTOs;
+﻿using FlightManagementSystemAPI.Model;
+using FlightManagementSystemAPI.Model.DTOs;
 
 namespace FlightManagementSystemAPI.Interfaces
 {
@@ -34,5 +35,11 @@ namespace FlightManagementSystemAPI.Interfaces
       /// </summary>
       /// <returns></returns>
       public Task<List<FlightReturnDTO>> GetAllFlight();
+
+       /// <summary>
+       /// Used to get all the route and subroute of all flights
+       /// </summary>
+       /// <returns></returns>
+       public Task<Dictionary<int, Dictionary<int, List<SubRoute>>>> GetAllFlightsRoutesAndSubroutes();
     }
 }

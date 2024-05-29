@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using FlightManagementSystemAPI.Exceptions.FlightExceptions;
+using System.Text.Json.Serialization;
+using System.Text.Json;
 
 namespace FlightManagementSystemAPI.Controllers
 {
@@ -19,7 +21,7 @@ namespace FlightManagementSystemAPI.Controllers
             _flightService = flightService;
 
         }
-        
+
         [HttpPost("AddFlight")]
         [ProducesResponseType(typeof(FlightReturnDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
@@ -145,5 +147,94 @@ namespace FlightManagementSystemAPI.Controllers
         }
 
 
+
+
+        //    [HttpGet("GetAllFlightsRoutesAndSubroutes")]
+        //    [ProducesResponseType(typeof(Dictionary<int, Dictionary<int, List<SubRoute>>>), StatusCodes.Status200OK)]
+        //    [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status500InternalServerError)]
+        //    public async Task<ActionResult<Dictionary<int, Dictionary<int, List<SubRoute>>>>> GetAllFlightsRoutesAndSubroutes()
+        //    {
+        //        try
+        //        {
+        //            var options = new JsonSerializerOptions
+        //            {
+        //                ReferenceHandler = ReferenceHandler.Preserve,
+        //                MaxDepth = 64 // Adjust the max depth as needed
+        //            };
+
+        //            var flightsRoutesSubroutes = await _flightService.GetAllFlightsRoutesAndSubroutes();
+        //            var json = JsonSerializer.Serialize(flightsRoutesSubroutes, options);
+        //            return Ok(json);
+        //        }
+        //        catch (FlightException ex)
+        //        {
+        //            return StatusCode(500, new ErrorModel(500, ex.Message));
+        //        }
+        //        catch (FlightServiceException ex)
+        //        {
+        //            return StatusCode(500, new ErrorModel(500, ex.Message));
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            return StatusCode(500, new ErrorModel(500, ex.Message));
+        //        }
+        //    }
+        //}
+
+        [HttpGet("GetAllFlightsRoutesAndSubroutes")]
+        [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<string>> GetAllFlightsRoutesAndSubroutes()
+        {
+            try
+            {
+                var flightsRoutesSubroutes = await _flightService.GetAllFlightsRoutesAndSubroutes();
+                var json = FormatNestedJson(flightsRoutesSubroutes);
+                return Ok(json);
+            }
+            catch (FlightException ex)
+            {
+                return StatusCode(500, new ErrorModel(500, ex.Message));
+            }
+            catch (FlightServiceException ex)
+            {
+                return StatusCode(500, new ErrorModel(500, ex.Message));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new ErrorModel(500, ex.Message));
+            }
+        }
+
+
+
+        private string FormatNestedJson(Dictionary<int, Dictionary<int, List<SubRoute>>> flightsRoutesSubroutes)
+        {
+            var formattedData = new Dictionary<string, Dictionary<string, List<SubRoute>>>();
+
+            foreach (var flightId in flightsRoutesSubroutes.Keys)
+            {
+                var routesAndSubroutes = new Dictionary<string, List<SubRoute>>();
+                foreach (var routeId in flightsRoutesSubroutes[flightId].Keys)
+                {
+                    var subRoutes = flightsRoutesSubroutes[flightId][routeId];
+                    routesAndSubroutes.Add($"Route: {routeId}", subRoutes);
+                }
+                formattedData.Add($"Flight: {flightId}", routesAndSubroutes);
+            }
+
+            var options = new JsonSerializerOptions
+            {
+                WriteIndented = true,
+                IgnoreReadOnlyProperties = true,
+                IgnoreNullValues = true,
+                ReferenceHandler = ReferenceHandler.Preserve
+            };
+
+            return JsonSerializer.Serialize(formattedData, options);
+        }
+
+
     }
 }
+

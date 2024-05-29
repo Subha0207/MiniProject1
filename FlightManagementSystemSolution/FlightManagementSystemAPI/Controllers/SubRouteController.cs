@@ -25,11 +25,11 @@ namespace FlightManagementSystemAPI.Controllers
         [ProducesResponseType(typeof(SubRouteReturnDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<SubRouteReturnDTO>> AddSubRoute(SubRouteDTO subrouteDTO)
+        public async Task<ActionResult<SubRouteReturnDTO[]>> AddSubRoute(SubRouteDTO[] subrouteDTO)
         {
             try
             {
-                SubRouteReturnDTO returnDTO = await _subrouteService.AddSubRoute(subrouteDTO);
+                SubRouteReturnDTO[] returnDTO = await _subrouteService.AddSubRoutes(subrouteDTO);
                 return Ok(returnDTO);
             }
             catch (RouteException ex)

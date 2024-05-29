@@ -12,7 +12,7 @@ namespace FlightManagementSystemAPI.Interfaces
        /// </summary>
        /// <param name="subrouteDTO"></param>
        /// <returns></returns>
-       public  Task<SubRouteReturnDTO> AddSubRoute(SubRouteDTO subrouteDTO);
+       public Task<SubRouteReturnDTO[]> AddSubRoutes(SubRouteDTO[] subrouteDTO);
 
 
        /// <summary>

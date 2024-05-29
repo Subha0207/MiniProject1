@@ -7,7 +7,7 @@
 
         public int SeatCapacity { get; set; }
         public ICollection<Booking> Bookings { get; set; }
-
+        public ICollection<FlightRoute> Routes { get; set; }
         public ICollection<SubRoute> SubRoutes { get; set; }
 
     }

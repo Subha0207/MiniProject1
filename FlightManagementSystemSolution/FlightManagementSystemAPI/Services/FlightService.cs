@@ -3,16 +3,21 @@ using FlightManagementSystemAPI.Exceptions.UserExceptions;
 using FlightManagementSystemAPI.Interfaces;
 using FlightManagementSystemAPI.Model;
 using FlightManagementSystemAPI.Model.DTOs;
+using FlightManagementSystemAPI.Repositories;
 
 namespace FlightManagementSystemAPI.Services
 {
     public class FlightService : IFlightService
     {
         private readonly IRepository<int, Flight> _flightRepository;
+        private readonly IRepository<int, FlightRoute> _routeRepository;
+        private readonly IRepository<int, SubRoute> _subrouteRepository;
 
-        public FlightService(IRepository<int, Flight> flightRepository)
+        public FlightService(IRepository<int, Flight> flightRepository, IRepository<int, FlightRoute> routeRepository, IRepository<int, SubRoute> subrouteRepository)
         {
             _flightRepository = flightRepository;
+            _routeRepository = routeRepository;
+            _subrouteRepository = subrouteRepository;
         }
          
         public async Task<FlightReturnDTO> AddFlight(FlightDTO flightDTO)
@@ -139,5 +144,50 @@ namespace FlightManagementSystemAPI.Services
             flight.SeatCapacity= flightReturnDTO.SeatCapacity;
             return flight;
         }
+
+        
+
+        public async Task<Dictionary<int, Dictionary<int, List<SubRoute>>>> GetAllFlightsRoutesAndSubroutes()
+        {
+            var flights = await _flightRepository.GetAll();
+            var allRoutes = await _routeRepository.GetAll();
+            var allSubroutes = await _subrouteRepository.GetAll();
+
+            var flightsRoutesAndSubroutes = new Dictionary<int, Dictionary<int, List<SubRoute>>>();
+
+            foreach (var flight in flights)
+            {
+                var flightRoutes = new List<FlightRoute>();
+                var routesAndSubroutes = new Dictionary<int, List<SubRoute>>();
+
+                foreach (var route in allRoutes)
+                {
+                    if (route.FlightId == flight.FlightId)
+                    {
+                        flightRoutes.Add(route);
+                        var routeSubroutes = new List<SubRoute>();
+
+                        foreach (var subroute in allSubroutes)
+                        {
+                            if (subroute.RouteId == route.RouteId)
+                            {
+                                routeSubroutes.Add(subroute);
+                            }
+                        }
+
+                        routesAndSubroutes.Add(route.RouteId, routeSubroutes);
+                    }
+                }
+
+                flightsRoutesAndSubroutes.Add(flight.FlightId, routesAndSubroutes);
+            }
+
+            return flightsRoutesAndSubroutes;
+        }
+
+
     }
+
+
 }
+
