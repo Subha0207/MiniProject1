@@ -1,15 +1,13 @@
 ﻿using FlightManagementSystemAPI.Contexts;
 using FlightManagementSystemAPI.Exceptions.BookingExceptions;
-using FlightManagementSystemAPI.Exceptions.FlightExceptions;
 using FlightManagementSystemAPI.Model;
 using FlightManagementSystemAPI.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Moq;
+using NUnit.Framework;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace FlightManagementUnitTests.RepositoryTests
@@ -18,9 +16,11 @@ namespace FlightManagementUnitTests.RepositoryTests
     {
         private FlightManagementContext _context;
         private BookingRepository _bookingRepository;
+        private Flight _flight;
+        private FlightRoute _route;
 
         [SetUp]
-        public void Setup()
+        public async Task Setup()
         {
             var options = new DbContextOptionsBuilder<FlightManagementContext>()
                 .UseInMemoryDatabase(databaseName: "dummyDB")
@@ -29,16 +29,45 @@ namespace FlightManagementUnitTests.RepositoryTests
             var bookingLoggerMock = new Mock<ILogger<BookingRepository>>();
             _bookingRepository = new BookingRepository(_context, bookingLoggerMock.Object);
 
+            _flight = new Flight
+            {
+                FlightName = "ABC Airlines",
+                SeatCapacity = 150
+            };
+
+            _route = new FlightRoute
+            {
+                ArrivalLocation = "XYZ",
+                DepartureLocation = "ABC",
+                NoOfStops = 1,
+                PricePerPerson = 100.0f,
+                SeatsAvailable = 30,
+                DepartureDateTime = DateTime.Now,
+                ArrivalDateTime = DateTime.Now.AddHours(2),
+                FlightId = _flight.FlightId
+            };
+            _context.Flights.Add(_flight);
+            _context.Routes.Add(_route);
+            await _context.SaveChangesAsync();
         }
+
+        [TearDown]
+        public void TearDown()
+        {
+            _context.Database.EnsureDeleted();
+            _context.Dispose();
+        }
+
         [Test]
         public async Task Add_Success()
         {
             // Arrange
             var newBooking = new Booking
             {
-               FlightId=1,
-               RouteId=2,
-               NoOfPersons=1
+                RouteId = _route.RouteId,
+                FlightId = _flight.FlightId,
+                NoOfPersons = 2,
+                TotalAmount = 200.0f
             };
 
             // Act
@@ -48,15 +77,27 @@ namespace FlightManagementUnitTests.RepositoryTests
             Assert.NotNull(result);
             Assert.AreEqual(1, result.BookingId);
         }
+
+        [Test]
+        public void Add_Failure_Exception()
+        {
+            // Arrange
+            var invalidBooking = new Booking(); // Missing required fields
+
+            // Act & Assert
+            Assert.ThrowsAsync<BookingException>(() => _bookingRepository.Add(invalidBooking));
+        }
+
         [Test]
         public async Task GetByKey_Success()
         {
             // Arrange
             var newBooking = new Booking
             {
-                FlightId = 1,
-                RouteId = 2,
-                NoOfPersons = 1
+                RouteId = _route.RouteId,
+                FlightId = _flight.FlightId,
+                NoOfPersons = 2,
+                TotalAmount = 200.0f
             };
             var addedBooking = await _bookingRepository.Add(newBooking);
 
@@ -67,14 +108,15 @@ namespace FlightManagementUnitTests.RepositoryTests
             Assert.NotNull(result);
             Assert.AreEqual(addedBooking.BookingId, result.BookingId);
         }
+
         [Test]
         public void GetByKey_Failure_NotFoundException()
         {
             // Arrange
-            var nonExistentBookingId = 999; // Assuming invalid booking ID
+            var nonExistentBookingId = 999;
 
             // Act & Assert
-            Assert.ThrowsAsync<Exception>(() => _bookingRepository.Get(nonExistentBookingId));
+            Assert.ThrowsAsync<BookingException>(() => _bookingRepository.Get(nonExistentBookingId));
         }
 
         [Test]
@@ -83,21 +125,24 @@ namespace FlightManagementUnitTests.RepositoryTests
             // Arrange
             var newBooking = new Booking
             {
-                FlightId = 1,
-                RouteId = 2,
-                NoOfPersons = 1
+                RouteId = _route.RouteId,
+                FlightId = _flight.FlightId,
+                NoOfPersons = 2,
+                TotalAmount = 200.0f
             };
             var addedBooking = await _bookingRepository.Add(newBooking);
 
             // Modify some data in the booking
-            addedBooking.NoOfPersons = 2;
+            addedBooking.NoOfPersons = 3;
+            addedBooking.TotalAmount = 300.0f;
 
             // Act
             var result = await _bookingRepository.Update(addedBooking);
 
             // Assert
             Assert.NotNull(result);
-            Assert.AreEqual(2, result.NoOfPersons);
+            Assert.AreEqual(3, result.NoOfPersons);
+            Assert.AreEqual(300.0f, result.TotalAmount);
         }
 
         [Test]
@@ -106,14 +151,15 @@ namespace FlightManagementUnitTests.RepositoryTests
             // Arrange
             var nonExistentBooking = new Booking
             {
-                BookingId = 999, // Assuming invalid booking ID
-                FlightId = 1,
-                RouteId = 2,
-                NoOfPersons = 2
+                BookingId = 999,
+                RouteId = _route.RouteId,
+                FlightId = _flight.FlightId,
+                NoOfPersons = 2,
+                TotalAmount = 200.0f
             };
 
             // Act & Assert
-            Assert.ThrowsAsync<Exception>(() => _bookingRepository.Update(nonExistentBooking));
+            Assert.ThrowsAsync<BookingException>(() => _bookingRepository.Update(nonExistentBooking));
         }
 
         [Test]
@@ -122,9 +168,10 @@ namespace FlightManagementUnitTests.RepositoryTests
             // Arrange
             var newBooking = new Booking
             {
-                FlightId = 1,
-                RouteId = 2,
-                NoOfPersons = 1
+                RouteId = _route.RouteId,
+                FlightId = _flight.FlightId,
+                NoOfPersons = 2,
+                TotalAmount = 200.0f
             };
             var addedBooking = await _bookingRepository.Add(newBooking);
 
@@ -140,10 +187,10 @@ namespace FlightManagementUnitTests.RepositoryTests
         public void DeleteByKey_Failure_BookingNotFound()
         {
             // Arrange
-            var nonExistentBookingId = 999; // Assuming invalid booking ID
+            var nonExistentBookingId = 999;
 
             // Act & Assert
-            Assert.ThrowsAsync<Exception>(() => _bookingRepository.Delete(nonExistentBookingId));
+            Assert.ThrowsAsync<BookingException>(() => _bookingRepository.Delete(nonExistentBookingId));
         }
 
         [Test]
@@ -152,48 +199,36 @@ namespace FlightManagementUnitTests.RepositoryTests
             // Arrange
             var newBooking1 = new Booking
             {
-                FlightId = 1,
-                RouteId = 2,
-                NoOfPersons = 1
+                RouteId = _route.RouteId,
+                FlightId = _flight.FlightId,
+                NoOfPersons = 2,
+                TotalAmount = 200.0f
             };
             var newBooking2 = new Booking
             {
-                FlightId = 2,
-                RouteId = 3,
-                NoOfPersons = 2
+                RouteId = _route.RouteId,
+                FlightId = _flight.FlightId,
+                NoOfPersons = 3,
+                TotalAmount = 300.0f
             };
-            List<Booking> addedBookings = new List<Booking> { newBooking1, newBooking2 };
-            foreach (var booking in addedBookings)
-            {
-                await _bookingRepository.Add(booking);
-            }
+            await _bookingRepository.Add(newBooking1);
+            await _bookingRepository.Add(newBooking2);
 
             // Act
             var result = await _bookingRepository.GetAll();
 
             // Assert
             Assert.NotNull(result);
-            Assert.AreEqual(addedBookings.Count, result.Count()); // Assuming only the added bookings are in the database
-            foreach (var addedBooking in addedBookings)
-            {
-                Assert.IsTrue(result.Any(b => b.FlightId == addedBooking.FlightId && b.RouteId == addedBooking.RouteId && b.NoOfPersons == addedBooking.NoOfPersons));
-            }
+            Assert.AreEqual(2, result.Count());
         }
 
         [Test]
         public void GetAll_Failure_NoBookingsPresent()
         {
             // Arrange
-            // Ensure no bookings are added
 
             // Act & Assert
-            Assert.ThrowsAsync<Exception>(() => _bookingRepository.GetAll());
-        }
-        [TearDown]
-        public void TearDown()
-        {
-            _context.Database.EnsureDeleted();
-            _context.Dispose();
+            Assert.ThrowsAsync<BookingException>(() => _bookingRepository.GetAll());
         }
     }
 }

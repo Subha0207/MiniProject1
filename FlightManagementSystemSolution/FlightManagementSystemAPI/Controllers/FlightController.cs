@@ -146,41 +146,6 @@ namespace FlightManagementSystemAPI.Controllers
             }
         }
 
-
-
-
-        //    [HttpGet("GetAllFlightsRoutesAndSubroutes")]
-        //    [ProducesResponseType(typeof(Dictionary<int, Dictionary<int, List<SubRoute>>>), StatusCodes.Status200OK)]
-        //    [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status500InternalServerError)]
-        //    public async Task<ActionResult<Dictionary<int, Dictionary<int, List<SubRoute>>>>> GetAllFlightsRoutesAndSubroutes()
-        //    {
-        //        try
-        //        {
-        //            var options = new JsonSerializerOptions
-        //            {
-        //                ReferenceHandler = ReferenceHandler.Preserve,
-        //                MaxDepth = 64 // Adjust the max depth as needed
-        //            };
-
-        //            var flightsRoutesSubroutes = await _flightService.GetAllFlightsRoutesAndSubroutes();
-        //            var json = JsonSerializer.Serialize(flightsRoutesSubroutes, options);
-        //            return Ok(json);
-        //        }
-        //        catch (FlightException ex)
-        //        {
-        //            return StatusCode(500, new ErrorModel(500, ex.Message));
-        //        }
-        //        catch (FlightServiceException ex)
-        //        {
-        //            return StatusCode(500, new ErrorModel(500, ex.Message));
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            return StatusCode(500, new ErrorModel(500, ex.Message));
-        //        }
-        //    }
-        //}
-
         [HttpGet("GetAllFlightsRoutesAndSubroutes")]
         [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status500InternalServerError)]
@@ -188,8 +153,58 @@ namespace FlightManagementSystemAPI.Controllers
         {
             try
             {
-                var flightsRoutesSubroutes = await _flightService.GetAllFlightsRoutesAndSubroutes();
-                var json = FormatNestedJson(flightsRoutesSubroutes);
+                var flightsRoutesAndSubroutes = await _flightService.GetAllFlightsRoutesAndSubroutes();
+                var json = FormatFlightsRoutesAndSubroutesJson(flightsRoutesAndSubroutes);
+                return Ok(json);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new ErrorModel(500, ex.Message));
+            }
+        }
+
+        private string FormatFlightsRoutesAndSubroutesJson(Dictionary<int, Dictionary<int, List<SubRouteDisplayDTO>>> flightsRoutesAndSubroutes)
+        {
+            var formattedData = new Dictionary<string, Dictionary<string, List<SubRouteDisplayDTO>>>();
+
+            foreach (var flightId in flightsRoutesAndSubroutes.Keys)
+            {
+                var routesAndSubroutes = flightsRoutesAndSubroutes[flightId];
+                var formattedRoutesAndSubroutes = new Dictionary<string, List<SubRouteDisplayDTO>>();
+
+                foreach (var routeId in routesAndSubroutes.Keys)
+                {
+                    var subroutes = routesAndSubroutes[routeId];
+                    formattedRoutesAndSubroutes.Add($"Route: {routeId}", subroutes);
+                }
+
+                formattedData.Add($"Flight: {flightId}", formattedRoutesAndSubroutes);
+            }
+
+            var options = new JsonSerializerOptions
+            {
+                WriteIndented = true,
+                DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull
+            };
+
+            return JsonSerializer.Serialize(formattedData, options);
+        }
+
+
+
+
+
+
+
+        [HttpGet("GetAllDirectFlights")]
+        [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<string>> GetAllRoutesOfFlight()
+        {
+            try
+            {
+                var routesOfFlight = await _flightService.GetAllDirectFlights();
+                var json = FormatRoutesJson(routesOfFlight);
                 return Ok(json);
             }
             catch (FlightException ex)
@@ -206,21 +221,14 @@ namespace FlightManagementSystemAPI.Controllers
             }
         }
 
-
-
-        private string FormatNestedJson(Dictionary<int, Dictionary<int, List<SubRoute>>> flightsRoutesSubroutes)
+        private string FormatRoutesJson(Dictionary<int, List<RouteDTO>> routesOfFlight)
         {
-            var formattedData = new Dictionary<string, Dictionary<string, List<SubRoute>>>();
+            var formattedData = new Dictionary<string, List<RouteDTO>>();
 
-            foreach (var flightId in flightsRoutesSubroutes.Keys)
+            foreach (var flightId in routesOfFlight.Keys)
             {
-                var routesAndSubroutes = new Dictionary<string, List<SubRoute>>();
-                foreach (var routeId in flightsRoutesSubroutes[flightId].Keys)
-                {
-                    var subRoutes = flightsRoutesSubroutes[flightId][routeId];
-                    routesAndSubroutes.Add($"Route: {routeId}", subRoutes);
-                }
-                formattedData.Add($"Flight: {flightId}", routesAndSubroutes);
+                var routes = routesOfFlight[flightId];
+                formattedData.Add($"Flight: {flightId}", routes);
             }
 
             var options = new JsonSerializerOptions

@@ -50,9 +50,36 @@ namespace FlightManagementSystemAPI.Services
             // Return the booking details
             var returnCancellationDTO = new ReturnCancellationDTO
             {
-               CancellationId=savedCancellation.CancellationId
+               CancellationId=savedCancellation.CancellationId,
+                Reason=savedCancellation.Reason
+               
             };
             return returnCancellationDTO;
+        }
+        private ReturnCancellationDTO MapCancellationToReturnCancellationDTO(Cancellation cancellation)
+        {
+            return new ReturnCancellationDTO
+            {
+                CancellationId = cancellation.CancellationId,
+                Reason = cancellation.Reason
+            };
+        }
+        public async Task<List<ReturnCancellationDTO>> GetAllCancellations()
+        {
+            try
+            {
+                var cancellations = await _cancellationRepository.GetAll();
+                List<ReturnCancellationDTO> returnCancellationDTOs = new List<ReturnCancellationDTO>();
+                foreach (var cancellation in cancellations)
+                {
+                    returnCancellationDTOs.Add(MapCancellationToReturnCancellationDTO(cancellation));
+                }
+                return returnCancellationDTOs;
+            }
+            catch (Exception ex)
+            {
+                throw new CancellationException("Error Occurred While Getting All the Cancellations: " + ex.Message, ex);
+            }
         }
     }
 }

@@ -121,7 +121,9 @@ namespace FlightManagementSystemAPI.Repositories
             {
                 _logger.LogInformation($"Updating sub-route with SubRouteId: {item.SubRouteId}");
                 var subRoute = await Get(item.SubRouteId);
+                _context.Entry(subRoute).State = EntityState.Detached;
                 _context.Update(item);
+
                 await _context.SaveChangesAsync(true);
                 _logger.LogInformation("Sub-route updated successfully.");
                 return subRoute;

@@ -2,8 +2,6 @@
 {
     public class RefundDTO
     {
-   
-
         public int CancellationId { get; set; }
     }
 }

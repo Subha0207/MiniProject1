@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FlightManagementSystemAPI.Migrations
 {
     [DbContext(typeof(FlightManagementContext))]
-    [Migration("20240529164136_last")]
-    partial class last
+    [Migration("20240530130455_initial")]
+    partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

@@ -31,7 +31,7 @@ namespace FlightManagementSystemAPI.Controllers
             }
             catch (Exception)
             {
-                // Handle other exceptions (e.g., database errors) appropriately
+              
                 return StatusCode(500, "An error occurred while processing the request.");
             }
         }

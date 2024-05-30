@@ -38,7 +38,7 @@ namespace FlightBookingSystemTest.RepositoryTests
             // Arrange
             var newFlight = new Flight
             {
-                FlightName = "Test Airline",
+                FlightName = "Indigo",
                 SeatCapacity = 150
             };
 
@@ -66,7 +66,7 @@ namespace FlightBookingSystemTest.RepositoryTests
             // Arrange
             var newFlight = new Flight
             {
-                FlightName = "Test Airline",
+                FlightName = "Indigo",
                 SeatCapacity = 150
             };
             var addedFlight = await _flightRepository.Add(newFlight);
@@ -95,8 +95,8 @@ namespace FlightBookingSystemTest.RepositoryTests
             // Arrange
             var newFlight = new Flight
             {
-                FlightName = "Test Airline",
-                SeatCapacity= 150
+                FlightName = "Indigo",
+                SeatCapacity= 100
             };
             var addedFlight = await _flightRepository.Add(newFlight);
 
@@ -132,7 +132,7 @@ namespace FlightBookingSystemTest.RepositoryTests
             // Arrange
             var newFlight = new Flight
             {
-                FlightName = "Test Airline",
+                FlightName = "Indigo",
                 SeatCapacity = 150
             };
             var addedFlight = await _flightRepository.Add(newFlight);
@@ -160,12 +160,12 @@ namespace FlightBookingSystemTest.RepositoryTests
             // Arrange
             var newFlight1 = new Flight
             {
-                FlightName = "Test Airline 1",
+                FlightName = "Indigo",
                 SeatCapacity = 150
             };
             var newFlight2 = new Flight
             {
-                FlightName = "Test Airline 2",
+                FlightName = "AirIndia",
                 SeatCapacity = 200
             };
             List<Flight> addedFlights = new List<Flight> { newFlight1, newFlight2 };

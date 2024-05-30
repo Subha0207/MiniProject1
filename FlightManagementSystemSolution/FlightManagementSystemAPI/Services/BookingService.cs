@@ -2,6 +2,8 @@
 
 using System;
 using System.Threading.Tasks;
+using FlightManagementSystemAPI.Exceptions.BookingExceptions;
+using FlightManagementSystemAPI.Exceptions.UserExceptions;
 using FlightManagementSystemAPI.Interfaces;
 using FlightManagementSystemAPI.Model;
 using FlightManagementSystemAPI.Model.DTOs;
@@ -61,7 +63,7 @@ namespace FlightManagementSystemAPI.Services
 
             // Save the booking to the repository
             var savedBooking = await _bookingRepository.Add(newBooking);
-
+            
             // Return the booking details
             var returnBookingDTO = new ReturnBookingDTO
             {
@@ -73,6 +75,40 @@ namespace FlightManagementSystemAPI.Services
             };
 
             return returnBookingDTO;
+        }
+
+       
+        public async Task<List<ReturnBookingDTO>> GetAllBookings()
+        {
+            try
+            {
+                var bookings = await _bookingRepository.GetAll();
+                List<ReturnBookingDTO> returnBookingDTOs = new List<ReturnBookingDTO>();
+                foreach (var booking in bookings)
+                {
+                    returnBookingDTOs.Add(MapBookingToReturnBookingDTO(booking));
+                }
+                return returnBookingDTOs;
+            }
+            catch (BookingException)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                throw new BookingException("Error Occurred While Getting All the Bookings: " + ex.Message, ex);
+            }
+        }
+        private ReturnBookingDTO MapBookingToReturnBookingDTO(Booking booking)
+        {
+            return new ReturnBookingDTO
+            {
+                BookingId = booking.BookingId,
+                FlightId = booking.FlightId,
+                RouteId = booking.RouteId,
+                NoOfPersons = booking.NoOfPersons,
+                TotalAmount = booking.TotalAmount
+            };
         }
     }
 }

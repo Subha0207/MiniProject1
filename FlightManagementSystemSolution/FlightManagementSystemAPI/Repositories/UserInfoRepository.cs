@@ -145,6 +145,7 @@ namespace FlightManagementSystemAPI.Repositories
             {
                 _logger.LogInformation($"Updating user info with UserId: {item.UserId}");
                 var userInfo = await Get(item.UserId);
+
                 _context.Update(item);
                 await _context.SaveChangesAsync(true);
                 _logger.LogInformation("User info updated successfully.");

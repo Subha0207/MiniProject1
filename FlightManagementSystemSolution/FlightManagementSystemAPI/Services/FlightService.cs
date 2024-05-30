@@ -145,27 +145,40 @@ namespace FlightManagementSystemAPI.Services
             return flight;
         }
 
-
-
-        public async Task<Dictionary<int, Dictionary<int, List<SubRoute>>>> GetAllFlightsRoutesAndSubroutes()
+        public async Task<Dictionary<int, Dictionary<int, List<SubRouteDisplayDTO>>>> GetAllFlightsRoutesAndSubroutes()
         {
             var flights = await _flightRepository.GetAll();
             var allRoutes = await _routeRepository.GetAll();
-            var allSubroutes = await _subrouteRepository.GetAll();
-
-            var flightsRoutesAndSubroutes = new Dictionary<int, Dictionary<int, List<SubRoute>>>();
+            var flightsRoutesAndSubroutes = new Dictionary<int, Dictionary<int, List<SubRouteDisplayDTO>>>();
 
             foreach (var flight in flights)
             {
-                var flightRoutes = new List<FlightRoute>();
-                var routesAndSubroutes = new Dictionary<int, List<SubRoute>>();
+                var routesAndSubroutes = new Dictionary<int, List<SubRouteDisplayDTO>>();
 
                 foreach (var route in allRoutes)
                 {
-                    if (route.FlightId == flight.FlightId)
+                    if (route.FlightId == flight.FlightId && route.NoOfStops > 0)
                     {
-                        flightRoutes.Add(route);
-                        var routeSubroutes = allSubroutes.Where(subroute => subroute.RouteId == route.RouteId).ToList();
+                        var allSubroutes = await _subrouteRepository.GetAll();
+                        var routeSubroutes = allSubroutes
+                            .Where(subroute => subroute.RouteId == route.RouteId)
+                            .Select(subroute => new SubRouteDisplayDTO
+                            {
+                                SubRouteId = subroute.SubRouteId,
+                                RouteId = subroute.RouteId,
+                                FlightId = subroute.FlightId,
+                                ArrivalLocation = subroute.ArrivalLocation,
+                                DepartureLocation = subroute.DepartureLocation,
+                                ArrivalDateTime = subroute.ArrivalDateTime,
+                                DepartureDateTime = subroute.DepartureDateTime,
+                                SubFlightId = subroute.SubFlightId
+                            })
+                            .ToList();
+
+                        if (routeSubroutes.Count == 0)
+                        {
+                            throw new Exception("Subroute flights are not available for route with id " + route.RouteId);
+                        }
 
                         routesAndSubroutes.Add(route.RouteId, routeSubroutes);
                     }
@@ -176,6 +189,55 @@ namespace FlightManagementSystemAPI.Services
 
             return flightsRoutesAndSubroutes;
         }
+
+
+
+
+        public async Task<Dictionary<int, List<RouteDTO>>> GetAllDirectFlights()
+        {
+            var flights = await _flightRepository.GetAll();
+            var allRoutes = await _routeRepository.GetAll();
+
+            var flightsAndRoutes = new Dictionary<int, List<RouteDTO>>();
+
+            foreach (var flight in flights)
+            {
+                // Initialize the dictionary entry with an empty list
+                flightsAndRoutes[flight.FlightId] = new List<RouteDTO>();
+            }
+
+            foreach (var route in allRoutes)
+            {
+                // Check if the route has no stops
+                if (route.NoOfStops == 0)
+                {
+                    // Check if the route's flight ID is in the flights dictionary
+                    if (flightsAndRoutes.ContainsKey(route.FlightId))
+                    {
+                        // Create a new RouteDTO object
+                        var routeDto = new RouteDTO
+                        {
+                            FlightId = route.FlightId,
+                            ArrivalLocation = route.ArrivalLocation,
+                            ArrivalDateTime = route.ArrivalDateTime,
+                            DepartureLocation = route.DepartureLocation,
+                            DepartureDateTime = route.DepartureDateTime,
+                            SeatsAvailable = route.SeatsAvailable,
+                            NoOfStops = route.NoOfStops,
+                            PricePerPerson = route.PricePerPerson
+                        };
+
+                        // Add the RouteDTO object to the corresponding flight's list
+                        flightsAndRoutes[route.FlightId].Add(routeDto);
+                    }
+                }
+            }
+
+            return flightsAndRoutes;
+        }
+
+   
+
 
     }
 

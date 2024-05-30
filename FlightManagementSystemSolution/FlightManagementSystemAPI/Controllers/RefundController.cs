@@ -1,5 +1,6 @@
 ﻿using FlightManagementSystemAPI.Exceptions.RefundExceptions;
 using FlightManagementSystemAPI.Interfaces;
+using FlightManagementSystemAPI.Model;
 using FlightManagementSystemAPI.Model.DTOs;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -56,5 +57,33 @@ namespace FlightManagementSystemAPI.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing your request.");
             }
         }
+
+        
+
+        [HttpPut("UpdateRefund")]
+        [ProducesResponseType(typeof(ReturnRefundDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<ReturnRefundDTO>> UpdateRefund(ReturnRefundDTO returnRefundDTO)
+        {
+            try
+            {
+                ReturnRefundDTO updatedRefund = await _refundService.UpdateRefund(returnRefundDTO);
+                return Ok(updatedRefund);
+            }
+            catch (RefundException ex)
+            {
+                return BadRequest(new ErrorModel(400, ex.Message));
+            }
+            
+            catch (Exception ex)
+            {
+                return StatusCode(500, new ErrorModel(500, ex.Message));
+            }
         }
+
+    }
+
+
+
 }

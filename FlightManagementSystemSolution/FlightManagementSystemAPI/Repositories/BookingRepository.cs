@@ -27,10 +27,7 @@ namespace FlightManagementSystemAPI.Repositories
             {
                 _logger.LogInformation("Adding new booking.");
 
-                if (item == null )
-                {
-                    throw new BookingException("Invalid Booking object");
-                }
+               
                 _context.Add(item);
                 await _context.SaveChangesAsync();
                 _logger.LogInformation("Booking added successfully.");
@@ -124,6 +121,7 @@ namespace FlightManagementSystemAPI.Repositories
             {
                 _logger.LogInformation($"Updating booking with BookingId: {item.BookingId}");
                 var booking = await Get(item.BookingId);
+                _context.Entry(booking).State = EntityState.Detached;
                 _context.Update(item);
                 await _context.SaveChangesAsync(true);
                 _logger.LogInformation("Booking updated successfully.");

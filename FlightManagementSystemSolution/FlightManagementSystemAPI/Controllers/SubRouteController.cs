@@ -98,7 +98,55 @@ namespace FlightManagementSystemAPI.Controllers
                 return StatusCode(500, new ErrorModel(500, ex.Message));
             }
         }
+        [HttpDelete("{subrouteId}")]
+        [ProducesResponseType(typeof(SubRouteReturnDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<SubRouteReturnDTO>> DeleteSubRoute(int subrouteId)
+        {
+            try
+            {
+                // Call the service to delete the subroute
+                var deletedSubRoute = await _subrouteService.DeleteSubRoute(subrouteId);
+                return Ok(deletedSubRoute);
+            }
+            catch (SubRouteNotFoundException ex)
+            {
+                // Subroute not found, return 404 Not Found with error message
+                return NotFound(new ErrorModel(404, ex.Message));
+            }
+            catch (Exception ex)
+            {
+                // Other exceptions, return 500 Internal Server Error with error message
+                return StatusCode(500, new ErrorModel(500, ex.Message));
+            }
+        }
 
-        
+        [HttpPut("UpdateSubRoute")]
+        [ProducesResponseType(typeof(SubRouteReturnDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<SubRouteReturnDTO>> UpdateSubRoute(SubRouteReturnDTO subrouteReturnDTO)
+        {
+            try
+            {
+                SubRouteReturnDTO updatedSubRoute = await _subrouteService.UpdateSubRoute(subrouteReturnDTO);
+                return Ok(updatedSubRoute);
+            }
+            catch (SubRouteException ex)
+            {
+                return BadRequest(new ErrorModel(400, ex.Message));
+            }
+            catch (SubRouteServiceException ex)
+            {
+                return StatusCode(500, new ErrorModel(500, ex.Message));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new ErrorModel(500, ex.Message));
+            }
+        }
+
+
     }
 }

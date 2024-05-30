@@ -119,6 +119,7 @@ namespace FlightManagementSystemAPI.Repositories
             {
                 _logger.LogInformation($"Updating refund with RefundId: {item.RefundId}");
                 var refund = await Get(item.RefundId);
+                _context.Entry(refund).State = EntityState.Detached;
                 _context.Update(item);
                 await _context.SaveChangesAsync(true);
                 _logger.LogInformation("Refund updated successfully.");

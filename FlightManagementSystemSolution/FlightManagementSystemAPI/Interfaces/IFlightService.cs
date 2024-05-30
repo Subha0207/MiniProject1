@@ -36,10 +36,14 @@ namespace FlightManagementSystemAPI.Interfaces
       /// <returns></returns>
       public Task<List<FlightReturnDTO>> GetAllFlight();
 
-       /// <summary>
-       /// Used to get all the route and subroute of all flights
-       /// </summary>
-       /// <returns></returns>
-       public Task<Dictionary<int, Dictionary<int, List<SubRoute>>>> GetAllFlightsRoutesAndSubroutes();
+        /// <summary>
+        /// Used to get all the route and subroute of all flights
+        /// </summary>
+        /// <returns></returns>
+        //  public Task<Dictionary<int, Dictionary<int, List<SubRoute>>>> GetAllFlightsRoutesAndSubroutes();
+        public  Task<Dictionary<int, List<RouteDTO>>> GetAllDirectFlights();
+        public Task<Dictionary<int, Dictionary<int, List<SubRouteDisplayDTO>>>> GetAllFlightsRoutesAndSubroutes();
+
+
     }
 }

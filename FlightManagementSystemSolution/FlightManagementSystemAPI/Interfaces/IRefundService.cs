@@ -6,5 +6,8 @@ namespace FlightManagementSystemAPI.Interfaces
     {
         public Task<ReturnRefundDTO> AddRefund(RefundDTO refundDTO);
         public  Task<ReturnRefundDTO> GetRefund(int refundId);
+        public Task<ReturnRefundDTO> UpdateRefund(ReturnRefundDTO RefundReturnDTO);
+     
+     
     }
 }

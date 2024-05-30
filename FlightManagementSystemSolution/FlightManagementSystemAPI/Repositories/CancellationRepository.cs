@@ -121,6 +121,7 @@ namespace FlightManagementSystemAPI.Repositories
             {
                 _logger.LogInformation($"Updating cancellation with CancellationId: {item.CancellationId}");
                 var cancellation = await Get(item.CancellationId);
+                _context.Entry(cancellation).State = EntityState.Detached;
                 _context.Update(item);
                 await _context.SaveChangesAsync(true);
                 _logger.LogInformation("Cancellation updated successfully.");

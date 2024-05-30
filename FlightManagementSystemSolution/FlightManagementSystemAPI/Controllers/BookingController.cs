@@ -1,4 +1,6 @@
-﻿using FlightManagementSystemAPI.Interfaces;
+﻿using FlightManagementSystemAPI.Exceptions.BookingExceptions;
+using FlightManagementSystemAPI.Interfaces;
+using FlightManagementSystemAPI.Model;
 using FlightManagementSystemAPI.Model.DTOs;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -32,6 +34,27 @@ namespace FlightManagementSystemAPI.Controllers
             {
                 // Handle other exceptions (e.g., database errors) appropriately
                 return StatusCode(500, "An error occurred while processing the request.");
+            }
+        }
+
+
+        [HttpGet("GetAllBookings")]
+        [ProducesResponseType(typeof(List<ReturnBookingDTO>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<List<ReturnBookingDTO>>> GetAllBookings()
+        {
+            try
+            {
+                List<ReturnBookingDTO> bookings = await _bookingService.GetAllBookings();
+                return Ok(bookings);
+            }
+            catch (BookingException ex)
+            {
+                return StatusCode(500, new ErrorModel(500, ex.Message));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new ErrorModel(500, ex.Message));
             }
         }
     }

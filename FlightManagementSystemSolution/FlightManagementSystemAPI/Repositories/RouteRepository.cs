@@ -119,7 +119,9 @@ namespace FlightManagementSystemAPI.Repositories
             {
                 _logger.LogInformation($"Updating route with RouteId: {item.RouteId}");
                 var route = await Get(item.RouteId);
+                _context.Entry(route).State = EntityState.Detached;
                 _context.Update(item);
+          
                 await _context.SaveChangesAsync(true);
                 _logger.LogInformation("Route updated successfully.");
                 return route;

@@ -1,4 +1,6 @@
-﻿using FlightManagementSystemAPI.Interfaces;
+﻿using FlightManagementSystemAPI.Exceptions.CancellationExceptions;
+using FlightManagementSystemAPI.Interfaces;
+using FlightManagementSystemAPI.Model;
 using FlightManagementSystemAPI.Model.DTOs;
 using FlightManagementSystemAPI.Services;
 using Microsoft.AspNetCore.Http;
@@ -32,6 +34,26 @@ namespace FlightManagementSystemAPI.Controllers
             {
                 // Handle other exceptions (e.g., database errors) appropriately
                 return StatusCode(500, "An error occurred while processing the request.");
+            }
+        }
+
+        [HttpGet("GetAllCancellations")]
+        [ProducesResponseType(typeof(List<ReturnCancellationDTO>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<List<ReturnCancellationDTO>>> GetAllCancellations()
+        {
+            try
+            {
+                List<ReturnCancellationDTO> cancellations = await _cancellationService.GetAllCancellations();
+                return Ok(cancellations);
+            }
+            catch (CancellationException ex)
+            {
+                return StatusCode(500, new ErrorModel(500, ex.Message));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new ErrorModel(500, ex.Message));
             }
         }
     }

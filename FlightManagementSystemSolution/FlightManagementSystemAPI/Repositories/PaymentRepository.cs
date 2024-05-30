@@ -120,6 +120,7 @@ namespace FlightManagementSystemAPI.Repositories
             {
                 _logger.LogInformation($"Updating payment with PaymentId: {item.PaymentId}");
                 var payment = await Get(item.PaymentId);
+                _context.Entry(payment).State = EntityState.Detached;
                 _context.Update(item);
                 await _context.SaveChangesAsync(true);
                 _logger.LogInformation("Payment updated successfully.");

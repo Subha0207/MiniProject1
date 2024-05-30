@@ -59,13 +59,14 @@ namespace FlightManagementSystemAPI.Services
                     {
                         throw new Exception("The departure location of the route does not match with the first stop's departure location");
                     }
+
                     if (route.NoOfStops == 1 && subroutes.Length != 2)
                     {
-                        throw new Exception("You need to add one more stop detail");
+                        throw new Exception("You need to add two stop details for a route with one stop");
                     }
                     else if (route.NoOfStops == 2 && subroutes.Length != 3)
                     {
-                        throw new Exception("You need to add two more stop details");
+                        throw new Exception("You need to add three stop details for a route with two stops");
                     }
 
                     foreach (var subroute in subroutes)
@@ -91,25 +92,18 @@ namespace FlightManagementSystemAPI.Services
                 DepartureLocation = subRoute.DepartureLocation,
                 DepartureDateTime = subRoute.DepartureDateTime,
                 RouteId = subRoute.RouteId
-
             };
 
             return subrouteReturnDTO;
         }
-
-
 
         private SubRoute[] MapSubRouteDTOToSubRoutes(SubRouteDTO subrouteDTO)
         {
             List<SubRoute> subroutes = new List<SubRoute>();
             SubRoute previousSubroute = null;
 
-
-
             foreach (var stop in subrouteDTO.Stops)
             {
-             
-
                 if (stop.ArrivalLocation == stop.DepartureLocation)
                 {
                     throw new SubRouteException("Arrival and departure location names must be different");
@@ -125,10 +119,7 @@ namespace FlightManagementSystemAPI.Services
                 {
                     throw new SubRouteException("Arrival time of the current stop must be after the departure time of the previous stop");
                 }
-                if (subrouteDTO.Stops.Length == 2 && subroutes[0].ArrivalLocation != subroutes[1].DepartureLocation)
-                {
-                    throw new SubRouteException("The arrival location of the first stop must be the same as the departure location of the second stop");
-                }
+
                 SubRoute subroute = new SubRoute
                 {
                     FlightId = subrouteDTO.FlightId,
@@ -146,7 +137,6 @@ namespace FlightManagementSystemAPI.Services
 
             return subroutes.ToArray();
         }
-
         public async Task<List<SubRouteReturnDTO>> GetAllSubRoutes()
         {
             var subroutes = await _subrouteRepository.GetAll();
@@ -173,14 +163,20 @@ namespace FlightManagementSystemAPI.Services
             return MapSubRouteToSubRouteReturnDTO(subroute);
         }
 
+   
         public async Task<SubRouteReturnDTO> UpdateSubRoute(SubRouteReturnDTO subrouteReturnDTO)
         {
-            var subroute = await _subrouteRepository.Update(MapSubRouteReturnDTOToSubRoute(subrouteReturnDTO));
-            if (subroute == null)
+            var updatedSubroute = await _subrouteRepository.Update(MapSubRouteReturnDTOToSubRoute(subrouteReturnDTO));
+
+            if (updatedSubroute == null)
             {
                 throw new SubRouteNotFoundException("No subroute with given id");
             }
-            return MapSubRouteToSubRouteReturnDTO(subroute);
+
+            // Fetch the updated entity again if necessary
+            updatedSubroute = await _subrouteRepository.Get(updatedSubroute.SubRouteId);
+
+            return MapSubRouteToSubRouteReturnDTO(updatedSubroute);
         }
 
         private SubRoute MapSubRouteReturnDTOToSubRoute(SubRouteReturnDTO subrouteReturnDTO)
@@ -196,6 +192,8 @@ namespace FlightManagementSystemAPI.Services
                 RouteId = subrouteReturnDTO.RouteId
             };
         }
+
+       
 
     }
 }
