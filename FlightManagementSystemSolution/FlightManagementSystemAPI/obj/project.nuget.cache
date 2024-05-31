@@ -1,10 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "azuphHaC/VxCzfQ/HuPt1OILmO2ledIW2jGFe2q0NWLL4znAtXiZOZspjUlpBjFo8P6IWBBsP8OWRjl0kDb3tw==",
+  "dgSpecHash": "q98LY2ODU8ljsgdA3pQZo/Cy5H2wWVj23CJC8iPl8Pr+oPNdc3W2B1hyGoIc7Lmado6QOgY3ICEJ/OxgF4A4xw==",
   "success": true,
   "projectFilePath": "C:\\Users\\VC\\Desktop\\Flight_Management_System\\FlightManagementSystemSolution\\FlightManagementSystemAPI\\FlightManagementSystemAPI.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\VC\\.nuget\\packages\\castle.core\\5.1.1\\castle.core.5.1.1.nupkg.sha512",
+    "C:\\Users\\VC\\.nuget\\packages\\coverlet.collector\\6.0.2\\coverlet.collector.6.0.2.nupkg.sha512",
     "C:\\Users\\VC\\.nuget\\packages\\humanizer.core\\2.8.26\\humanizer.core.2.8.26.nupkg.sha512",
     "C:\\Users\\VC\\.nuget\\packages\\log4net\\2.0.17\\log4net.2.0.17.nupkg.sha512",
     "C:\\Users\\VC\\.nuget\\packages\\microsoft.aspnetcore.authentication.jwtbearer\\6.0.29\\microsoft.aspnetcore.authentication.jwtbearer.6.0.29.nupkg.sha512",

@@ -93,13 +93,14 @@ namespace FlightManagementSystemAPI.Repositories
             {
                 _logger.LogInformation("Getting all refunds.");
                 var refunds = await _context.Refunds.ToListAsync();
-                if (refunds.Count <= 0)
+                if (refunds.Count == 0)
                 {
                     _logger.LogWarning("No refunds found.");
                     throw new RefundNotFoundException("No refund is present.");
                 }
                 _logger.LogInformation("Refunds fetched successfully.");
                 return refunds;
+
             }
             catch (RefundNotFoundException ex)
             {

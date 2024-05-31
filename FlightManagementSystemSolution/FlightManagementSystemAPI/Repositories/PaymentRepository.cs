@@ -27,6 +27,11 @@ namespace FlightManagementSystemAPI.Repositories
             try
             {
                 _logger.LogInformation("Adding new payment.");
+                var booking = await _context.Bookings.FindAsync(item.BookingId);
+                if (booking == null)
+                {
+                    throw new PaymentException("Invalid BookingId");
+                }
                 _context.Add(item);
                 await _context.SaveChangesAsync();
                 _logger.LogInformation("Payment added successfully.");
@@ -94,18 +99,13 @@ namespace FlightManagementSystemAPI.Repositories
             {
                 _logger.LogInformation("Getting all payments.");
                 var payments = await _context.Payments.ToListAsync();
-                if (payments.Count <= 0)
+                if (payments.Count == 0)
                 {
                     _logger.LogWarning("No payments found.");
-                    throw new PaymentNotFoundException("No payment is present.");
+                    return payments; // Return an empty list instead of throwing an exception
                 }
                 _logger.LogInformation("Payments fetched successfully.");
                 return payments;
-            }
-            catch (PaymentNotFoundException ex)
-            {
-                _logger.LogError(ex, "Error while getting payments: " + ex.Message);
-                throw new PaymentException("Error while getting payments: " + ex.Message, ex);
             }
             catch (Exception ex)
             {
@@ -113,6 +113,7 @@ namespace FlightManagementSystemAPI.Repositories
                 throw new PaymentException("Error while getting payments", ex);
             }
         }
+
 
         public async Task<Payment> Update(Payment item)
         {

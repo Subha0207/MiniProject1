@@ -15,6 +15,7 @@
           "Microsoft.Extensions.Logging.Log4Net.AspNetCore": "6.1.0",
           "Moq": "4.20.70",
           "Swashbuckle.AspNetCore": "6.4.0",
+          "coverlet.collector": "6.0.2",
           "log4net": "2.0.17"
         },
         "runtime": {
@@ -32,6 +33,7 @@
           }
         }
       },
+      "coverlet.collector/6.0.2": {},
       "Humanizer.Core/2.8.26": {
         "runtime": {
           "lib/netstandard2.0/Humanizer.dll": {
@@ -605,6 +607,13 @@
       "sha512": "sha512-rpYtIczkzGpf+EkZgDr9CClTdemhsrwA/W5hMoPjLkRFnXzH44zDLoovXeKtmxb1ykXK9aJVODSpiJml8CTw2g==",
       "path": "castle.core/5.1.1",
       "hashPath": "castle.core.5.1.1.nupkg.sha512"
+    },
+    "coverlet.collector/6.0.2": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-bJShQ6uWRTQ100ZeyiMqcFlhP7WJ+bCuabUs885dJiBEzMsJMSFr7BOyeCw4rgvQokteGi5rKQTlkhfQPUXg2A==",
+      "path": "coverlet.collector/6.0.2",
+      "hashPath": "coverlet.collector.6.0.2.nupkg.sha512"
     },
     "Humanizer.Core/2.8.26": {
       "type": "package",

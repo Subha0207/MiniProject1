@@ -28,6 +28,15 @@ namespace FlightManagementSystemAPI.Repositories
             try
             {
                 _logger.LogInformation("Adding new cancellation.");
+
+                // Check if the booking exists
+                var booking = await _context.Bookings.FindAsync(item.BookingId);
+                if (booking == null)
+                {
+                    _logger.LogWarning("Invalid booking ID.");
+                    throw new CancellationException("Invalid booking ID.");
+                }
+
                 _context.Add(item);
                 await _context.SaveChangesAsync();
                 _logger.LogInformation("Cancellation added successfully.");
@@ -36,9 +45,10 @@ namespace FlightManagementSystemAPI.Repositories
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error occurred while adding cancellation.");
-                throw new RouteException("Error while adding Cancellation", ex);
+                throw new CancellationException("Error while adding Cancellation", ex); // Use CancellationException instead of RouteException
             }
         }
+
 
         public async Task<Cancellation> Delete(int key)
         {
@@ -88,7 +98,6 @@ namespace FlightManagementSystemAPI.Repositories
                 throw new CancellationException("Error while getting cancellation.", ex);
             }
         }
-
         public async Task<IEnumerable<Cancellation>> GetAll()
         {
             try
@@ -98,15 +107,9 @@ namespace FlightManagementSystemAPI.Repositories
                 if (cancellations.Count == 0)
                 {
                     _logger.LogWarning("No cancellations found.");
-                    throw new CancellationNotFoundException("No cancellation is present.");
                 }
                 _logger.LogInformation("Cancellation details fetched successfully.");
                 return cancellations;
-            }
-            catch (CancellationNotFoundException ex)
-            {
-                _logger.LogError(ex, "Error occurred while getting cancellations.");
-                throw new RouteException("Error while getting cancellation. " + ex.Message, ex);
             }
             catch (Exception ex)
             {
@@ -114,6 +117,7 @@ namespace FlightManagementSystemAPI.Repositories
                 throw new CancellationException("Error while getting cancellations.", ex);
             }
         }
+
 
         public async Task<Cancellation> Update(Cancellation item)
         {

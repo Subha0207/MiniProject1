@@ -1,11 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "oI18sEShW0qJlDnhdub4a1/H09xCOBvE5OFfCbXWnCuUnYDIcfsfb9EVIG9LrSZXUIQ/eCQ+hbTGaPL+8SC4pQ==",
+  "dgSpecHash": "HXAVE723xQrWQLZTK+tWDLtKXchgt8Tgu5iWQLCENCIj75hI3SSny5bFA21OpW2pnVZnfsJOBVyL6s8Z3m4NRg==",
   "success": true,
   "projectFilePath": "C:\\Users\\VC\\Desktop\\Flight_Management_System\\FlightManagementSystemSolution\\FlightManagementUnitTests\\FlightManagementUnitTests.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\VC\\.nuget\\packages\\castle.core\\5.1.1\\castle.core.5.1.1.nupkg.sha512",
-    "C:\\Users\\VC\\.nuget\\packages\\coverlet.collector\\6.0.0\\coverlet.collector.6.0.0.nupkg.sha512",
+    "C:\\Users\\VC\\.nuget\\packages\\coverlet.collector\\6.0.2\\coverlet.collector.6.0.2.nupkg.sha512",
     "C:\\Users\\VC\\.nuget\\packages\\log4net\\2.0.17\\log4net.2.0.17.nupkg.sha512",
     "C:\\Users\\VC\\.nuget\\packages\\microsoft.aspnetcore.authentication.jwtbearer\\6.0.29\\microsoft.aspnetcore.authentication.jwtbearer.6.0.29.nupkg.sha512",
     "C:\\Users\\VC\\.nuget\\packages\\microsoft.codecoverage\\17.8.0\\microsoft.codecoverage.17.8.0.nupkg.sha512",
