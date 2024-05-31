@@ -20,7 +20,7 @@ namespace FlightManagementSystemAPI.Repositories
             _context = context;
             _logger = logger;
         }
-
+        #region AddRefund
         public async Task<Refund> Add(Refund item)
         {
             try
@@ -37,7 +37,8 @@ namespace FlightManagementSystemAPI.Repositories
                 throw new RefundException("Error while adding refund", ex);
             }
         }
-
+        #endregion
+        #region DeleteRefund
         public async Task<Refund> Delete(int key)
         {
             try
@@ -60,7 +61,8 @@ namespace FlightManagementSystemAPI.Repositories
                 throw new RefundException("Error occurred while deleting refund.", ex);
             }
         }
-
+        #endregion
+        #region GetRefund
         public async Task<Refund> Get(int key)
         {
             try
@@ -86,7 +88,8 @@ namespace FlightManagementSystemAPI.Repositories
                 throw new RefundException("Error while getting refund", ex);
             }
         }
-
+        #endregion
+        #region GetAllRefund
         public async Task<IEnumerable<Refund>> GetAll()
         {
             try
@@ -113,7 +116,8 @@ namespace FlightManagementSystemAPI.Repositories
                 throw new RefundException("Error while getting refunds", ex);
             }
         }
-
+        #endregion
+        #region UpdateRefund
         public async Task<Refund> Update(Refund item)
         {
             try
@@ -137,5 +141,6 @@ namespace FlightManagementSystemAPI.Repositories
                 throw new RefundException("Error while updating refund", ex);
             }
         }
+        #endregion
     }
 }

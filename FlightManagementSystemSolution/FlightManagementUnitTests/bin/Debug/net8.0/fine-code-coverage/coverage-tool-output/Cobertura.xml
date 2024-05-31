@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE coverage SYSTEM "http://cobertura.sourceforge.net/xml/coverage-04.dtd">
-<coverage line-rate="0.525013743815283" branch-rate="0.310975609756098" lines-covered="1910" lines-valid="3638" branches-covered="51" branches-valid="164" complexity="579" version="0" timestamp="1717142976">
+<coverage line-rate="0.531378459852014" branch-rate="0.310975609756098" lines-covered="1939" lines-valid="3649" branches-covered="51" branches-valid="164" complexity="581" version="0" timestamp="1717149477">
   <sources>
     <source>C:\Users\VC\</source>
   </sources>
   <packages>
-    <package name="FlightManagementSystemAPI" line-rate="0.312475089677162" branch-rate="0.284810126582278" complexity="471">
+    <package name="FlightManagementSystemAPI" line-rate="0.319649262654444" branch-rate="0.284810126582278" complexity="471">
       <classes>
         <class name="FlightManagementSystemAPI.Contexts.FlightManagementContext" filename="C:\Users\VC\Desktop\Flight_Management_System\FlightManagementSystemSolution\FlightManagementSystemAPI\Contexts\FlightManagementContext.cs" line-rate="1" branch-rate="1" complexity="11">
           <methods>
@@ -2975,7 +2975,7 @@
           <methods>
             <method name="get_UserId" signature="()" line-rate="1" branch-rate="1" complexity="1">
               <lines>
-                <line number="6" hits="23" branch="false" />
+                <line number="6" hits="25" branch="false" />
               </lines>
             </method>
             <method name="get_Name" signature="()" line-rate="1" branch-rate="1" complexity="1">
@@ -2985,7 +2985,7 @@
             </method>
             <method name="get_Email" signature="()" line-rate="1" branch-rate="1" complexity="1">
               <lines>
-                <line number="8" hits="64" branch="false" />
+                <line number="8" hits="66" branch="false" />
               </lines>
             </method>
             <method name="get_Password" signature="()" line-rate="1" branch-rate="1" complexity="1">
@@ -3000,17 +3000,17 @@
             </method>
             <method name="get_Role" signature="()" line-rate="1" branch-rate="1" complexity="1">
               <lines>
-                <line number="11" hits="22" branch="false" />
+                <line number="11" hits="24" branch="false" />
               </lines>
             </method>
           </methods>
           <lines>
-            <line number="6" hits="23" branch="false" />
+            <line number="6" hits="25" branch="false" />
             <line number="7" hits="25" branch="false" />
-            <line number="8" hits="64" branch="false" />
+            <line number="8" hits="66" branch="false" />
             <line number="9" hits="43" branch="false" />
             <line number="10" hits="43" branch="false" />
-            <line number="11" hits="22" branch="false" />
+            <line number="11" hits="24" branch="false" />
           </lines>
         </class>
         <class name="FlightManagementSystemAPI.Model.UserInfo" filename="C:\Users\VC\Desktop\Flight_Management_System\FlightManagementSystemSolution\FlightManagementSystemAPI\Model\UserInfo.cs" line-rate="0.833333333333333" branch-rate="1" complexity="6">
@@ -6663,54 +6663,54 @@
             <line number="194" hits="0" branch="false" />
           </lines>
         </class>
-        <class name="FlightManagementSystemAPI.Services.TokenService" filename="C:\Users\VC\Desktop\Flight_Management_System\FlightManagementSystemSolution\FlightManagementSystemAPI\Services\TokenService.cs" line-rate="0" branch-rate="1" complexity="2">
+        <class name="FlightManagementSystemAPI.Services.TokenService" filename="C:\Users\VC\Desktop\Flight_Management_System\FlightManagementSystemSolution\FlightManagementSystemAPI\Services\TokenService.cs" line-rate="1" branch-rate="1" complexity="2">
           <methods>
-            <method name="GenerateToken" signature="(...)" line-rate="0" branch-rate="1" complexity="1">
+            <method name="GenerateToken" signature="(...)" line-rate="1" branch-rate="1" complexity="1">
               <lines>
-                <line number="23" hits="0" branch="false" />
-                <line number="24" hits="0" branch="false" />
-                <line number="26" hits="0" branch="false" />
-                <line number="27" hits="0" branch="false" />
-                <line number="28" hits="0" branch="false" />
-                <line number="29" hits="0" branch="false" />
-                <line number="30" hits="0" branch="false" />
-                <line number="31" hits="0" branch="false" />
-                <line number="33" hits="0" branch="false" />
-                <line number="35" hits="0" branch="false" />
-                <line number="36" hits="0" branch="false" />
-                <line number="37" hits="0" branch="false" />
-                <line number="38" hits="0" branch="false" />
+                <line number="23" hits="1" branch="false" />
+                <line number="24" hits="1" branch="false" />
+                <line number="26" hits="1" branch="false" />
+                <line number="27" hits="1" branch="false" />
+                <line number="28" hits="1" branch="false" />
+                <line number="29" hits="1" branch="false" />
+                <line number="30" hits="1" branch="false" />
+                <line number="31" hits="1" branch="false" />
+                <line number="33" hits="1" branch="false" />
+                <line number="35" hits="1" branch="false" />
+                <line number="36" hits="1" branch="false" />
+                <line number="37" hits="1" branch="false" />
+                <line number="38" hits="1" branch="false" />
               </lines>
             </method>
-            <method name=".ctor" signature="(...)" line-rate="0" branch-rate="1" complexity="1">
+            <method name=".ctor" signature="(...)" line-rate="1" branch-rate="1" complexity="1">
               <lines>
-                <line number="15" hits="0" branch="false" />
-                <line number="16" hits="0" branch="false" />
-                <line number="18" hits="0" branch="false" />
-                <line number="20" hits="0" branch="false" />
-                <line number="21" hits="0" branch="false" />
+                <line number="15" hits="1" branch="false" />
+                <line number="16" hits="1" branch="false" />
+                <line number="18" hits="1" branch="false" />
+                <line number="20" hits="1" branch="false" />
+                <line number="21" hits="1" branch="false" />
               </lines>
             </method>
           </methods>
           <lines>
-            <line number="15" hits="0" branch="false" />
-            <line number="16" hits="0" branch="false" />
-            <line number="18" hits="0" branch="false" />
-            <line number="20" hits="0" branch="false" />
-            <line number="21" hits="0" branch="false" />
-            <line number="23" hits="0" branch="false" />
-            <line number="24" hits="0" branch="false" />
-            <line number="26" hits="0" branch="false" />
-            <line number="27" hits="0" branch="false" />
-            <line number="28" hits="0" branch="false" />
-            <line number="29" hits="0" branch="false" />
-            <line number="30" hits="0" branch="false" />
-            <line number="31" hits="0" branch="false" />
-            <line number="33" hits="0" branch="false" />
-            <line number="35" hits="0" branch="false" />
-            <line number="36" hits="0" branch="false" />
-            <line number="37" hits="0" branch="false" />
-            <line number="38" hits="0" branch="false" />
+            <line number="15" hits="1" branch="false" />
+            <line number="16" hits="1" branch="false" />
+            <line number="18" hits="1" branch="false" />
+            <line number="20" hits="1" branch="false" />
+            <line number="21" hits="1" branch="false" />
+            <line number="23" hits="1" branch="false" />
+            <line number="24" hits="1" branch="false" />
+            <line number="26" hits="1" branch="false" />
+            <line number="27" hits="1" branch="false" />
+            <line number="28" hits="1" branch="false" />
+            <line number="29" hits="1" branch="false" />
+            <line number="30" hits="1" branch="false" />
+            <line number="31" hits="1" branch="false" />
+            <line number="33" hits="1" branch="false" />
+            <line number="35" hits="1" branch="false" />
+            <line number="36" hits="1" branch="false" />
+            <line number="37" hits="1" branch="false" />
+            <line number="38" hits="1" branch="false" />
           </lines>
         </class>
         <class name="FlightManagementSystemAPI.Services.UserService" filename="C:\Users\VC\Desktop\Flight_Management_System\FlightManagementSystemSolution\FlightManagementSystemAPI\Services\UserService.cs" line-rate="0" branch-rate="0" complexity="19">
@@ -6997,7 +6997,7 @@
         </class>
       </classes>
     </package>
-    <package name="FlightManagementUnitTests" line-rate="0.997342781222321" branch-rate="1" complexity="108">
+    <package name="FlightManagementUnitTests" line-rate="0.997368421052632" branch-rate="1" complexity="110">
       <classes>
         <class name="AutoGeneratedProgram" filename="C:\Users\VC\.nuget\packages\microsoft.net.test.sdk\17.8.0\build\netcoreapp3.1\Microsoft.NET.Test.Sdk.Program.cs" line-rate="0" branch-rate="1" complexity="1">
           <methods>
@@ -9735,6 +9735,42 @@
             <line number="246" hits="1" branch="false" />
             <line number="250" hits="2" branch="false" />
             <line number="251" hits="1" branch="false" />
+          </lines>
+        </class>
+        <class name="FlightManagementUnitTests.ServiceTests.TokenServiceTest" filename="C:\Users\VC\Desktop\Flight_Management_System\FlightManagementSystemSolution\FlightManagementUnitTests\ServiceTests\TokenServiceTest.cs" line-rate="1" branch-rate="1" complexity="2">
+          <methods>
+            <method name="Setup" signature="()" line-rate="1" branch-rate="1" complexity="1">
+              <lines>
+                <line number="23" hits="1" branch="false" />
+                <line number="24" hits="1" branch="false" />
+                <line number="25" hits="1" branch="false" />
+                <line number="26" hits="1" branch="false" />
+                <line number="27" hits="1" branch="false" />
+              </lines>
+            </method>
+            <method name="GenerateTokenTest" signature="()" line-rate="1" branch-rate="1" complexity="1">
+              <lines>
+                <line number="31" hits="1" branch="false" />
+                <line number="34" hits="1" branch="false" />
+                <line number="37" hits="1" branch="false" />
+                <line number="40" hits="1" branch="false" />
+                <line number="41" hits="1" branch="false" />
+                <line number="42" hits="1" branch="false" />
+              </lines>
+            </method>
+          </methods>
+          <lines>
+            <line number="23" hits="1" branch="false" />
+            <line number="24" hits="1" branch="false" />
+            <line number="25" hits="1" branch="false" />
+            <line number="26" hits="1" branch="false" />
+            <line number="27" hits="1" branch="false" />
+            <line number="31" hits="1" branch="false" />
+            <line number="34" hits="1" branch="false" />
+            <line number="37" hits="1" branch="false" />
+            <line number="40" hits="1" branch="false" />
+            <line number="41" hits="1" branch="false" />
+            <line number="42" hits="1" branch="false" />
           </lines>
         </class>
       </classes>

@@ -4,8 +4,17 @@ namespace FlightManagementSystemAPI.Interfaces
 {
     public interface ICancellationService
     {
-        public Task<ReturnCancellationDTO> AddCancellation(CancellationDTO cancellationDTO);
+       /// <summary>
+       /// Used to add Cancellation for the booking by the user
+       /// </summary>
+       /// <param name="cancellationDTO"></param>
+       /// <returns></returns>
+       public Task<ReturnCancellationDTO> AddCancellation(CancellationDTO cancellationDTO);
 
-        public Task<List<ReturnCancellationDTO>> GetAllCancellations();
+       /// <summary>
+       /// Used to get all the cancellations by admin
+       /// </summary>
+       /// <returns></returns>
+       public Task<List<ReturnCancellationDTO>> GetAllCancellations();
     }
 }

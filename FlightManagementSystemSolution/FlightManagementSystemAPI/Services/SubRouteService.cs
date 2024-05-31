@@ -14,73 +14,23 @@ namespace FlightManagementSystemAPI.Services
 {
     public class SubRouteService : ISubRouteService
     {
+        private readonly ILogger<SubRouteService> _logger;
         private readonly IRepository<int, SubRoute> _subrouteRepository;
         private readonly IRepository<int, FlightRoute> _routeRepository;
         private readonly IRepository<int, Flight> _flightRepository;
 
-        public SubRouteService(
+        public SubRouteService(ILogger<SubRouteService> logger,
             IRepository<int, SubRoute> subrouteRepository,
             IRepository<int, Flight> flightRepository,
             IRepository<int, FlightRoute> routeRepository)
         {
+            _logger = logger;
             _subrouteRepository = subrouteRepository;
             _routeRepository = routeRepository;
             _flightRepository = flightRepository;
         }
 
-        public async Task<SubRouteReturnDTO[]> AddSubRoutes(SubRouteDTO[] subrouteDTOs)
-        {
-            List<SubRouteReturnDTO> subrouteReturnDTOs = new List<SubRouteReturnDTO>();
-
-            foreach (var subrouteDTO in subrouteDTOs)
-            {
-                var flight = await _flightRepository.Get(subrouteDTO.FlightId);
-                if (flight == null)
-                {
-                    throw new FlightNotFoundException("No flight with given id");
-                }
-
-                var route = await _routeRepository.Get(subrouteDTO.RouteId);
-                if (route == null)
-                {
-                    throw new RouteNotFoundException("No route with given id");
-                }
-
-                if (route.NoOfStops > 0)
-                {
-                    var subroutes = MapSubRouteDTOToSubRoutes(subrouteDTO);
-                    if (route.ArrivalLocation != subroutes.Last().ArrivalLocation)
-                    {
-                        throw new Exception("The arrival location of the route does not match with the last stop's arrival location");
-                    }
-
-                    // Validate the departure location of the route matches with the first stop's departure location
-                    if (route.DepartureLocation != subroutes.First().DepartureLocation)
-                    {
-                        throw new Exception("The departure location of the route does not match with the first stop's departure location");
-                    }
-
-                    if (route.NoOfStops == 1 && subroutes.Length != 2)
-                    {
-                        throw new Exception("You need to add two stop details for a route with one stop");
-                    }
-                    else if (route.NoOfStops == 2 && subroutes.Length != 3)
-                    {
-                        throw new Exception("You need to add three stop details for a route with two stops");
-                    }
-
-                    foreach (var subroute in subroutes)
-                    {
-                        SubRoute addedRoute = await _subrouteRepository.Add(subroute);
-                        SubRouteReturnDTO subrouteReturnDTO = MapSubRouteToSubRouteReturnDTO(addedRoute);
-                        subrouteReturnDTOs.Add(subrouteReturnDTO);
-                    }
-                }
-            }
-
-            return subrouteReturnDTOs.ToArray();
-        }
-
+        #region MapperMethods
         private SubRouteReturnDTO MapSubRouteToSubRouteReturnDTO(SubRoute subRoute)
         {
             SubRouteReturnDTO subrouteReturnDTO = new SubRouteReturnDTO
@@ -137,48 +87,9 @@ namespace FlightManagementSystemAPI.Services
 
             return subroutes.ToArray();
         }
-        public async Task<List<SubRouteReturnDTO>> GetAllSubRoutes()
-        {
-            var subroutes = await _subrouteRepository.GetAll();
-            return subroutes.Select(MapSubRouteToSubRouteReturnDTO).ToList();
-        }
 
-        public async Task<SubRouteReturnDTO> GetSubRoute(int subrouteId)
-        {
-            var subroute = await _subrouteRepository.Get(subrouteId);
-            if (subroute == null)
-            {
-                throw new SubRouteNotFoundException("No subroute with given id");
-            }
-            return MapSubRouteToSubRouteReturnDTO(subroute);
-        }
-
-        public async Task<SubRouteReturnDTO> DeleteSubRoute(int subrouteId)
-        {
-            var subroute = await _subrouteRepository.Delete(subrouteId);
-            if (subroute == null)
-            {
-                throw new SubRouteNotFoundException("No subroute with given id");
-            }
-            return MapSubRouteToSubRouteReturnDTO(subroute);
-        }
-
+        
    
-        public async Task<SubRouteReturnDTO> UpdateSubRoute(SubRouteReturnDTO subrouteReturnDTO)
-        {
-            var updatedSubroute = await _subrouteRepository.Update(MapSubRouteReturnDTOToSubRoute(subrouteReturnDTO));
-
-            if (updatedSubroute == null)
-            {
-                throw new SubRouteNotFoundException("No subroute with given id");
-            }
-
-            // Fetch the updated entity again if necessary
-            updatedSubroute = await _subrouteRepository.Get(updatedSubroute.SubRouteId);
-
-            return MapSubRouteToSubRouteReturnDTO(updatedSubroute);
-        }
-
         private SubRoute MapSubRouteReturnDTOToSubRoute(SubRouteReturnDTO subrouteReturnDTO)
         {
             return new SubRoute
@@ -192,8 +103,155 @@ namespace FlightManagementSystemAPI.Services
                 RouteId = subrouteReturnDTO.RouteId
             };
         }
+        #endregion
+        #region AddSubRoutes
+        public async Task<SubRouteReturnDTO[]> AddSubRoutes(SubRouteDTO[] subrouteDTOs)
+        {
+            List<SubRouteReturnDTO> subrouteReturnDTOs = new List<SubRouteReturnDTO>();
 
-       
+            foreach (var subrouteDTO in subrouteDTOs)
+            {
+                try
+                {
+                    var flight = await _flightRepository.Get(subrouteDTO.FlightId);
+                    if (flight == null)
+                    {
+                        _logger.LogError("No flight with given id: {FlightId}", subrouteDTO.FlightId);
+                        throw new FlightNotFoundException("No flight with given id");
+                    }
+
+                    var route = await _routeRepository.Get(subrouteDTO.RouteId);
+                    if (route == null)
+                    {
+                        _logger.LogError("No route with given id: {RouteId}", subrouteDTO.RouteId);
+                        throw new RouteNotFoundException("No route with given id");
+                    }
+
+                    if (route.NoOfStops > 0)
+                    {
+                        var subroutes = MapSubRouteDTOToSubRoutes(subrouteDTO);
+                        if (route.ArrivalLocation != subroutes.Last().ArrivalLocation)
+                        {
+                            _logger.LogError("The arrival location of the route does not match with the last stop's arrival location");
+                            throw new Exception("The arrival location of the route does not match with the last stop's arrival location");
+                        }
+
+                        // Validate the departure location of the route matches with the first stop's departure location
+                        if (route.DepartureLocation != subroutes.First().DepartureLocation)
+                        {
+                            _logger.LogError("The departure location of the route does not match with the first stop's departure location");
+                            throw new Exception("The departure location of the route does not match with the first stop's departure location");
+                        }
+
+                        if (route.NoOfStops == 1 && subroutes.Length != 2)
+                        {
+                            _logger.LogError("You need to add two stop details for a route with one stop");
+                            throw new Exception("You need to add two stop details for a route with one stop");
+                        }
+                        else if (route.NoOfStops == 2 && subroutes.Length != 3)
+                        {
+                            _logger.LogError("You need to add three stop details for a route with two stops");
+                            throw new Exception("You need to add three stop details for a route with two stops");
+                        }
+
+                        foreach (var subroute in subroutes)
+                        {
+                            SubRoute addedRoute = await _subrouteRepository.Add(subroute);
+                            SubRouteReturnDTO subrouteReturnDTO = MapSubRouteToSubRouteReturnDTO(addedRoute);
+                            subrouteReturnDTOs.Add(subrouteReturnDTO);
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "An error occurred while adding subroutes.");
+                    throw;
+                }
+            }
+
+            return subrouteReturnDTOs.ToArray();
+        }
+        #endregion
+        #region GetAllSubRoutes
+        public async Task<List<SubRouteReturnDTO>> GetAllSubRoutes()
+        {
+            try
+            {
+                var subroutes = await _subrouteRepository.GetAll();
+                return subroutes.Select(MapSubRouteToSubRouteReturnDTO).ToList();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while getting all subroutes.");
+                throw;
+            }
+        }
+        #endregion
+        #region GetSubRouteById
+        public async Task<SubRouteReturnDTO> GetSubRoute(int subrouteId)
+        {
+            try
+            {
+                var subroute = await _subrouteRepository.Get(subrouteId);
+                if (subroute == null)
+                {
+                    _logger.LogError("No subroute with id {SubRouteId} found", subrouteId);
+                    throw new SubRouteNotFoundException("No subroute with given id");
+                }
+                return MapSubRouteToSubRouteReturnDTO(subroute);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while getting subroute with id {SubRouteId}", subrouteId);
+                throw;
+            }
+        }
+        #endregion
+        #region DeleteSubRoute
+        public async Task<SubRouteReturnDTO> DeleteSubRoute(int subrouteId)
+        {
+            try
+            {
+                var subroute = await _subrouteRepository.Delete(subrouteId);
+                if (subroute == null)
+                {
+                    _logger.LogError("No subroute with id {SubRouteId} found", subrouteId);
+                    throw new SubRouteNotFoundException("No subroute with given id");
+                }
+                return MapSubRouteToSubRouteReturnDTO(subroute);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while deleting subroute with id {SubRouteId}", subrouteId);
+                throw;
+            }
+        }
+        #endregion
+        #region UpdateSubRoute
+        public async Task<SubRouteReturnDTO> UpdateSubRoute(SubRouteReturnDTO subrouteReturnDTO)
+        {
+            try
+            {
+                var updatedSubroute = await _subrouteRepository.Update(MapSubRouteReturnDTOToSubRoute(subrouteReturnDTO));
+
+                if (updatedSubroute == null)
+                {
+                    _logger.LogError("No subroute with id {SubRouteId} found", subrouteReturnDTO.SubRouteId);
+                    throw new SubRouteNotFoundException("No subroute with given id");
+                }
+
+                // Fetch the updated entity again if necessary
+                updatedSubroute = await _subrouteRepository.Get(updatedSubroute.SubRouteId);
+
+                return MapSubRouteToSubRouteReturnDTO(updatedSubroute);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while updating subroute with id {SubRouteId}", subrouteReturnDTO.SubRouteId);
+                throw;
+            }
+        }
+        #endregion
 
     }
 }

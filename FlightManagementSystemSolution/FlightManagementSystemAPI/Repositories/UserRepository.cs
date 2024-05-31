@@ -21,7 +21,7 @@ namespace FlightManagementSystemAPI.Repositories
             _context = context;
             _logger = logger;
         }
-
+        #region AddUser
         public async Task<User> Add(User item)
         {
             try
@@ -73,7 +73,8 @@ namespace FlightManagementSystemAPI.Repositories
                 throw new UserException("Error occurred while adding user.", ex);
             }
         }
-
+        #endregion
+        #region DeleteUser
         public async Task<User> Delete(int key)
         {
             try
@@ -96,7 +97,8 @@ namespace FlightManagementSystemAPI.Repositories
                 throw new UserException("Error occurred while deleting user.", ex);
             }
         }
-
+        #endregion
+        #region GetUser
         public async Task<User> Get(int key)
         {
             try
@@ -122,7 +124,8 @@ namespace FlightManagementSystemAPI.Repositories
                 throw new UserException("Error occurred while getting user.", ex);
             }
         }
-
+        #endregion
+        #region GetAllUser
         public async Task<IEnumerable<User>> GetAll()
         {
             try
@@ -148,7 +151,8 @@ namespace FlightManagementSystemAPI.Repositories
                 throw new UserException("Error occurred while retrieving users.", ex);
             }
         }
-
+        #endregion
+        #region UpdateUser
         public async Task<User> Update(User item)
         {
             try
@@ -171,5 +175,6 @@ namespace FlightManagementSystemAPI.Repositories
                 throw new UserException("Error occurred while updating user.", ex);
             }
         }
+        #endregion
     }
 }

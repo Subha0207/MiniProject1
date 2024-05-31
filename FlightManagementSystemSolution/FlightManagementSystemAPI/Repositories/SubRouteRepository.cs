@@ -22,7 +22,7 @@ namespace FlightManagementSystemAPI.Repositories
             _context = context;
             _logger = logger;
         }
-
+        #region AddSubRoute
         public async Task<SubRoute> Add(SubRoute item)
         {
             try
@@ -39,7 +39,8 @@ namespace FlightManagementSystemAPI.Repositories
                 throw new SubRouteException("Error while adding sub-route", ex);
             }
         }
-
+        #endregion
+        #region DeleteSubRoute
         public async Task<SubRoute> Delete(int key)
         {
             try
@@ -62,7 +63,8 @@ namespace FlightManagementSystemAPI.Repositories
                 throw new SubRouteException("Error occurred while deleting sub-route.", ex);
             }
         }
-
+        #endregion
+        #region GetSubRoute
         public async Task<SubRoute> Get(int key)
         {
             try
@@ -88,7 +90,8 @@ namespace FlightManagementSystemAPI.Repositories
                 throw new SubRouteException("Error while getting sub-route", ex);
             }
         }
-
+        #endregion
+        #region GetAllSubRoute
         public async Task<IEnumerable<SubRoute>> GetAll()
         {
             try
@@ -114,7 +117,8 @@ namespace FlightManagementSystemAPI.Repositories
                 throw new SubRouteException("Error while getting sub-routes", ex);
             }
         }
-
+        #endregion
+        #region UpdateSubRoute
         public async Task<SubRoute> Update(SubRoute item)
         {
             try
@@ -139,5 +143,6 @@ namespace FlightManagementSystemAPI.Repositories
                 throw new SubRouteException("Error while updating sub-route", ex);
             }
         }
+        #endregion
     }
 }

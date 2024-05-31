@@ -22,7 +22,7 @@ namespace FlightManagementSystemAPI.Repositories
             _context = context;
             _logger = logger;
         }
-
+        #region AddCancellation
         public async Task<Cancellation> Add(Cancellation item)
         {
             try
@@ -48,8 +48,8 @@ namespace FlightManagementSystemAPI.Repositories
                 throw new CancellationException("Error while adding Cancellation", ex); // Use CancellationException instead of RouteException
             }
         }
-
-
+        #endregion
+        #region DeleteCancellation
         public async Task<Cancellation> Delete(int key)
         {
             try
@@ -72,7 +72,8 @@ namespace FlightManagementSystemAPI.Repositories
                 throw new CancellationException("Error occurred while deleting cancellation.", ex);
             }
         }
-
+        #endregion
+        #region GetCancellation
         public async Task<Cancellation> Get(int key)
         {
             try
@@ -98,6 +99,8 @@ namespace FlightManagementSystemAPI.Repositories
                 throw new CancellationException("Error while getting cancellation.", ex);
             }
         }
+        #endregion
+        #region GetAllCancellation
         public async Task<IEnumerable<Cancellation>> GetAll()
         {
             try
@@ -118,7 +121,8 @@ namespace FlightManagementSystemAPI.Repositories
             }
         }
 
-
+        #endregion
+        #region UpdateCancellation
         public async Task<Cancellation> Update(Cancellation item)
         {
             try
@@ -142,5 +146,6 @@ namespace FlightManagementSystemAPI.Repositories
                 throw new CancellationException("Error while updating cancellation. " + ex.Message, ex);
             }
         }
+        #endregion
     }
 }

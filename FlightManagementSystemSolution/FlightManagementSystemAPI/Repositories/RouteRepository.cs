@@ -20,7 +20,7 @@ namespace FlightManagementSystemAPI.Repositories
             _context = context;
             _logger = logger;
         }
-
+        #region AddRoute
         public async Task<FlightRoute> Add(FlightRoute item)
         {
             try
@@ -37,7 +37,8 @@ namespace FlightManagementSystemAPI.Repositories
                 throw new RouteException("Error while adding route", ex);
             }
         }
-
+        #endregion
+        #region DeleteRoute
         public async Task<FlightRoute> Delete(int key)
         {
             try
@@ -60,7 +61,8 @@ namespace FlightManagementSystemAPI.Repositories
                 throw new RouteException("Error occurred while deleting route.", ex);
             }
         }
-
+        #endregion
+        #region GetRoute
         public async Task<FlightRoute> Get(int key)
         {
             try
@@ -86,7 +88,8 @@ namespace FlightManagementSystemAPI.Repositories
                 throw new RouteException("Error while getting route", ex);
             }
         }
-
+        #endregion
+        #region GetAllRoute
         public async Task<IEnumerable<FlightRoute>> GetAll()
         {
             try
@@ -112,7 +115,8 @@ namespace FlightManagementSystemAPI.Repositories
                 throw new RouteException("Error while getting routes", ex);
             }
         }
-
+        #endregion
+        #region UpdateRoute
         public async Task<FlightRoute> Update(FlightRoute item)
         {
             try
@@ -137,5 +141,6 @@ namespace FlightManagementSystemAPI.Repositories
                 throw new RouteException("Error while updating route", ex);
             }
         }
+        #endregion
     }
 }

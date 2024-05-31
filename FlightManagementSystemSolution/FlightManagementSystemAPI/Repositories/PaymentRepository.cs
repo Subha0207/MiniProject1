@@ -21,7 +21,7 @@ namespace FlightManagementSystemAPI.Repositories
             _context = context;
             _logger = logger;
         }
-
+        #region AddPayment
         public async Task<Payment> Add(Payment item)
         {
             try
@@ -43,7 +43,8 @@ namespace FlightManagementSystemAPI.Repositories
                 throw new PaymentException("Error while adding payment", ex);
             }
         }
-
+        #endregion
+        #region DeletePayment
         public async Task<Payment> Delete(int key)
         {
             try
@@ -66,7 +67,8 @@ namespace FlightManagementSystemAPI.Repositories
                 throw new PaymentException("Error occurred while deleting payment.", ex);
             }
         }
-
+        #endregion
+        #region GetPayment
         public async Task<Payment> Get(int key)
         {
             try
@@ -92,7 +94,8 @@ namespace FlightManagementSystemAPI.Repositories
                 throw new PaymentException("Error while getting payment", ex);
             }
         }
-
+        #endregion
+        #region GetAllPaymnet
         public async Task<IEnumerable<Payment>> GetAll()
         {
             try
@@ -113,8 +116,8 @@ namespace FlightManagementSystemAPI.Repositories
                 throw new PaymentException("Error while getting payments", ex);
             }
         }
-
-
+        #endregion
+        #region Update Payment
         public async Task<Payment> Update(Payment item)
         {
             try
@@ -138,5 +141,6 @@ namespace FlightManagementSystemAPI.Repositories
                 throw new PaymentException("Error while updating payment", ex);
             }
         }
+        #endregion
     }
 }

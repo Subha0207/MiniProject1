@@ -21,6 +21,8 @@ namespace FlightManagementSystemAPI.Repositories
             _logger = logger;
         }
 
+
+        #region  AddBooking
         public async Task<Booking> Add(Booking item)
         {
             try
@@ -39,7 +41,8 @@ namespace FlightManagementSystemAPI.Repositories
                 throw new BookingException("Error while adding Booking", ex);
             }
         }
-
+        #endregion
+        #region DeleteBooking
         public async Task<Booking> Delete(int key)
         {
             try
@@ -62,7 +65,8 @@ namespace FlightManagementSystemAPI.Repositories
                 throw new BookingException("Error occurred while deleting booking.", ex);
             }
         }
-
+        #endregion
+        #region GetBooking
         public async Task<Booking> Get(int key)
         {
             try
@@ -88,7 +92,8 @@ namespace FlightManagementSystemAPI.Repositories
                 throw new BookingException("Error while getting booking details", ex);
             }
         }
-
+        #endregion
+        #region GetAllBooking
         public async Task<IEnumerable<Booking>> GetAll()
         {
             try
@@ -114,7 +119,8 @@ namespace FlightManagementSystemAPI.Repositories
                 throw new BookingException("Error while getting bookings", ex);
             }
         }
-
+        #endregion
+        #region UpdateBooking
         public async Task<Booking> Update(Booking item)
         {
             try
@@ -138,5 +144,6 @@ namespace FlightManagementSystemAPI.Repositories
                 throw new BookingException("Error while updating booking", ex);
             }
         }
+        #endregion
     }
 }

@@ -17,6 +17,8 @@ namespace FlightManagementSystemAPI.Repositories
             _context = context;
             _logger = logger;
         }
+
+        #region AddFlight
         public async Task<Flight> Add(Flight item)
         {
             try
@@ -34,7 +36,8 @@ namespace FlightManagementSystemAPI.Repositories
             }
 
         }
-
+        #endregion
+        #region DeleteFlight
         public async Task<Flight> Delete(int key)
         {
             try
@@ -59,7 +62,8 @@ namespace FlightManagementSystemAPI.Repositories
             }
 
         }
-
+        #endregion
+        #region GetFlight
         public async Task<Flight> Get(int key)
         {
             try
@@ -85,7 +89,8 @@ namespace FlightManagementSystemAPI.Repositories
                 throw new FlightException("Error occurred while getting flight. " + ex.Message, ex);
             }
         }
-
+        #endregion
+        #region GetAllFlight
         public async Task<IEnumerable<Flight>> GetAll()
         {
             try
@@ -110,8 +115,9 @@ namespace FlightManagementSystemAPI.Repositories
             }
            
         }
-
-            public async Task<Flight> Update(Flight item)
+        #endregion
+        #region UpdateFlight
+        public async Task<Flight> Update(Flight item)
             {
             try
             {
@@ -132,5 +138,6 @@ namespace FlightManagementSystemAPI.Repositories
                 throw new FlightException("Error  while updating flights. " + ex.Message, ex);
             }
         }
-        }
-    } 
+        #endregion
+    }
+} 

@@ -21,7 +21,7 @@ namespace FlightManagementSystemAPI.Repositories
             _context = context;
             _logger = logger;
         }
-
+        #region AddUserInfo
         public async Task<UserInfo> Add(UserInfo item)
         {
             try
@@ -63,7 +63,8 @@ namespace FlightManagementSystemAPI.Repositories
                 throw new UserInfoException("Error occurred while adding user info.", ex);
             }
         }
-
+        #endregion
+        #region DeleteUserInfo
         public async Task<UserInfo> Delete(int key)
         {
             try
@@ -86,7 +87,8 @@ namespace FlightManagementSystemAPI.Repositories
                 throw new UserInfoException("Error while deleting user info", ex);
             }
         }
-
+        #endregion
+        #region GetUserInfo
         public async Task<UserInfo> Get(int key)
         {
             try
@@ -112,7 +114,8 @@ namespace FlightManagementSystemAPI.Repositories
                 throw new UserInfoException("Error occurred while getting user info.", ex);
             }
         }
-
+        #endregion
+        #region GetAllUserInfo
         public async Task<IEnumerable<UserInfo>> GetAll()
         {
             try
@@ -138,7 +141,8 @@ namespace FlightManagementSystemAPI.Repositories
                 throw new UserInfoException("Error occurred while getting user infos.", ex);
             }
         }
-
+        #endregion
+        #region UpdateUserInfo
         public async Task<UserInfo> Update(UserInfo item)
         {
             try
@@ -162,5 +166,6 @@ namespace FlightManagementSystemAPI.Repositories
                 throw new UserInfoException("Error occurred while updating user info.", ex);
             }
         }
+        #endregion
     }
 }
