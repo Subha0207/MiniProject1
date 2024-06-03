@@ -21,7 +21,7 @@ namespace FlightManagementSystemAPI.Controllers
             _flightService = flightService;
 
         }
-
+        [Authorize(Roles = "admin")]
         [HttpPost("AddFlight")]
         [ProducesResponseType(typeof(FlightReturnDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
@@ -46,7 +46,7 @@ namespace FlightManagementSystemAPI.Controllers
                 return StatusCode(500, new ErrorModel(500, ex.Message));
             }
         }
-
+        [Authorize(Roles = "admin")]
         [HttpPut("UpdateFlight")]
         [ProducesResponseType(typeof(FlightReturnDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
@@ -71,7 +71,7 @@ namespace FlightManagementSystemAPI.Controllers
                 return StatusCode(500, new ErrorModel(500, ex.Message));
             }
         }
-
+        [Authorize(Roles = "admin")]
         [HttpDelete("DeleteFlight/{flightId}")]
         [ProducesResponseType(typeof(FlightReturnDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
@@ -97,7 +97,7 @@ namespace FlightManagementSystemAPI.Controllers
                 return StatusCode(500, new ErrorModel(500, ex.Message));
             }
         }
-
+        [Authorize(Roles = "admin")]
         [HttpGet("GetAllFlights")]
         [ProducesResponseType(typeof(List<FlightReturnDTO>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status500InternalServerError)]
@@ -121,6 +121,8 @@ namespace FlightManagementSystemAPI.Controllers
                 return StatusCode(500, new ErrorModel(500, ex.Message));
             }
         }
+
+
         [HttpGet("GetFlight/{flightId}")]
         [ProducesResponseType(typeof(FlightReturnDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status404NotFound)]

@@ -5,6 +5,7 @@ using FlightManagementSystemAPI.Model.DTOs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Text.Json;
 
 namespace FlightManagementSystemAPI.Controllers
 {
@@ -78,9 +79,10 @@ namespace FlightManagementSystemAPI.Controllers
                 return BadRequest(new ErrorModel(400, ex.Message));
             }
         }
+        [Authorize(Roles = "admin")]
         [HttpPut("admin/UpdateUserActivation")]
         [ProducesResponseType(typeof(ReturnUserActivationDTO), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status403Forbidden)]
         public async Task<ActionResult<ReturnUserActivationDTO>> UserActivation([FromBody] UserActivationDTO userActivationDTO)
         {
             try
@@ -95,9 +97,9 @@ namespace FlightManagementSystemAPI.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(new ErrorModel(501, ex.Message));
+                return StatusCode(StatusCodes.Status403Forbidden, new ErrorModel(403, ex.Message));
             }
         }
-
+     
     }
 }

@@ -1,5 +1,7 @@
-﻿using FlightManagementSystemAPI.Model;
+﻿using FlightManagementSystemAPI.Exceptions.BookingExceptions;
+using FlightManagementSystemAPI.Model;
 using FlightManagementSystemAPI.Model.DTOs;
+using FlightManagementSystemAPI.Repositories;
 
 namespace FlightManagementSystemAPI.Interfaces
 {
@@ -15,5 +17,21 @@ namespace FlightManagementSystemAPI.Interfaces
 /// </summary>
 /// <returns></returns>
         public Task<List<ReturnBookingDTO>> GetAllBookings();
+
+        /// <summary>
+        /// Get Booking details by using Booking id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public Task<ReturnBookingDTO> GetBookingById(int id);
+
+/// <summary>
+/// Delete Booking by using Booking id
+/// </summary>
+/// <param name="bookingId"></param>
+/// <returns></returns>
+        public Task<ReturnBookingDTO> DeleteBookingById(int bookingId);
+        
+
     }
 }

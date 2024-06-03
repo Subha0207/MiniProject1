@@ -12,33 +12,41 @@ namespace FlightManagementSystemAPI.Services
         private readonly IRepository<int, Flight> _flightRepository;
         private readonly IRepository<int, FlightRoute> _routeRepository;
         private readonly IRepository<int, SubRoute> _subrouteRepository;
-
-        public FlightService(IRepository<int, Flight> flightRepository, IRepository<int, FlightRoute> routeRepository, IRepository<int, SubRoute> subrouteRepository)
+        private readonly ILogger<FlightService> _logger;
+        public FlightService(IRepository<int, Flight> flightRepository, IRepository<int, FlightRoute> routeRepository, IRepository<int, SubRoute> subrouteRepository, ILogger<FlightService> logger)
         {
             _flightRepository = flightRepository;
             _routeRepository = routeRepository;
             _subrouteRepository = subrouteRepository;
+            _logger = logger;
         }
-         
+        #region AddFlight
         public async Task<FlightReturnDTO> AddFlight(FlightDTO flightDTO)
         {
             try
             {
+                _logger.LogInformation("Adding flight...");
                 Flight flight = MapFlightDTOToFlight(flightDTO);
                 Flight AddedFlight = await _flightRepository.Add(flight);
                 FlightReturnDTO flightReturnDTO = MapFlightToFlightReturnDTO(AddedFlight);
+                _logger.LogInformation("Flight added successfully.");
                 return flightReturnDTO;
             }
             catch (FlightException fr)
             {
+                _logger.LogError(fr, "Flight exception occurred while adding flight.");
                 throw;
             }
             catch (Exception ex)
             {
-                throw new FlightServiceException("Error Occured,Unable to Add Flight", ex);
+                _logger.LogError(ex, "Error occurred while adding flight.");
+                throw new FlightServiceException("Error Occurred,Unable to Add Flight", ex);
             }
         }
+        #endregion
 
+
+        #region  MapperMethods
         private FlightReturnDTO MapFlightToFlightReturnDTO(Flight addedFlight)
         {
             FlightReturnDTO flightReturnDTO = new FlightReturnDTO();
@@ -55,13 +63,25 @@ namespace FlightManagementSystemAPI.Services
             return flight;
         }
 
+        private Flight MapFlightReturnDTOWithFlight(FlightReturnDTO flightReturnDTO)
+        {
+            Flight flight = new Flight();
+            flight.FlightId = flightReturnDTO.FlightId;
+            flight.FlightName = flightReturnDTO.FlightName;
+            flight.SeatCapacity = flightReturnDTO.SeatCapacity;
+            return flight;
+        }
+        #endregion
+        #region UpdateFlight
         public async Task<FlightReturnDTO> UpdateFlight(FlightReturnDTO FlightReturnDTO)
         {
             try
             {
+                _logger.LogInformation("Updating flight...");
                 Flight flight = MapFlightReturnDTOWithFlight(FlightReturnDTO);
                 Flight UpdatedFlight = await _flightRepository.Update(flight);
                 FlightReturnDTO flightReturnDTO = MapFlightToFlightReturnDTO(UpdatedFlight);
+                _logger.LogInformation("Flight updated successfully.");
                 return flightReturnDTO;
             }
             catch (UserException)
@@ -70,16 +90,20 @@ namespace FlightManagementSystemAPI.Services
             }
             catch (Exception e)
             {
-                throw new FlightServiceException("Error Occured,Unable to Update Flight" + e.Message, e);
+                _logger.LogError(e, "Error occurred while updating flight.");
+                throw new FlightServiceException("Error Occurred, Unable to Update Flight" + e.Message, e);
             }
         }
-
+        #endregion
+#region DeleteFlight
         public async Task<FlightReturnDTO> DeleteFlight(int flightId)
         {
             try
             {
+                _logger.LogInformation("Deleting flight...");
                 Flight flight = await _flightRepository.Delete(flightId);
                 FlightReturnDTO flightReturnDTO = MapFlightToFlightReturnDTO(flight);
+                _logger.LogInformation("Flight deleted successfully.");
                 return flightReturnDTO;
             }
             catch (FlightException)
@@ -92,16 +116,22 @@ namespace FlightManagementSystemAPI.Services
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Error occurred while deleting the flight.");
                 throw new FlightServiceException("Error occurred while deleting the flight: " + ex.Message, ex);
             }
         }
+        #endregion
 
+        
+        #region GetFlight
         public async Task<FlightReturnDTO> GetFlight(int flightId)
         {
             try
             {
+                _logger.LogInformation("Fetching flight...");
                 Flight flight = await _flightRepository.Get(flightId);
                 FlightReturnDTO flightReturnDTO = MapFlightToFlightReturnDTO(flight);
+                _logger.LogInformation("Flight fetched successfully.");
                 return flightReturnDTO;
             }
             catch (UserException)
@@ -110,20 +140,24 @@ namespace FlightManagementSystemAPI.Services
             }
             catch (Exception e)
             {
-                throw new FlightServiceException("Error Occured,Unable to Get Flight" + e.Message, e);
+                _logger.LogError(e, "Error occurred while fetching flight.");
+                throw new FlightServiceException("Error Occurred, Unable to Get Flight" + e.Message, e);
             }
         }
-
+        #endregion
+        #region GetAllFlight
         public async Task<List<FlightReturnDTO>> GetAllFlight()
         {
             try
             {
+                _logger.LogInformation("Fetching all flights...");
                 var flights = await _flightRepository.GetAll();
                 List<FlightReturnDTO> flightReturnDTOs = new List<FlightReturnDTO>();
                 foreach (Flight flight in flights)
                 {
                     flightReturnDTOs.Add(MapFlightToFlightReturnDTO(flight));
                 }
+                _logger.LogInformation("All flights fetched successfully.");
                 return flightReturnDTOs;
             }
             catch (UserException)
@@ -132,111 +166,124 @@ namespace FlightManagementSystemAPI.Services
             }
             catch (Exception ex)
             {
-                throw new FlightServiceException("Error Occured While Getting All the Flight" + ex.Message, ex);
+                _logger.LogError(ex, "Error occurred while getting all flights.");
+                throw new FlightServiceException("Error Occurred While Getting All the Flight" + ex.Message, ex);
             }
         }
+        #endregion
 
-        private Flight MapFlightReturnDTOWithFlight(FlightReturnDTO flightReturnDTO)
-        {
-            Flight flight = new Flight();
-            flight.FlightId = flightReturnDTO.FlightId;
-            flight.FlightName = flightReturnDTO.FlightName;
-            flight.SeatCapacity= flightReturnDTO.SeatCapacity;
-            return flight;
-        }
-
+        #region GetAllFlightsRoutesAndSubroutes
         public async Task<Dictionary<int, Dictionary<int, List<SubRouteDisplayDTO>>>> GetAllFlightsRoutesAndSubroutes()
         {
-            var flights = await _flightRepository.GetAll();
-            var allRoutes = await _routeRepository.GetAll();
-            var flightsRoutesAndSubroutes = new Dictionary<int, Dictionary<int, List<SubRouteDisplayDTO>>>();
-
-            foreach (var flight in flights)
+            try
             {
-                var routesAndSubroutes = new Dictionary<int, List<SubRouteDisplayDTO>>();
+                _logger.LogInformation("Fetching all flights, routes, and subroutes...");
+                var flights = await _flightRepository.GetAll();
+                var allRoutes = await _routeRepository.GetAll();
+                var flightsRoutesAndSubroutes = new Dictionary<int, Dictionary<int, List<SubRouteDisplayDTO>>>();
+
+                foreach (var flight in flights)
+                {
+                    var routesAndSubroutes = new Dictionary<int, List<SubRouteDisplayDTO>>();
+
+                    foreach (var route in allRoutes)
+                    {
+                        if (route.FlightId == flight.FlightId && route.NoOfStops > 0)
+                        {
+                            var allSubroutes = await _subrouteRepository.GetAll();
+                            var routeSubroutes = allSubroutes
+                                .Where(subroute => subroute.RouteId == route.RouteId)
+                                .Select(subroute => new SubRouteDisplayDTO
+                                {
+                                    SubRouteId = subroute.SubRouteId,
+                                    RouteId = subroute.RouteId,
+                                    FlightId = subroute.FlightId,
+                                    ArrivalLocation = subroute.ArrivalLocation,
+                                    DepartureLocation = subroute.DepartureLocation,
+                                    ArrivalDateTime = subroute.ArrivalDateTime,
+                                    DepartureDateTime = subroute.DepartureDateTime,
+                                    SubFlightId = subroute.SubFlightId
+                                })
+                                .ToList();
+
+                            if (routeSubroutes.Count == 0)
+                            {
+                                throw new Exception("Subroute flights are not available for route with id " + route.RouteId);
+                            }
+
+                            routesAndSubroutes.Add(route.RouteId, routeSubroutes);
+                        }
+                    }
+
+                    flightsRoutesAndSubroutes.Add(flight.FlightId, routesAndSubroutes);
+                }
+
+                _logger.LogInformation("All flights, routes, and subroutes fetched successfully.");
+                return flightsRoutesAndSubroutes;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occurred while getting all flights, routes, and subroutes.");
+                throw new FlightServiceException("Error Occurred While Getting All Flights, Routes, and Subroutes: " + ex.Message, ex);
+            }
+        }
+        #endregion
+
+        #region GetAllDirectFlights
+        public async Task<Dictionary<int, List<RouteDTO>>> GetAllDirectFlights()
+        {
+            try
+            {
+                _logger.LogInformation("Fetching all direct flights...");
+                var flights = await _flightRepository.GetAll();
+                var allRoutes = await _routeRepository.GetAll();
+
+                var flightsAndRoutes = new Dictionary<int, List<RouteDTO>>();
+
+                foreach (var flight in flights)
+                {
+                    // Initialize the dictionary entry with an empty list
+                    flightsAndRoutes[flight.FlightId] = new List<RouteDTO>();
+                }
 
                 foreach (var route in allRoutes)
                 {
-                    if (route.FlightId == flight.FlightId && route.NoOfStops > 0)
+                    // Check if the route has no stops
+                    if (route.NoOfStops == 0)
                     {
-                        var allSubroutes = await _subrouteRepository.GetAll();
-                        var routeSubroutes = allSubroutes
-                            .Where(subroute => subroute.RouteId == route.RouteId)
-                            .Select(subroute => new SubRouteDisplayDTO
+                        // Check if the route's flight ID is in the flights dictionary
+                        if (flightsAndRoutes.ContainsKey(route.FlightId))
+                        {
+                            // Create a new RouteDTO object
+                            var routeDto = new RouteDTO
                             {
-                                SubRouteId = subroute.SubRouteId,
-                                RouteId = subroute.RouteId,
-                                FlightId = subroute.FlightId,
-                                ArrivalLocation = subroute.ArrivalLocation,
-                                DepartureLocation = subroute.DepartureLocation,
-                                ArrivalDateTime = subroute.ArrivalDateTime,
-                                DepartureDateTime = subroute.DepartureDateTime,
-                                SubFlightId = subroute.SubFlightId
-                            })
-                            .ToList();
+                                FlightId = route.FlightId,
+                                ArrivalLocation = route.ArrivalLocation,
+                                ArrivalDateTime = route.ArrivalDateTime,
+                                DepartureLocation = route.DepartureLocation,
+                                DepartureDateTime = route.DepartureDateTime,
+                                SeatsAvailable = route.SeatsAvailable,
+                                NoOfStops = route.NoOfStops,
+                                PricePerPerson = route.PricePerPerson
+                            };
 
-                        if (routeSubroutes.Count == 0)
-                        {
-                            throw new Exception("Subroute flights are not available for route with id " + route.RouteId);
+                            // Add the RouteDTO object to the corresponding flight's list
+                            flightsAndRoutes[route.FlightId].Add(routeDto);
                         }
-
-                        routesAndSubroutes.Add(route.RouteId, routeSubroutes);
                     }
                 }
 
-                flightsRoutesAndSubroutes.Add(flight.FlightId, routesAndSubroutes);
+                _logger.LogInformation("All direct flights fetched successfully.");
+                return flightsAndRoutes;
             }
-
-            return flightsRoutesAndSubroutes;
-        }
-
-
-
-
-        public async Task<Dictionary<int, List<RouteDTO>>> GetAllDirectFlights()
-        {
-            var flights = await _flightRepository.GetAll();
-            var allRoutes = await _routeRepository.GetAll();
-
-            var flightsAndRoutes = new Dictionary<int, List<RouteDTO>>();
-
-            foreach (var flight in flights)
+            catch (Exception ex)
             {
-                // Initialize the dictionary entry with an empty list
-                flightsAndRoutes[flight.FlightId] = new List<RouteDTO>();
+                _logger.LogError(ex, "Error occurred while getting all direct flights.");
+                throw new FlightServiceException("Error Occurred While Getting All Direct Flights: " + ex.Message, ex);
             }
-
-            foreach (var route in allRoutes)
-            {
-                // Check if the route has no stops
-                if (route.NoOfStops == 0)
-                {
-                    // Check if the route's flight ID is in the flights dictionary
-                    if (flightsAndRoutes.ContainsKey(route.FlightId))
-                    {
-                        // Create a new RouteDTO object
-                        var routeDto = new RouteDTO
-                        {
-                            FlightId = route.FlightId,
-                            ArrivalLocation = route.ArrivalLocation,
-                            ArrivalDateTime = route.ArrivalDateTime,
-                            DepartureLocation = route.DepartureLocation,
-                            DepartureDateTime = route.DepartureDateTime,
-                            SeatsAvailable = route.SeatsAvailable,
-                            NoOfStops = route.NoOfStops,
-                            PricePerPerson = route.PricePerPerson
-                        };
-
-                        // Add the RouteDTO object to the corresponding flight's list
-                        flightsAndRoutes[route.FlightId].Add(routeDto);
-                    }
-                }
-            }
-
-            return flightsAndRoutes;
         }
+        #endregion
 
-   
 
 
     }

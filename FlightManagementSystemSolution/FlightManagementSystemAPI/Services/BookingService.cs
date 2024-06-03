@@ -119,6 +119,55 @@ namespace FlightManagementSystemAPI.Services
                 throw new BookingException("Error Occurred While Getting All the Bookings: " + ex.Message, ex);
             }
         }
+        public async Task<ReturnBookingDTO> GetBookingById(int id)
+        {
+            _logger.LogInformation("GetBookingById method called with id: {Id}", id);
+            try
+            {
+                var booking = await _bookingRepository.Get(id);
+                if (booking == null)
+                {
+                    _logger.LogInformation("No booking found with id: {Id}", id);
+                    return null;
+                }
+                var returnBookingDTO = MapBookingToReturnBookingDTO(booking);
+                _logger.LogInformation("Booking retrieved successfully: {ReturnBookingDTO}", returnBookingDTO);
+                return returnBookingDTO;
+            }
+            catch (BookingException ex)
+            {
+                _logger.LogError(ex, "BookingException occurred while getting booking with id: {Id}", id);
+                throw;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Exception occurred while getting booking with id: {Id}", id);
+                throw new BookingException("Error Occurred While Getting the Booking: " + ex.Message, ex);
+            }
+        }
+        #region DeleteBooking
+        public async Task<ReturnBookingDTO> DeleteBookingById(int bookingId)
+        {
+            try
+            {
+                _logger.LogInformation("Deleting booking...");
+                Booking booking = await _bookingRepository.Delete(bookingId);
+                ReturnBookingDTO returnBookingDTO = MapBookingToReturnBookingDTO(booking);
+                _logger.LogInformation("Booking deleted successfully.");
+                return returnBookingDTO;
+            }
+            catch (BookingException)
+            {
+                throw;
+            }
+            
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occurred while deleting the booking.");
+                throw new BookingException("Error occurred while deleting the booking: " + ex.Message, ex);
+            }
+        }
+        #endregion
 
         private ReturnBookingDTO MapBookingToReturnBookingDTO(Booking booking)
         {

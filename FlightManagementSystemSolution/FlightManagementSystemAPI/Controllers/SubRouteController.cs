@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using FlightManagementSystemAPI.Exceptions.RouteExceptions;
 using FlightManagementSystemAPI.Exceptions.SubRouteExceptions;
+using Microsoft.AspNetCore.Authorization;
 
 namespace FlightManagementSystemAPI.Controllers
 {
@@ -20,7 +21,7 @@ namespace FlightManagementSystemAPI.Controllers
             _subrouteService = subrouteService;
 
         }
-
+        [Authorize(Roles = "admin")]
         [HttpPost("AddSubRoute")]
         [ProducesResponseType(typeof(SubRouteReturnDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
@@ -98,6 +99,7 @@ namespace FlightManagementSystemAPI.Controllers
                 return StatusCode(500, new ErrorModel(500, ex.Message));
             }
         }
+        [Authorize(Roles = "admin")]
         [HttpDelete("{subrouteId}")]
         [ProducesResponseType(typeof(SubRouteReturnDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status404NotFound)]
@@ -121,7 +123,7 @@ namespace FlightManagementSystemAPI.Controllers
                 return StatusCode(500, new ErrorModel(500, ex.Message));
             }
         }
-
+        [Authorize(Roles = "admin")]
         [HttpPut("UpdateSubRoute")]
         [ProducesResponseType(typeof(SubRouteReturnDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]

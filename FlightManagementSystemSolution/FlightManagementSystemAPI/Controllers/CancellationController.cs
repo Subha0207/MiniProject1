@@ -18,7 +18,7 @@ namespace FlightManagementSystemAPI.Controllers
         {
             _cancellationService = cancellationService;
         }
-        [HttpPost("addCancellation")]
+        [HttpPost("AddCancellation")]
         public async Task<IActionResult> AddCancellation([FromBody] CancellationDTO cancellationDTO)
         {
             try
@@ -56,5 +56,55 @@ namespace FlightManagementSystemAPI.Controllers
                 return StatusCode(500, new ErrorModel(500, ex.Message));
             }
         }
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<ReturnCancellationDTO>> GetCancellationById(int id)
+        {
+            try
+            {
+                var cancellation = await _cancellationService.GetCancellationById(id);
+                if (cancellation == null)
+                {
+                    return NotFound(new { message = $"Cancellation with ID {id} not found." });
+                }
+                return Ok(cancellation);
+            }
+            catch (CancellationException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                // Log the exception
+                return StatusCode(500, new { message = $"Internal server error: {ex.Message}" });
+            }
+        }
+
+
+        [HttpDelete("DeleteCancellationById/{cancellationId}")]
+        [ProducesResponseType(typeof(ReturnCancellationDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<ReturnCancellationDTO>> DeleteCancellationById(int cancellationId)
+        {
+            try
+            {
+                ReturnCancellationDTO returnDTO = await _cancellationService.DeleteCancellationById(cancellationId);
+                if (returnDTO == null)
+                {
+                    return NotFound();
+                }
+                return Ok(returnDTO);
+            }
+            catch (CancellationException ex)
+            {
+                return StatusCode(500, new ErrorModel(500, ex.Message));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new ErrorModel(500, ex.Message));
+            }
+        }
+
     }
 }

@@ -2,6 +2,7 @@
 using FlightManagementSystemAPI.Interfaces;
 using FlightManagementSystemAPI.Model;
 using FlightManagementSystemAPI.Model.DTOs;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
@@ -20,7 +21,7 @@ namespace FlightManagementSystemAPI.Controllers
             _refundService = refundService;
         }
 
-        [HttpPost("addRefund")]
+        [HttpPost("AddRefund")]
         public async Task<IActionResult> AddRefund([FromBody] RefundDTO refundDTO)
         {
             try
@@ -58,13 +59,13 @@ namespace FlightManagementSystemAPI.Controllers
             }
         }
 
-        
 
+        [Authorize(Roles = "admin")]
         [HttpPut("UpdateRefund")]
         [ProducesResponseType(typeof(ReturnRefundDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<ReturnRefundDTO>> UpdateRefund(ReturnRefundDTO returnRefundDTO)
+        public async Task<ActionResult<ReturnRefundDTO>> UpdateRefund(UpdateRefundDTO returnRefundDTO)
         {
             try
             {
@@ -81,6 +82,48 @@ namespace FlightManagementSystemAPI.Controllers
                 return StatusCode(500, new ErrorModel(500, ex.Message));
             }
         }
+
+
+        [Authorize(Roles = "admin")]
+        [HttpGet("GetAllPendingRefunds")]
+        public async Task<ActionResult<List<ReturnRefundDTO>>> GetAllPendingRefunds()
+        {
+            try
+            {
+                var initiatedRefunds = await _refundService.GetAllPendingRefunds();
+                return Ok(initiatedRefunds);
+            }
+            catch (Exception ex)
+            {
+                // Handle exceptions appropriately (e.g., log, return error response)
+                return StatusCode(500, "An error occurred while fetching initiated refunds.");
+            }
+        }
+
+
+        [Authorize(Roles = "admin")]
+        [HttpDelete("DeleteRefund/{refundId}")]
+        [ProducesResponseType(typeof(ReturnRefundDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<ReturnRefundDTO>> DeleteRefund(int refundId)
+        {
+            try
+            {
+                ReturnRefundDTO deletedRefund = await _refundService.DeleteRefundById(refundId);
+                return Ok(deletedRefund);
+            }
+            catch (RefundException ex)
+            {
+                return NotFound(new ErrorModel(404, ex.Message));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new ErrorModel(500, ex.Message));
+            }
+        }
+
+
 
     }
 

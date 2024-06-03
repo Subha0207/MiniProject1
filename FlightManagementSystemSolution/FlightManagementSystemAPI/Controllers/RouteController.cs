@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using FlightManagementSystemAPI.Exceptions.RouteExceptions;
 using FlightManagementSystemAPI.Services;
+using Microsoft.AspNetCore.Authorization;
 
 namespace FlightManagementSystemAPI.Controllers
 {
@@ -19,7 +20,7 @@ namespace FlightManagementSystemAPI.Controllers
             _routeService = routeService;
 
         }
-
+        [Authorize(Roles = "admin")]
         [HttpPost("AddRoute")]
         [ProducesResponseType(typeof(RouteReturnDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
@@ -67,7 +68,7 @@ namespace FlightManagementSystemAPI.Controllers
                 return StatusCode(500, new ErrorModel(500, ex.Message));
             }
         }
-
+        [Authorize(Roles = "admin")]
         [HttpDelete("DeleteRoute/{routeId}")]
         [ProducesResponseType(typeof(RouteReturnDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
@@ -122,7 +123,7 @@ namespace FlightManagementSystemAPI.Controllers
                 return StatusCode(500, new ErrorModel(500, ex.Message));
             }
         }
-
+        [Authorize(Roles = "admin")]
         [HttpPut("UpdateRoute")]
         [ProducesResponseType(typeof(RouteReturnDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]

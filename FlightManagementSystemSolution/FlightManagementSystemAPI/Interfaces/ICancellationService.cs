@@ -16,5 +16,18 @@ namespace FlightManagementSystemAPI.Interfaces
        /// </summary>
        /// <returns></returns>
        public Task<List<ReturnCancellationDTO>> GetAllCancellations();
+        /// <summary>
+        /// Used to get Cancellation by Cancellation ID
+        /// </summary>
+        /// <param name="CancellationId"></param>
+        /// <returns></returns>
+        public Task<ReturnCancellationDTO> GetCancellationById(int cancellationId);
+      /// <summary>
+      /// Used to delete cancellation by admin
+      /// </summary>
+      /// <param name="bookingId"></param>
+      /// <returns></returns>
+      public Task<ReturnCancellationDTO> DeleteCancellationById(int cancellationId);
+
     }
 }

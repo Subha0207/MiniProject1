@@ -2,6 +2,7 @@
 using FlightManagementSystemAPI.Interfaces;
 using FlightManagementSystemAPI.Model;
 using FlightManagementSystemAPI.Model.DTOs;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,7 +19,7 @@ namespace FlightManagementSystemAPI.Controllers
             _bookingService = bookingService;
         }
 
-        [HttpPost("addBooking")]
+        [HttpPost("User/AddBooking")]
         public async Task<IActionResult> AddBooking([FromBody] BookingDTO bookingDTO)
         {
             try
@@ -37,8 +38,8 @@ namespace FlightManagementSystemAPI.Controllers
             }
         }
 
-
-        [HttpGet("GetAllBookings")]
+        [Authorize(Roles = "admin")]
+        [HttpGet("Admin/GetAllBookings")]
         [ProducesResponseType(typeof(List<ReturnBookingDTO>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<List<ReturnBookingDTO>>> GetAllBookings()
@@ -57,5 +58,60 @@ namespace FlightManagementSystemAPI.Controllers
                 return StatusCode(500, new ErrorModel(500, ex.Message));
             }
         }
+
+
+        [HttpGet("User/GetBookingById/{id}")]
+        [ProducesResponseType(typeof(ReturnBookingDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<ReturnBookingDTO>> GetBookingById(int id)
+        {
+            try
+            {
+                ReturnBookingDTO returnDTO = await _bookingService.GetBookingById(id);
+                if (returnDTO == null)
+                {
+                    return NotFound();
+                }
+                return Ok(returnDTO);
+            }
+            catch (BookingException ex)
+            {
+                return StatusCode(500, new ErrorModel(500, ex.Message));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new ErrorModel(500, ex.Message));
+            }
+        }
+
+
+        [Authorize(Roles = "admin")]
+        [HttpDelete("Admin/DeleteBookingById/{bookingId}")]
+        [ProducesResponseType(typeof(ReturnBookingDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<ReturnBookingDTO>> DeleteBookingById(int bookingId)
+        {
+            try
+            {
+                ReturnBookingDTO returnDTO = await _bookingService.DeleteBookingById(bookingId);
+                if (returnDTO == null)
+                {
+                    return NotFound();
+                }
+                return Ok(returnDTO);
+            }
+            catch (BookingException ex)
+            {
+                return StatusCode(500, new ErrorModel(500, ex.Message));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new ErrorModel(500, ex.Message));
+            }
+        }
+
+
     }
 }
