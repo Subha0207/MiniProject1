@@ -44,23 +44,26 @@ namespace FlightManagementSystemAPI.Repositories
             {
                 _logger.LogInformation($"Deleting flight with key: {key}");
                 var flight = await Get(key);
+                if (flight == null)
+                {
+                    throw new FlightNotFoundException("No such flight exists.");
+                }
+
                 _context.Remove(flight);
                 _logger.LogInformation("Flight deleted successfully.");
                 await _context.SaveChangesAsync(true);
                 return flight;
-
             }
             catch (FlightNotFoundException ex)
             {
-                _logger.LogError(ex, "Error  while deleting flight. Flight not found.");
-                throw new FlightException("Error  while deleting flight. Flight not found. " + ex.Message, ex);
+                _logger.LogError(ex, "Error while deleting flight. Flight not found.");
+                throw;
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error  while deleting flight.");
-                throw new FlightException("Error  while deleting flight.", ex);
+                _logger.LogError(ex, "Error while deleting flight.");
+                throw new FlightException("Error while deleting flight.", ex);
             }
-
         }
         #endregion
         #region GetFlight
@@ -81,7 +84,7 @@ namespace FlightManagementSystemAPI.Repositories
             catch (FlightNotFoundException ex)
             {
                 _logger.LogError(ex, "Error occurred while getting flight.");
-                throw new FlightException("Error occurred while getting flight. " + ex.Message, ex);
+                throw new FlightNotFoundException( ex.Message, ex);
             }
             catch (Exception ex)
             {

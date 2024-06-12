@@ -15,35 +15,12 @@ namespace FlightManagementSystemAPI.Services
         private readonly ILogger<FlightService> _logger;
         public FlightService(IRepository<int, Flight> flightRepository, IRepository<int, FlightRoute> routeRepository, IRepository<int, SubRoute> subrouteRepository, ILogger<FlightService> logger)
         {
+           
             _flightRepository = flightRepository;
             _routeRepository = routeRepository;
             _subrouteRepository = subrouteRepository;
             _logger = logger;
         }
-        #region AddFlight
-        public async Task<FlightReturnDTO> AddFlight(FlightDTO flightDTO)
-        {
-            try
-            {
-                _logger.LogInformation("Adding flight...");
-                Flight flight = MapFlightDTOToFlight(flightDTO);
-                Flight AddedFlight = await _flightRepository.Add(flight);
-                FlightReturnDTO flightReturnDTO = MapFlightToFlightReturnDTO(AddedFlight);
-                _logger.LogInformation("Flight added successfully.");
-                return flightReturnDTO;
-            }
-            catch (FlightException fr)
-            {
-                _logger.LogError(fr, "Flight exception occurred while adding flight.");
-                throw;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error occurred while adding flight.");
-                throw new FlightServiceException("Error Occurred,Unable to Add Flight", ex);
-            }
-        }
-        #endregion
 
 
         #region  MapperMethods
@@ -72,17 +49,61 @@ namespace FlightManagementSystemAPI.Services
             return flight;
         }
         #endregion
+        #region AddFlight
+        public async Task<FlightReturnDTO> AddFlight(FlightDTO flightDTO)
+        {
+            try
+            {
+                if (flightDTO.SeatCapacity == 0)
+                {
+                    throw new InvalidSeatCapacityException("Seat capacity cannot be 0.");
+                }
+
+
+                _logger.LogInformation("Adding flight...");
+                Flight flight = MapFlightDTOToFlight(flightDTO);
+                Flight AddedFlight = await _flightRepository.Add(flight);
+                FlightReturnDTO flightReturnDTO = MapFlightToFlightReturnDTO(AddedFlight);
+                _logger.LogInformation("Flight added successfully.");
+                return flightReturnDTO;
+            }
+            catch (InvalidSeatCapacityException isce)
+            {
+                throw;
+            }
+            catch (FlightException fr)
+            {
+                _logger.LogError(fr, "Flight exception occurred while adding flight.");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occurred while adding flight.");
+                throw new FlightServiceException("Error Occurred,Unable to Add Flight", ex);
+            }
+        }
+        #endregion
         #region UpdateFlight
         public async Task<FlightReturnDTO> UpdateFlight(FlightReturnDTO FlightReturnDTO)
         {
             try
             {
+
+                if (FlightReturnDTO.SeatCapacity == 0)
+                {
+                    throw new InvalidSeatCapacityException("Seat capacity cannot be 0.");
+                }
                 _logger.LogInformation("Updating flight...");
                 Flight flight = MapFlightReturnDTOWithFlight(FlightReturnDTO);
                 Flight UpdatedFlight = await _flightRepository.Update(flight);
                 FlightReturnDTO flightReturnDTO = MapFlightToFlightReturnDTO(UpdatedFlight);
                 _logger.LogInformation("Flight updated successfully.");
                 return flightReturnDTO;
+            }
+
+            catch (InvalidSeatCapacityException isce)
+            {
+                throw;
             }
             catch (UserException)
             {
@@ -95,23 +116,49 @@ namespace FlightManagementSystemAPI.Services
             }
         }
         #endregion
-#region DeleteFlight
+        #region DeleteFlight
         public async Task<FlightReturnDTO> DeleteFlight(int flightId)
         {
             try
             {
                 _logger.LogInformation("Deleting flight...");
+
+                // Get all routes
+                var routes = await _routeRepository.GetAll();
+
+                // Check if any route is associated with the flight
+                foreach (var route in routes)
+                {
+                    if (route.FlightId == flightId)
+                    {
+                        throw new FlightServiceException("A route exists with the given flight ID. Cannot delete the flight.");
+                    }
+                }
+
+                // If no associated routes found, proceed with flight deletion
                 Flight flight = await _flightRepository.Delete(flightId);
+
+                // If the flight is null, throw FlightNotFoundException
+                if (flight == null)
+                {
+                    throw new FlightNotFoundException("No such flight exists.");
+                }
+
+                // Map the flight to a DTO
                 FlightReturnDTO flightReturnDTO = MapFlightToFlightReturnDTO(flight);
+
                 _logger.LogInformation("Flight deleted successfully.");
+
                 return flightReturnDTO;
             }
-            catch (FlightException)
+            catch (FlightNotFoundException fnf)
             {
-                throw;
+                _logger.LogWarning(fnf, "Flight not found.");
+                throw;  // Rethrow the exception to be caught by the controller
             }
-            catch (FlightServiceException)
+            catch (FlightServiceException fse)
             {
+                _logger.LogError(fse, "FlightServiceException occurred.");
                 throw;
             }
             catch (Exception ex)
@@ -120,9 +167,8 @@ namespace FlightManagementSystemAPI.Services
                 throw new FlightServiceException("Error occurred while deleting the flight: " + ex.Message, ex);
             }
         }
-        #endregion
 
-        
+        #endregion
         #region GetFlight
         public async Task<FlightReturnDTO> GetFlight(int flightId)
         {
@@ -171,7 +217,6 @@ namespace FlightManagementSystemAPI.Services
             }
         }
         #endregion
-
         #region GetAllFlightsRoutesAndSubroutes
         public async Task<Dictionary<int, Dictionary<int, List<SubRouteDisplayDTO>>>> GetAllFlightsRoutesAndSubroutes()
         {
@@ -228,7 +273,6 @@ namespace FlightManagementSystemAPI.Services
             }
         }
         #endregion
-
         #region GetAllDirectFlights
         public async Task<Dictionary<int, List<RouteDTO>>> GetAllDirectFlights()
         {

@@ -53,7 +53,13 @@ namespace FlightManagementSystemAPI.Contexts
                .HasForeignKey(b => b.FlightId)
                .OnDelete(DeleteBehavior.Restrict);
 
-                modelBuilder.Entity<Booking>()
+            //modelBuilder.Entity<Booking>()
+            //.HasOne(b => b.User)
+            //.WithMany(u => u.Bookings)
+            //.HasForeignKey(b => b.UserId)
+            //.OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Booking>()
                 .HasOne(b => b.FlightRoute)
                 .WithMany(r => r.Bookings)
                 .HasForeignKey(b => b.RouteId)

@@ -1,4 +1,5 @@
-﻿using FlightManagementSystemAPI.Exceptions.PaymentExceptions;
+﻿using FlightManagementSystemAPI.Exceptions.FlightExceptions;
+using FlightManagementSystemAPI.Exceptions.PaymentExceptions;
 using FlightManagementSystemAPI.Interfaces;
 using FlightManagementSystemAPI.Model;
 using FlightManagementSystemAPI.Model.DTOs;
@@ -52,7 +53,7 @@ namespace FlightManagementSystemAPI.Services
                 Amount = amount,
                 PaymentMethod = paymentDTO.PaymentMethod,
             };
-            if (newPayment.PaymentMethod == null)
+            if (newPayment.PaymentMethod == "")
             {
                 throw new EmptyPaymentMethodException();
             }
@@ -105,7 +106,7 @@ namespace FlightManagementSystemAPI.Services
         }
 
         #endregion
-        #region
+        #region GetAllPayments
         public async Task<List<PaymentDetailsDTO>> GetAllPayments()
         {
             _logger.LogInformation("GetAllPayments method called");
@@ -142,8 +143,6 @@ namespace FlightManagementSystemAPI.Services
                 throw new PaymentException("Error Occurred While Getting All the Payments: " + ex.Message, ex);
             }
         }
-
-
         #endregion
         #region DeletePayment
         public async Task<ReturnPaymentDTO> DeletePaymentById(int paymentId)
@@ -152,24 +151,25 @@ namespace FlightManagementSystemAPI.Services
             {
                 _logger.LogInformation("Deleting payment...");
                 Payment payment = await _paymentRepository.Delete(paymentId);
+                if (payment == null)
+                {
+                    throw new PaymentNotFoundException("No payment with given ID exists");
+                }
                 ReturnPaymentDTO paymentReturnDTO = MapPaymentToReturnPaymentDTO(payment);
                 _logger.LogInformation("Payment deleted successfully.");
                 return paymentReturnDTO;
             }
-            catch (PaymentException)
+            catch (PaymentNotFoundException)
             {
                 throw;
             }
-            
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error occurred while deleting the payment.");
-                throw new PaymentException("Error occurred while deleting the payment: " + ex.Message, ex);
-            }
+        
         }
 
 
         #endregion
+
+        #region MapperMethods
         private ReturnPaymentDTO MapPaymentToReturnPaymentDTO(Payment payment)
         {
             ReturnPaymentDTO returnPaymentDTO = new ReturnPaymentDTO();
@@ -178,7 +178,7 @@ namespace FlightManagementSystemAPI.Services
             return returnPaymentDTO;
         }
 
-
+        #endregion
     }
 }
 

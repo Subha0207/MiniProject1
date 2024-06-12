@@ -30,6 +30,11 @@ namespace FlightManagementSystemAPI.Interfaces
         /// </summary>
         /// <returns></returns>
         public  Task<List<ReturnRefundDTO>> GetAllPendingRefunds();
+        /// <summary>
+        /// Delete Refunds by id by Admin
+        /// </summary>
+        /// <param name="refundId"></param>
+        /// <returns></returns>
         public Task<ReturnRefundDTO> DeleteRefundById(int refundId);
     }
 }

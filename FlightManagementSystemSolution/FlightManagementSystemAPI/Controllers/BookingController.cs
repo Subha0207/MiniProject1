@@ -1,4 +1,7 @@
 ﻿using FlightManagementSystemAPI.Exceptions.BookingExceptions;
+using FlightManagementSystemAPI.Exceptions.FlightExceptions;
+using FlightManagementSystemAPI.Exceptions.RouteExceptions;
+using FlightManagementSystemAPI.Exceptions.UserExceptions;
 using FlightManagementSystemAPI.Interfaces;
 using FlightManagementSystemAPI.Model;
 using FlightManagementSystemAPI.Model.DTOs;
@@ -18,8 +21,9 @@ namespace FlightManagementSystemAPI.Controllers
         {
             _bookingService = bookingService;
         }
-
         [HttpPost("User/AddBooking")]
+        [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> AddBooking([FromBody] BookingDTO bookingDTO)
         {
             try
@@ -27,16 +31,33 @@ namespace FlightManagementSystemAPI.Controllers
                 var returnBookingDTO = await _bookingService.AddBooking(bookingDTO);
                 return Ok(returnBookingDTO);
             }
-            catch (ArgumentException ex)
+
+            catch (SeatsFilledException ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new ErrorModel(400, ex.Message));
             }
-            catch (Exception)
+            catch (UserNotFoundException ex)
             {
-                // Handle other exceptions (e.g., database errors) appropriately
-                return StatusCode(500, "An error occurred while processing the request.");
+                return BadRequest(new ErrorModel(400, ex.Message));
+            }
+            catch (InvalidNumberOfPersonException ex)
+            {
+                return BadRequest(new ErrorModel(400, ex.Message));
+            }
+            catch (FlightNotFoundException ex)
+            {
+                return BadRequest(new ErrorModel(400, ex.Message));
+            }
+            catch (RouteNotFoundException ex)
+            {
+                return BadRequest(new ErrorModel(400, ex.Message));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new ErrorModel(500, ex.Message));
             }
         }
+
 
         [Authorize(Roles = "admin")]
         [HttpGet("Admin/GetAllBookings")]
@@ -49,6 +70,7 @@ namespace FlightManagementSystemAPI.Controllers
                 List<ReturnBookingDTO> bookings = await _bookingService.GetAllBookings();
                 return Ok(bookings);
             }
+
             catch (BookingException ex)
             {
                 return StatusCode(500, new ErrorModel(500, ex.Message));
@@ -58,7 +80,29 @@ namespace FlightManagementSystemAPI.Controllers
                 return StatusCode(500, new ErrorModel(500, ex.Message));
             }
         }
-
+        [HttpGet("GetAllBookingsByUserId")]
+        [ProducesResponseType(typeof(List<ReturnBookingDTO>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<List<ReturnBookingDTO>>> GetAllBookings([FromQuery] int userId)
+        {
+          try
+            {
+                List<ReturnBookingDTO> bookings = await _bookingService.GetAllBookingsByUserId(userId);
+                return Ok(bookings);
+            }
+            catch (UserNotFoundException ex)
+            {
+                return StatusCode(500, new ErrorModel(500, ex.Message));
+            }
+            catch (BookingException ex)
+            {
+               return StatusCode(500, new ErrorModel(500, ex.Message));
+            }
+            catch (Exception ex)
+            {
+               return StatusCode(500, new ErrorModel(500, ex.Message));
+            }
+        }
 
         [HttpGet("User/GetBookingById/{id}")]
         [ProducesResponseType(typeof(ReturnBookingDTO), StatusCodes.Status200OK)]
@@ -75,6 +119,7 @@ namespace FlightManagementSystemAPI.Controllers
                 }
                 return Ok(returnDTO);
             }
+          
             catch (BookingException ex)
             {
                 return StatusCode(500, new ErrorModel(500, ex.Message));
@@ -101,6 +146,10 @@ namespace FlightManagementSystemAPI.Controllers
                     return NotFound();
                 }
                 return Ok(returnDTO);
+            }
+            catch (BookingNotFoundException ex)
+            {
+                return NotFound(new ErrorModel(404, ex.Message));
             }
             catch (BookingException ex)
             {

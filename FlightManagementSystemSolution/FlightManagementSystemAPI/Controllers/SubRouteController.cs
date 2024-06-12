@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using FlightManagementSystemAPI.Exceptions.RouteExceptions;
 using FlightManagementSystemAPI.Exceptions.SubRouteExceptions;
 using Microsoft.AspNetCore.Authorization;
+using FlightManagementSystemAPI.Exceptions.FlightExceptions;
 
 namespace FlightManagementSystemAPI.Controllers
 {
@@ -108,18 +109,19 @@ namespace FlightManagementSystemAPI.Controllers
         {
             try
             {
-                // Call the service to delete the subroute
+              
                 var deletedSubRoute = await _subrouteService.DeleteSubRoute(subrouteId);
                 return Ok(deletedSubRoute);
             }
+         
             catch (SubRouteNotFoundException ex)
             {
-                // Subroute not found, return 404 Not Found with error message
+               
                 return NotFound(new ErrorModel(404, ex.Message));
             }
             catch (Exception ex)
             {
-                // Other exceptions, return 500 Internal Server Error with error message
+               
                 return StatusCode(500, new ErrorModel(500, ex.Message));
             }
         }
@@ -134,6 +136,21 @@ namespace FlightManagementSystemAPI.Controllers
             {
                 SubRouteReturnDTO updatedSubRoute = await _subrouteService.UpdateSubRoute(subrouteReturnDTO);
                 return Ok(updatedSubRoute);
+            }
+            catch (FlightNotFoundException ex)
+            {
+               
+                return NotFound(new ErrorModel(404, ex.Message));
+            }
+            catch (SubRouteNotFoundException ex)
+            {
+               
+                return NotFound(new ErrorModel(404, ex.Message));
+            }
+            catch (RouteNotFoundException ex)
+            {
+               
+                return NotFound(new ErrorModel(404, ex.Message));
             }
             catch (SubRouteException ex)
             {

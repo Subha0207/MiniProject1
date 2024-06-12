@@ -51,6 +51,11 @@ namespace FlightManagementSystemAPI.Repositories
             {
                 _logger.LogInformation($"Deleting payment with key: {key}");
                 var payment = await Get(key);
+                if (payment == null)
+                {
+                   throw new PaymentNotFoundException("Error occurred while deleting payment. Payment not found. ");
+
+                }
                 _context.Remove(payment);
                 await _context.SaveChangesAsync(true);
                 _logger.LogInformation("Payment deleted successfully.");
@@ -59,13 +64,8 @@ namespace FlightManagementSystemAPI.Repositories
             catch (PaymentNotFoundException ex)
             {
                 _logger.LogError(ex, "Error occurred while deleting payment: Payment not found.");
-                throw new PaymentException("Error occurred while deleting payment. Payment not found. " + ex.Message, ex);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error occurred while deleting payment.");
-                throw new PaymentException("Error occurred while deleting payment.", ex);
-            }
+                throw;           }
+            
         }
         #endregion
         #region GetPayment

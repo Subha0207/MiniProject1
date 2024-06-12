@@ -27,12 +27,10 @@ namespace FlightManagementSystemAPI.Services
         {
             _logger.LogInformation("Starting method AddCancellation.");
 
+            var payment = await _paymentRepository.Get(cancellationDTO.PaymentId);
+
             var booking = await _bookingRepository.Get(cancellationDTO.BookingId);
-            if (booking == null)
-            {
-                _logger.LogError("No booking is present with the given ID.");
-                throw new CancellationException("No booking is present with the given ID");
-            }
+           
             var route = await _routeRepository.Get(booking.RouteId);
 
             // Calculate the new number of available seats after cancellation

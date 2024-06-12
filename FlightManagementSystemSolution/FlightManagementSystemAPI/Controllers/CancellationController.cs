@@ -1,8 +1,11 @@
-﻿using FlightManagementSystemAPI.Exceptions.CancellationExceptions;
+﻿using FlightManagementSystemAPI.Exceptions.BookingExceptions;
+using FlightManagementSystemAPI.Exceptions.CancellationExceptions;
+using FlightManagementSystemAPI.Exceptions.FlightExceptions;
 using FlightManagementSystemAPI.Interfaces;
 using FlightManagementSystemAPI.Model;
 using FlightManagementSystemAPI.Model.DTOs;
 using FlightManagementSystemAPI.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -26,15 +29,19 @@ namespace FlightManagementSystemAPI.Controllers
                 var returnCancellationDTO = await _cancellationService.AddCancellation(cancellationDTO);
                 return Ok(returnCancellationDTO);
             }
-            catch (ArgumentException ex)
+            catch (PaymentNotFoundException ex)
             {
-                return BadRequest(ex.Message);
+                return StatusCode(500, new ErrorModel(500, ex.Message));
             }
-            catch (Exception)
+            catch (BookingNotFoundException ex)
             {
-                // Handle other exceptions (e.g., database errors) appropriately
-                return StatusCode(500, "An error occurred while processing the request.");
+                return StatusCode(500, new ErrorModel(500, ex.Message));
             }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new ErrorModel(500, ex.Message));
+            }
+
         }
 
         [HttpGet("GetAllCancellations")]
@@ -47,7 +54,7 @@ namespace FlightManagementSystemAPI.Controllers
                 List<ReturnCancellationDTO> cancellations = await _cancellationService.GetAllCancellations();
                 return Ok(cancellations);
             }
-            catch (CancellationException ex)
+            catch (NoCancellationExistsException ex)
             {
                 return StatusCode(500, new ErrorModel(500, ex.Message));
             }
@@ -69,18 +76,18 @@ namespace FlightManagementSystemAPI.Controllers
                 }
                 return Ok(cancellation);
             }
-            catch (CancellationException ex)
+            catch (CancellationNotFoundException ex)
             {
                 return BadRequest(new { message = ex.Message });
             }
             catch (Exception ex)
             {
-                // Log the exception
+                
                 return StatusCode(500, new { message = $"Internal server error: {ex.Message}" });
             }
         }
 
-
+        [Authorize(Roles = "admin")]
         [HttpDelete("DeleteCancellationById/{cancellationId}")]
         [ProducesResponseType(typeof(ReturnCancellationDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

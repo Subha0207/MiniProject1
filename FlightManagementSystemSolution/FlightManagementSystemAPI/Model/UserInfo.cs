@@ -14,7 +14,8 @@ namespace FlightManagementSystemAPI.Model
 
         [ForeignKey("UserId")]
             public User User { get; set; }
+     
 
-        
+
     }
 }

@@ -49,6 +49,10 @@ namespace FlightManagementSystemAPI.Repositories
             {
                 _logger.LogInformation($"Deleting booking with key: {key}");
                 var booking = await Get(key);
+                if (booking == null)
+                {
+                    throw new BookingNotFoundException($"Booking not found.");
+                }
                 _context.Remove(booking);
                 await _context.SaveChangesAsync(true);
                 _logger.LogInformation("Booking deleted successfully.");
@@ -57,14 +61,12 @@ namespace FlightManagementSystemAPI.Repositories
             catch (BookingNotFoundException ex)
             {
                 _logger.LogError(ex, "Error occurred while deleting booking. Booking not found.");
-                throw new BookingException("Error occurred while deleting booking. Booking not found. " + ex.Message, ex);
+                
+                throw;
             }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error occurred while deleting booking.");
-                throw new BookingException("Error occurred while deleting booking.", ex);
-            }
+            
         }
+
         #endregion
         #region GetBooking
         public async Task<Booking> Get(int key)

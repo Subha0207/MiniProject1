@@ -80,13 +80,9 @@ namespace FlightManagementSystemAPI.Repositories
             catch (RefundNotFoundException ex)
             {
                 _logger.LogError(ex, "Error while getting refund: " + ex.Message);
-                throw new RefundException("Error while getting refund: " + ex.Message, ex);
+                throw;
             }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error while getting refund.");
-                throw new RefundException("Error while getting refund", ex);
-            }
+            
         }
         #endregion
         #region GetAllRefund
@@ -108,7 +104,7 @@ namespace FlightManagementSystemAPI.Repositories
             catch (RefundNotFoundException ex)
             {
                 _logger.LogError(ex, "Error while getting refunds: " + ex.Message);
-                throw new RefundException("Error while getting refunds: " + ex.Message, ex);
+                throw;
             }
             catch (Exception ex)
             {
@@ -124,6 +120,10 @@ namespace FlightManagementSystemAPI.Repositories
             {
                 _logger.LogInformation($"Updating refund with RefundId: {item.RefundId}");
                 var refund = await Get(item.RefundId);
+                if (refund == null)
+                {
+                    throw new RefundNotFoundException("No refund exists with the given id");
+                }
                 _context.Entry(refund).State = EntityState.Detached;
                 _context.Update(item);
                 await _context.SaveChangesAsync(true);
@@ -133,13 +133,9 @@ namespace FlightManagementSystemAPI.Repositories
             catch (RefundNotFoundException ex)
             {
                 _logger.LogError(ex, "Error while updating refund: " + ex.Message);
-                throw new RefundException("Error while updating refund: " + ex.Message, ex);
+                throw;
             }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error while updating refund.");
-                throw new RefundException("Error while updating refund", ex);
-            }
+          
         }
         #endregion
     }

@@ -22,7 +22,7 @@ namespace FlightManagementSystemAPI.Services
             _refundRepository = refundRepository;
             _logger = logger;
         }
-
+        #region  AddRefund
         public async Task<ReturnRefundDTO> AddRefund(RefundDTO refundDTO)
         {
             _logger.LogInformation($"Adding a new refund for cancellation ID {refundDTO.CancellationId}...");
@@ -49,47 +49,58 @@ namespace FlightManagementSystemAPI.Services
             };
             return returnRefundDTO;
         }
-
-        private async Task<ReturnRefundDTO> MapRefundToReturnRefundDTO(Refund refund)
-        {
-            var cancellation = await _cancellationRepository.Get(refund.CancellationId);
-            return new ReturnRefundDTO
-            {
-                RefundId = refund.RefundId,
-                RefundStatus = refund.RefundStatus,
-                CancellationReason = cancellation.Reason
-            };
-        }
-
-
+        #endregion
+        #region GetAllPendingRefunds
         public async Task<List<ReturnRefundDTO>> GetAllPendingRefunds()
         {
-            _logger.LogInformation("Getting all pending refunds...");
-            var allRefunds = await _refundRepository.GetAll(); // Assuming you have a method to get all refunds
-
-            var initiatedRefunds = new List<ReturnRefundDTO>();
-
-            foreach (var refund in allRefunds)
+            try
             {
-                if (refund.RefundStatus == "Initiated")
-                {
-                    var returnRefundDTO = new ReturnRefundDTO
-                    {
-                        CancellationReason = refund.CancellationId != null
-                            ? (await _cancellationRepository.Get(refund.CancellationId))?.Reason
-                            : null,
-                        RefundId = refund.RefundId,
-                        RefundStatus = refund.RefundStatus
-                    };
+                _logger.LogInformation("Getting all pending refunds...");
+                var allRefunds = await _refundRepository.GetAll(); // Assuming you have a method to get all refunds
+              
 
-                    initiatedRefunds.Add(returnRefundDTO);
+                var initiatedRefunds = new List<ReturnRefundDTO>();
+
+                foreach (var refund in allRefunds)
+                {
+                    if (refund.RefundStatus == "Initiated")
+                    {
+                        var returnRefundDTO = new ReturnRefundDTO
+                        {
+                            CancellationReason = refund.CancellationId != null
+                                ? (await _cancellationRepository.Get(refund.CancellationId))?.Reason
+                                : null,
+                            RefundId = refund.RefundId,
+                            RefundStatus = refund.RefundStatus
+                        };
+
+                        initiatedRefunds.Add(returnRefundDTO);
+                    }
                 }
+                if (initiatedRefunds.Count == 0)
+                {
+                    throw new RefundNotFoundException("No pending refunds found for approval");
+                }
+                _logger.LogInformation($"Found {initiatedRefunds.Count} pending refunds.");
+                return initiatedRefunds;
+                
             }
 
-            _logger.LogInformation($"Found {initiatedRefunds.Count} pending refunds.");
-            return initiatedRefunds;
+            
+            catch (RefundNotFoundException ex)
+            {
+                _logger.LogError(ex, "No pending refunds found.");
+                throw; // Re-throw the exception
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occurred while fetching pending refunds.");
+                throw new RefundException("An error occurred while fetching pending refunds.", ex);
+            }
         }
 
+        #endregion
+        #region GetRefunds
         public async Task<ReturnRefundDTO> GetRefund(int refundId)
         {
             _logger.LogInformation($"Getting refund with ID {refundId}...");
@@ -112,7 +123,8 @@ namespace FlightManagementSystemAPI.Services
             _logger.LogInformation($"Successfully got refund with ID {refundId}.");
             return returnRefundDTO;
         }
-
+        #endregion
+        #region  UpdateRefunds
         public async Task<ReturnRefundDTO> UpdateRefund(UpdateRefundDTO updateRefundDTO)
         {
             try
@@ -151,11 +163,37 @@ namespace FlightManagementSystemAPI.Services
                 throw new RefundException("Error while updating refund", ex);
             }
         }
-
-        public Task<ReturnRefundDTO> DeleteRefundById(int refundId)
+        #endregion
+        #region DeleteRefundById
+        public async Task<ReturnRefundDTO> DeleteRefundById(int refundId)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var refund = await _refundRepository.Get(refundId);
+                if (refund == null)
+                {
+                    throw new RefundException($"Refund with ID {refundId} not found.");
+                }
+
+                await _refundRepository.Delete(refundId);
+
+                _logger.LogInformation($"Refund with ID {refundId} has been successfully deleted.");
+
+                return new ReturnRefundDTO
+                {
+                    CancellationReason = refund.Cancellation.Reason,
+                    RefundId = refund.RefundId,
+                    RefundStatus = refund.RefundStatus,
+                };
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error occurred while deleting the refund with ID {refundId}");
+                throw new RefundException($"Error occurred while deleting the refund with ID {refundId}: {ex.Message}", ex);
+            }
         }
+
+        #endregion
     }
 }
 

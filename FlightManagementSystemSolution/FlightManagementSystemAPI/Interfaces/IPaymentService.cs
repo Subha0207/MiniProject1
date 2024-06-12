@@ -21,6 +21,11 @@ namespace FlightManagementSystemAPI.Interfaces
         /// </summary>
         /// <returns></returns>
         public Task<List<PaymentDetailsDTO>> GetAllPayments();
+        /// <summary>
+        /// Delete payment by payment ID
+        /// </summary>
+        /// <param name="paymentId"></param>
+        /// <returns></returns>
         public Task<ReturnPaymentDTO> DeletePaymentById(int paymentId);
 
 

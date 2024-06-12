@@ -2,7 +2,15 @@
 {
     public class FlightNotFoundException : Exception
     {
-        public FlightNotFoundException(string? msg) : base(msg)
+        public FlightNotFoundException()
+        {
+        }
+
+        public FlightNotFoundException(string? message) : base(message)
+        {
+        }
+
+        public FlightNotFoundException(string? msg, FlightNotFoundException ex) : base(msg)
         {
 
         }

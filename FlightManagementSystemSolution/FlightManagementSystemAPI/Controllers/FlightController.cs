@@ -33,6 +33,10 @@ namespace FlightManagementSystemAPI.Controllers
                 FlightReturnDTO returnDTO = await _flightService.AddFlight(flightDTO);
                 return Ok(returnDTO);
             }
+            catch (InvalidSeatCapacityException ex)
+            {
+                return BadRequest(new ErrorModel(400, ex.Message));
+            }
             catch (FlightException ex)
             {
                 return BadRequest(new ErrorModel(400, ex.Message));
@@ -57,6 +61,10 @@ namespace FlightManagementSystemAPI.Controllers
             {
                 FlightReturnDTO updatedFlight = await _flightService.UpdateFlight(flightReturnDTO);
                 return Ok(updatedFlight);
+            }
+            catch (InvalidSeatCapacityException ex)
+            {
+                return BadRequest(new ErrorModel(400, ex.Message));
             }
             catch (FlightException ex)
             {
@@ -84,9 +92,13 @@ namespace FlightManagementSystemAPI.Controllers
                 FlightReturnDTO deletedFlight = await _flightService.DeleteFlight(flightId);
                 return Ok(deletedFlight);
             }
-            catch (FlightException ex)
+            catch (FlightNotFoundException ex)
             {
                 return NotFound(new ErrorModel(404, ex.Message));
+            }
+            catch (FlightException ex)
+            {
+                return NotFound(new ErrorModel(404, ex.Message)); 
             }
             catch (FlightServiceException ex)
             {
@@ -97,7 +109,7 @@ namespace FlightManagementSystemAPI.Controllers
                 return StatusCode(500, new ErrorModel(500, ex.Message));
             }
         }
-        [Authorize(Roles = "admin")]
+
         [HttpGet("GetAllFlights")]
         [ProducesResponseType(typeof(List<FlightReturnDTO>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status500InternalServerError)]
@@ -236,9 +248,7 @@ namespace FlightManagementSystemAPI.Controllers
             var options = new JsonSerializerOptions
             {
                 WriteIndented = true,
-                IgnoreReadOnlyProperties = true,
-                IgnoreNullValues = true,
-                ReferenceHandler = ReferenceHandler.Preserve
+                DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull
             };
 
             return JsonSerializer.Serialize(formattedData, options);

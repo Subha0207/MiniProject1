@@ -42,11 +42,16 @@ namespace FlightManagementSystemAPI.Migrations
                     b.Property<float>("TotalAmount")
                         .HasColumnType("real");
 
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
                     b.HasKey("BookingId");
 
                     b.HasIndex("FlightId");
 
                     b.HasIndex("RouteId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Bookings");
                 });
@@ -304,9 +309,17 @@ namespace FlightManagementSystemAPI.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("FlightManagementSystemAPI.Model.User", "User")
+                        .WithMany("Bookings")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Flight");
 
                     b.Navigation("FlightRoute");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("FlightManagementSystemAPI.Model.Cancellation", b =>
@@ -428,6 +441,11 @@ namespace FlightManagementSystemAPI.Migrations
                     b.Navigation("Cancellations");
 
                     b.Navigation("Refunds");
+                });
+
+            modelBuilder.Entity("FlightManagementSystemAPI.Model.User", b =>
+                {
+                    b.Navigation("Bookings");
                 });
 #pragma warning restore 612, 618
         }

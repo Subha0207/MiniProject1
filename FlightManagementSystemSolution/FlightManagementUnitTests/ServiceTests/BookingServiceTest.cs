@@ -26,6 +26,7 @@ namespace FlightManagementUnitTests.ServiceTests
         private RouteRepository _routeRepository;
         private BookingService _bookingService;
         private BookingRepository _bookingRepository;
+        private UserRepository _userRepository;
 
         [SetUp]
         public async Task Setup()
@@ -37,13 +38,15 @@ namespace FlightManagementUnitTests.ServiceTests
             var flightLoggerMock = new Mock<ILogger<FlightRepository>>();
             _flightRepository = new FlightRepository(_context, flightLoggerMock.Object);
 
+            var userLoggerMock = new Mock<ILogger<UserRepository>>();
+            _userRepository = new UserRepository(_context, userLoggerMock.Object);
             var routeLoggerMock = new Mock<ILogger<RouteRepository>>();
             _routeRepository = new RouteRepository(_context, routeLoggerMock.Object);
             var bookingLoggerMock = new Mock<ILogger<BookingRepository>>();
             _bookingRepository = new BookingRepository(_context, bookingLoggerMock.Object);
             var bookingServiceLoggerMock = new Mock<ILogger<BookingService>>();
 
-            _bookingService = new BookingService(_flightRepository, _routeRepository, _bookingRepository, bookingServiceLoggerMock.Object);
+            _bookingService = new BookingService(_flightRepository, _routeRepository, _bookingRepository,_userRepository, bookingServiceLoggerMock.Object);
 
         }
 
@@ -109,7 +112,7 @@ namespace FlightManagementUnitTests.ServiceTests
         }
 
         [Test]
-       public async Task Get_All_Booking_Success()
+        public async Task Get_All_Booking_Success()
         {
 
             // Arrange
@@ -167,8 +170,8 @@ namespace FlightManagementUnitTests.ServiceTests
             };
             // Act
             await _bookingService.AddBooking(bookingDTO1);
-             await _bookingService.AddBooking(bookingDTO2);
-          var result=  await _bookingService.GetAllBookings();
+            await _bookingService.AddBooking(bookingDTO2);
+            var result = await _bookingService.GetAllBookings();
             // Assert
             Assert.IsNotNull(result);
             Assert.AreEqual(2, result.Count);
@@ -233,9 +236,9 @@ namespace FlightManagementUnitTests.ServiceTests
                 RouteId = _route.RouteId,
                 NoOfPersons = 2
             };
-           
+
             // Act
-           var booking= await _bookingService.AddBooking(bookingDTO1);
+            var booking = await _bookingService.AddBooking(bookingDTO1);
             var result = await _bookingService.GetBookingById(booking.BookingId);
             // Assert
             Assert.IsNotNull(result);
@@ -251,10 +254,10 @@ namespace FlightManagementUnitTests.ServiceTests
         public async Task Get_Booking_Failure()
         {
             // Arrange
-            var nonExistentBookingId =99;
+            var nonExistentBookingId = 99;
 
             // Act
-          
+
             // Assert
             Assert.ThrowsAsync<BookingException>(async () => await _bookingService.GetBookingById(nonExistentBookingId));
 
@@ -330,7 +333,7 @@ namespace FlightManagementUnitTests.ServiceTests
 
             Assert.ThrowsAsync<BookingException>(async () => await _bookingService.DeleteBookingById(1));
 
-         
+
         }
 
 

@@ -116,8 +116,7 @@ namespace FlightManagementSystemAPI.Repositories
             catch (UserNotFoundException ex)
             {
                 _logger.LogError(ex, "Error occurred while getting user: " + ex.Message);
-                throw new UserException("Error occurred while getting user: " + ex.Message, ex);
-            }
+                throw;      }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error occurred while getting user.");

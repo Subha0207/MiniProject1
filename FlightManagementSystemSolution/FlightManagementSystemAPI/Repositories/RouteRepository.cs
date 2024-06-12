@@ -45,6 +45,10 @@ namespace FlightManagementSystemAPI.Repositories
             {
                 _logger.LogInformation($"Deleting route with key: {key}");
                 var route = await Get(key);
+                if (route == null)
+                {
+                    throw new RouteNotFoundException("route not found with given id");
+                }
                 _context.Remove(route);
                 await _context.SaveChangesAsync(true);
                 _logger.LogInformation("Route deleted successfully.");
@@ -53,7 +57,7 @@ namespace FlightManagementSystemAPI.Repositories
             catch (RouteNotFoundException ex)
             {
                 _logger.LogError(ex, "Error occurred while deleting route: Route not found.");
-                throw new RouteException("Error occurred while deleting route. Route not found. " + ex.Message, ex);
+                throw;
             }
             catch (Exception ex)
             {
@@ -80,13 +84,9 @@ namespace FlightManagementSystemAPI.Repositories
             catch (RouteNotFoundException ex)
             {
                 _logger.LogError(ex, "Error while getting route: " + ex.Message);
-                throw new RouteException("Error while getting route: " + ex.Message, ex);
+                throw new RouteNotFoundException(ex.Message, ex);
             }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error while getting route.");
-                throw new RouteException("Error while getting route", ex);
-            }
+           
         }
         #endregion
         #region GetAllRoute

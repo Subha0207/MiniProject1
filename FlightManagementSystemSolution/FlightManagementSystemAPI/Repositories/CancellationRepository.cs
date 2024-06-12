@@ -1,5 +1,6 @@
 ﻿using FlightManagementSystemAPI.Contexts;
 using FlightManagementSystemAPI.Exceptions;
+using FlightManagementSystemAPI.Exceptions.BookingExceptions;
 using FlightManagementSystemAPI.Exceptions.CancellationExceptions;
 using FlightManagementSystemAPI.Exceptions.RouteExceptions;
 using FlightManagementSystemAPI.Interfaces;
@@ -34,7 +35,7 @@ namespace FlightManagementSystemAPI.Repositories
                 if (booking == null)
                 {
                     _logger.LogWarning("Invalid booking ID.");
-                    throw new CancellationException("Invalid booking ID.");
+                    throw new BookingNotFoundException("Invalid booking ID.");
                 }
 
                 _context.Add(item);
@@ -42,10 +43,10 @@ namespace FlightManagementSystemAPI.Repositories
                 _logger.LogInformation("Cancellation added successfully.");
                 return item;
             }
-            catch (Exception ex)
+            catch (BookingNotFoundException ex)
             {
                 _logger.LogError(ex, "Error occurred while adding cancellation.");
-                throw new CancellationException("Error while adding Cancellation", ex); // Use CancellationException instead of RouteException
+                throw ; 
             }
         }
         #endregion
@@ -83,15 +84,15 @@ namespace FlightManagementSystemAPI.Repositories
                 if (cancellation == null)
                 {
                     _logger.LogWarning("No such cancellation is present.");
-                    throw new RouteNotFoundException("No such cancellation is present.");
+                    throw new CancellationNotFoundException("No such cancellation is present.");
                 }
                 _logger.LogInformation("Cancellation details fetched successfully.");
                 return cancellation;
             }
-            catch (RouteNotFoundException ex)
+            catch (CancellationNotFoundException ex)
             {
                 _logger.LogError(ex, "Error occurred while getting cancellation.");
-                throw new CancellationException("Error while getting cancellation. " + ex.Message, ex);
+                throw ;
             }
             catch (Exception ex)
             {
@@ -110,9 +111,14 @@ namespace FlightManagementSystemAPI.Repositories
                 if (cancellations.Count == 0)
                 {
                     _logger.LogWarning("No cancellations found.");
+                    throw new NoCancellationExistsException("Cancellations are not found.It is empty");
                 }
                 _logger.LogInformation("Cancellation details fetched successfully.");
                 return cancellations;
+            }
+            catch (NoCancellationExistsException ex)
+            {
+                throw;
             }
             catch (Exception ex)
             {

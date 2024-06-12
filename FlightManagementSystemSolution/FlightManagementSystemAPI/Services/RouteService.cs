@@ -1,4 +1,5 @@
-﻿using FlightManagementSystemAPI.Exceptions.FlightExceptions;
+﻿using FlightManagementSystemAPI.Exceptions.BookingExceptions;
+using FlightManagementSystemAPI.Exceptions.FlightExceptions;
 using FlightManagementSystemAPI.Exceptions.RouteExceptions;
 using FlightManagementSystemAPI.Interfaces;
 using FlightManagementSystemAPI.Model;
@@ -14,13 +15,18 @@ namespace FlightManagementSystemAPI.Services
 {
     public class RouteService : IRouteService
     {
+        private readonly IRepository<int, Booking> _bookingRepository;
         private readonly IRepository<int, FlightRoute> _routeRepository;
+        private readonly IRepository<int, SubRoute> _subrouteRepository;
         private readonly IRepository<int, Flight> _flightRepository;
+
         private readonly ILogger<RouteService> _logger;
 
-        public RouteService(IRepository<int, FlightRoute> routeRepository, IRepository<int, Flight> flightRepository, ILogger<RouteService> logger)
+        public RouteService(IRepository<int, FlightRoute> routeRepository, IRepository<int, Flight> flightRepository, ILogger<RouteService> logger, IRepository<int, SubRoute> subrouteRepository, IRepository<int, Booking> bookingRepository)
         {
+            _bookingRepository = bookingRepository;
             _routeRepository = routeRepository;
+            _subrouteRepository = subrouteRepository;
             _flightRepository = flightRepository;
             _logger = logger;
         }
@@ -151,28 +157,52 @@ namespace FlightManagementSystemAPI.Services
                 if (route == null)
                 {
                     _logger.LogError("No route with the given ID {RouteId} exists.", routeId);
-                    throw new RouteException("No route with the given ID exists.");
+                    throw new RouteServiceException("No route with the given ID exists.");
                 }
+
+                var subroutes = await _subrouteRepository.GetAll();
+                // Check if any subroute is associated with the route
+                foreach (var subroute in subroutes)
+                {
+                    if (subroute.RouteId == routeId)
+                    {
+                        var subrouteId = subroute.SubRouteId;
+                        throw new RouteServiceException($"A subroute with id {subrouteId} exists with the given route ID. Cannot delete the route.");
+                    }
+                }
+
+                var bookings = await _bookingRepository.GetAll();
+                // Check if any subroute is associated with the route
+                foreach (var booking in bookings)
+                {
+                    if (booking.RouteId == routeId)
+                    {
+                        _logger.LogInformation("Entered if clause");
+                        var bookingId = booking.BookingId;
+                        throw new BookingException($"A subroute with id {bookingId} exists with the given route ID. Cannot delete the route.");
+                     
+                    }
+                    _logger.LogInformation("exited if clause");
+                }
+
                 RouteReturnDTO routeReturnDTO = MapRouteToRouteReturnDTO(route);
                 _logger.LogInformation("Route with ID {RouteId} deleted successfully", routeId);
                 return routeReturnDTO;
             }
-            catch (UnableToDeleteRouteException ex)
+            catch (BookingException ex)
             {
-                _logger.LogError(ex, "Unable to delete route");
-                throw new RouteServiceException(ex.Message, ex);
-            }
-            catch (RouteException re)
-            {
-                _logger.LogError(re, "Route validation failed");
+                _logger.LogWarning(ex, "Route not found.");
                 throw;
             }
-            catch (Exception ex)
+           
+            catch (RouteServiceException ex)
             {
-                _logger.LogError(ex, "Unable to delete Route");
-                throw new RouteServiceException("Unable to delete Route: " + ex.Message, ex);
+                _logger.LogError(ex, "Route service exception occurred.");
+                throw;
             }
+          
         }
+
         #endregion
         #region GetAllRoutes
         public async Task<List<RouteReturnDTO>> GetAllRoutes()
@@ -181,8 +211,17 @@ namespace FlightManagementSystemAPI.Services
             {
                 _logger.LogInformation("Getting all routes");
                 var routes = await _routeRepository.GetAll();
+                if (routes == null)
+                {
+                    throw new RouteNotFoundException("No route exists");
+                }
                 List<RouteReturnDTO> routeReturnDTOs = routes.Select(MapRouteToRouteReturnDTO).ToList();
                 return routeReturnDTOs;
+            }
+            catch (RouteNotFoundException rnfe)
+            {
+                _logger.LogError(rnfe, "Route validation failed");
+                throw;
             }
             catch (RouteException re)
             {
@@ -196,18 +235,43 @@ namespace FlightManagementSystemAPI.Services
             }
         }
 
-#endregion
+        #endregion
         #region UpdateRoute
         public async Task<RouteReturnDTO> UpdateRoute(RouteReturnDTO routeReturnDTO)
         {
             try
             {
                 _logger.LogInformation("Updating route with ID {RouteId}", routeReturnDTO.RouteId);
+
                 var existingRoute = await _routeRepository.Get(routeReturnDTO.RouteId);
                 if (existingRoute == null)
                 {
                     _logger.LogError("No route with the given ID {RouteId} exists.", routeReturnDTO.RouteId);
-                    throw new RouteException("No route with the given ID exists.");
+                    throw new RouteNotFoundException("No route with the given ID exists.");
+                }
+
+                var flight = await _flightRepository.Get(routeReturnDTO.FlightId);
+                if (flight == null)
+                {
+                    _logger.LogError("No flight with the given ID {FlightId} exists.", routeReturnDTO.FlightId);
+                    throw new FlightNotFoundException("No flight with the given ID exists.");
+                }
+
+                if (routeReturnDTO.ArrivalLocation == routeReturnDTO.DepartureLocation)
+                {
+                    _logger.LogError("Arrival location and departure location cannot be the same.");
+                    throw new RouteException("Arrival location and departure location cannot be the same.");
+                }
+                if (routeReturnDTO.PricePerPerson <= 0)
+                {
+                    _logger.LogError("Price per person must be greater than zero.");
+                    throw new RouteException("Please enter a valid amount for price per person.");
+                }
+
+                if (routeReturnDTO.ArrivalDateTime <= routeReturnDTO.DepartureDateTime)
+                {
+                    _logger.LogError("Arrival date time must be greater than departure date time.");
+                    throw new RouteException("Arrival date time must be greater than departure date time.");
                 }
 
                 // Map the updated fields from the DTO to the existing route
@@ -229,6 +293,16 @@ namespace FlightManagementSystemAPI.Services
                 RouteReturnDTO updatedRouteReturnDTO = MapRouteToRouteReturnDTO(updatedRoute);
                 return updatedRouteReturnDTO;
             }
+            catch (FlightNotFoundException fnf)
+            {
+                _logger.LogError(fnf, "Flight not found");
+                throw new FlightNotFoundException("No flight with the given ID exists.") ;
+            }
+            catch (RouteNotFoundException re)
+            {
+                _logger.LogError(re, "Route validation failed");
+                throw;
+            }
             catch (RouteException re)
             {
                 _logger.LogError(re, "Route validation failed");
@@ -241,6 +315,7 @@ namespace FlightManagementSystemAPI.Services
             }
         }
         #endregion
+
 
     }
 }

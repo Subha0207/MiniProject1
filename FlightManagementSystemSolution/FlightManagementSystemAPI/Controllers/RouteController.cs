@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 using FlightManagementSystemAPI.Exceptions.RouteExceptions;
 using FlightManagementSystemAPI.Services;
 using Microsoft.AspNetCore.Authorization;
+using FlightManagementSystemAPI.Exceptions.FlightExceptions;
+using FlightManagementSystemAPI.Exceptions.BookingExceptions;
 
 namespace FlightManagementSystemAPI.Controllers
 {
@@ -55,6 +57,11 @@ namespace FlightManagementSystemAPI.Controllers
                 List<RouteReturnDTO> routes = await _routeService.GetAllRoutes();
                 return Ok(routes);
             }
+            catch (RouteNotFoundException ex)
+            {
+                return BadRequest(new ErrorModel(400, ex.Message));
+            }
+
             catch (RouteException ex)
             {
                 return StatusCode(500, new ErrorModel(500, ex.Message));
@@ -68,6 +75,7 @@ namespace FlightManagementSystemAPI.Controllers
                 return StatusCode(500, new ErrorModel(500, ex.Message));
             }
         }
+
         [Authorize(Roles = "admin")]
         [HttpDelete("DeleteRoute/{routeId}")]
         [ProducesResponseType(typeof(RouteReturnDTO), StatusCodes.Status200OK)]
@@ -81,13 +89,10 @@ namespace FlightManagementSystemAPI.Controllers
                 RouteReturnDTO route = await _routeService.DeleteRoute(routeId);
                 return Ok(route);
             }
-            catch (UnableToDeleteRouteException ex)
+          
+            catch (BookingException ex)
             {
-                return BadRequest(new ErrorModel(400, ex.Message));
-            }
-            catch (RouteException ex)
-            {
-                return NotFound(new ErrorModel(404, ex.Message));
+                return StatusCode(500, new ErrorModel(500, ex.Message));
             }
             catch (RouteServiceException ex)
             {
@@ -95,9 +100,15 @@ namespace FlightManagementSystemAPI.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new ErrorModel(500, ex.Message));
+                if (ex is BookingException)
+                {
+                    return StatusCode(500, new ErrorModel(500, ex.Message));
+                }
+                return StatusCode(500, new ErrorModel(500, "The route is present in Booking.So cannot delete route"));
             }
         }
+
+
 
         [HttpGet("GetRoute/{routeId}")]
         [ProducesResponseType(typeof(RouteReturnDTO), StatusCodes.Status200OK)]
@@ -135,6 +146,14 @@ namespace FlightManagementSystemAPI.Controllers
                 RouteReturnDTO updatedRoute = await _routeService.UpdateRoute(routeReturnDTO);
                 return Ok(updatedRoute);
             }
+            catch (FlightNotFoundException fnf)
+            {
+                return BadRequest(new ErrorModel(400, fnf.Message));
+            }
+            catch (RouteNotFoundException ex)
+            {
+                return BadRequest(new ErrorModel(400, ex.Message));
+            }
             catch (RouteException ex)
             {
                 return BadRequest(new ErrorModel(400, ex.Message));
@@ -148,6 +167,8 @@ namespace FlightManagementSystemAPI.Controllers
                 return StatusCode(500, new ErrorModel(500, ex.Message));
             }
         }
+
+
 
 
 

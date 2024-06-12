@@ -110,7 +110,7 @@ namespace FlightManagementSystemAPI.Services
             List<SubRouteReturnDTO> subrouteReturnDTOs = new List<SubRouteReturnDTO>();
 
             foreach (var subrouteDTO in subrouteDTOs)
-            {
+            {   
                 try
                 {
                     var flight = await _flightRepository.Get(subrouteDTO.FlightId);
@@ -126,10 +126,48 @@ namespace FlightManagementSystemAPI.Services
                         _logger.LogError("No route with given id: {RouteId}", subrouteDTO.RouteId);
                         throw new RouteNotFoundException("No route with given id");
                     }
+                    foreach (var stop in subrouteDTO.Stops)
+                    {
+                        int subFlightId = stop.SubFlightId;
+                        var subflight = await _flightRepository.Get(subFlightId);
+                        if(subflight == null)
+                        {
+                            throw new FlightNotFoundException("No flight with given id");
+                        }
+                    }
 
                     if (route.NoOfStops > 0)
                     {
-                        var subroutes = MapSubRouteDTOToSubRoutes(subrouteDTO);
+                       var subroutes = MapSubRouteDTOToSubRoutes(subrouteDTO);
+                        if (route.NoOfStops == 1 || route.NoOfStops == 2)
+                        {
+                            if (subroutes[0].ArrivalLocation != subroutes[1].DepartureLocation)
+                            {
+                                throw new Exception("The arrival location of the first sub route does not match with departure location of previous subroute");
+                            }
+                            if (subroutes[0].ArrivalDateTime >= subroutes[1].DepartureDateTime)
+                            {
+                                throw new Exception("The departure time of current subroute must be greater than the arrival time of the first sub route");
+                            }
+
+                            if (route.NoOfStops == 2)
+                            {
+                                if (subroutes[1].ArrivalLocation != subroutes[2].DepartureLocation)
+                                {
+                                    throw new Exception("The arrival location of the second sub route does not match with departure location of previous subroute");
+                                }
+                                if (subroutes[1].ArrivalDateTime >= subroutes[2].DepartureDateTime)
+                                {
+                                    throw new Exception("The departure time of current subroute must be greater than the arrival time of the second sub route");
+                                }
+                            }
+                        }
+
+
+
+
+
+
                         if (route.ArrivalLocation != subroutes.Last().ArrivalLocation)
                         {
                             _logger.LogError("The arrival location of the route does not match with the last stop's arrival location");
@@ -142,6 +180,21 @@ namespace FlightManagementSystemAPI.Services
                             _logger.LogError("The departure location of the route does not match with the first stop's departure location");
                             throw new Exception("The departure location of the route does not match with the first stop's departure location");
                         }
+
+                        if (route.ArrivalDateTime != subroutes.Last().ArrivalDateTime)
+                        {
+                            _logger.LogError("The arrival time of the route does not match with the last stop's arrival time");
+                            throw new Exception("The arrival time of the route does not match with the last stop's arrival time");
+                        }
+
+                        // Validate the departure location of the route matches with the first stop's departure location
+                        if (route.DepartureDateTime != subroutes.First().DepartureDateTime)
+                        {
+                            _logger.LogError("The departure time of the route does not match with the first stop's time ");
+                            throw new Exception("The departure time of the route does not match with the first stop's departure time");
+                        }
+                       
+
 
                         if (route.NoOfStops == 1 && subroutes.Length != 2)
                         {
@@ -161,6 +214,18 @@ namespace FlightManagementSystemAPI.Services
                             subrouteReturnDTOs.Add(subrouteReturnDTO);
                         }
                     }
+                }
+
+
+                catch (RouteNotFoundException ex)
+                {
+                    _logger.LogError(ex, "An error occurred while adding subroutes.");
+                    throw;
+                }
+                catch (FlightNotFoundException ex)
+                {
+                    _logger.LogError(ex, "An error occurred while adding subroutes.");
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -208,6 +273,8 @@ namespace FlightManagementSystemAPI.Services
         }
         #endregion
         #region DeleteSubRoute
+        
+
         public async Task<SubRouteReturnDTO> DeleteSubRoute(int subrouteId)
         {
             try
@@ -220,12 +287,26 @@ namespace FlightManagementSystemAPI.Services
                 }
                 return MapSubRouteToSubRouteReturnDTO(subroute);
             }
-            catch (Exception ex)
+            catch (SubRouteNotFoundException)
+            {
+                throw;
+            }
+            catch (SubRouteException ex)
             {
                 _logger.LogError(ex, "An error occurred while deleting subroute with id {SubRouteId}", subrouteId);
                 throw;
             }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An unexpected error occurred while deleting subroute with id {SubRouteId}", subrouteId);
+                throw;
+            }
         }
+
+
+
+
+
         #endregion
         #region UpdateSubRoute
         public async Task<SubRouteReturnDTO> UpdateSubRoute(SubRouteReturnDTO subrouteReturnDTO)
@@ -233,6 +314,17 @@ namespace FlightManagementSystemAPI.Services
             try
             {
                 var updatedSubroute = await _subrouteRepository.Update(MapSubRouteReturnDTOToSubRoute(subrouteReturnDTO));
+
+                var flight = await _flightRepository.Get(updatedSubroute.SubFlightId);
+                if (flight == null)
+                {
+                    throw new FlightNotFoundException("No flight with given id exists");
+                }
+                //var route = await _routeRepository.Get(updatedSubrout.SubRouteId);
+                //if (route == null)
+                //{
+                //    throw new RouteNotFoundException("No route with given id exists");
+                //}
 
                 if (updatedSubroute == null)
                 {
@@ -244,6 +336,18 @@ namespace FlightManagementSystemAPI.Services
                 updatedSubroute = await _subrouteRepository.Get(updatedSubroute.SubRouteId);
 
                 return MapSubRouteToSubRouteReturnDTO(updatedSubroute);
+            }
+            catch (FlightNotFoundException)
+            {
+                throw;
+            }
+            catch (RouteNotFoundException)
+            {
+                throw;
+            }
+            catch (SubRouteNotFoundException)
+            {
+                throw;
             }
             catch (Exception ex)
             {

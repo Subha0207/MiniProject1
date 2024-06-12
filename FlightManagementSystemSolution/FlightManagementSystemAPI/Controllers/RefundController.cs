@@ -1,4 +1,5 @@
-﻿using FlightManagementSystemAPI.Exceptions.RefundExceptions;
+﻿using FlightManagementSystemAPI.Exceptions.CancellationExceptions;
+using FlightManagementSystemAPI.Exceptions.RefundExceptions;
 using FlightManagementSystemAPI.Interfaces;
 using FlightManagementSystemAPI.Model;
 using FlightManagementSystemAPI.Model.DTOs;
@@ -22,6 +23,8 @@ namespace FlightManagementSystemAPI.Controllers
         }
 
         [HttpPost("AddRefund")]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> AddRefund([FromBody] RefundDTO refundDTO)
         {
             try
@@ -29,19 +32,23 @@ namespace FlightManagementSystemAPI.Controllers
                 var returnRefundDTO = await _refundService.AddRefund(refundDTO);
                 return Ok(returnRefundDTO);
             }
+            catch (CancellationException ex)
+            {
+                return BadRequest(new ErrorModel(400, ex.Message));
+            }
             catch (RefundException ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new ErrorModel(400, ex.Message));
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // Handle other exceptions (e.g., database errors) appropriately
-                return StatusCode(500, "An error occurred while processing the request.");
+                return StatusCode(500, new ErrorModel(500, ex.Message));
             }
         }
 
-
         [HttpGet("{refundId}")]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetRefund(int refundId)
         {
             try
@@ -51,20 +58,19 @@ namespace FlightManagementSystemAPI.Controllers
             }
             catch (RefundException ex)
             {
-                return NotFound(ex.Message);
+                return BadRequest(new ErrorModel(400, ex.Message));
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing your request.");
+                return StatusCode(500, new ErrorModel(500, ex.Message));
             }
         }
-
 
         [Authorize(Roles = "admin")]
         [HttpPut("UpdateRefund")]
         [ProducesResponseType(typeof(ReturnRefundDTO), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<ReturnRefundDTO>> UpdateRefund(UpdateRefundDTO returnRefundDTO)
         {
             try
@@ -72,13 +78,16 @@ namespace FlightManagementSystemAPI.Controllers
                 ReturnRefundDTO updatedRefund = await _refundService.UpdateRefund(returnRefundDTO);
                 return Ok(updatedRefund);
             }
-            catch (RefundException ex)
+            catch (RefundNotFoundException ex)
             {
                 return BadRequest(new ErrorModel(400, ex.Message));
             }
-            
             catch (Exception ex)
             {
+                if (ex.InnerException is RefundNotFoundException)
+                {
+                    return BadRequest(new ErrorModel(400, ex.InnerException.Message));
+                }
                 return StatusCode(500, new ErrorModel(500, ex.Message));
             }
         }
@@ -86,6 +95,8 @@ namespace FlightManagementSystemAPI.Controllers
 
         [Authorize(Roles = "admin")]
         [HttpGet("GetAllPendingRefunds")]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<List<ReturnRefundDTO>>> GetAllPendingRefunds()
         {
             try
@@ -93,19 +104,21 @@ namespace FlightManagementSystemAPI.Controllers
                 var initiatedRefunds = await _refundService.GetAllPendingRefunds();
                 return Ok(initiatedRefunds);
             }
+            catch (RefundNotFoundException ex)
+            {
+                return BadRequest(new ErrorModel(400, ex.Message));
+            }
             catch (Exception ex)
             {
-                // Handle exceptions appropriately (e.g., log, return error response)
-                return StatusCode(500, "An error occurred while fetching initiated refunds.");
+                return StatusCode(500, new ErrorModel(500, ex.Message));
             }
         }
-
 
         [Authorize(Roles = "admin")]
         [HttpDelete("DeleteRefund/{refundId}")]
         [ProducesResponseType(typeof(ReturnRefundDTO), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status404NotFound)]
-        [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<ReturnRefundDTO>> DeleteRefund(int refundId)
         {
             try
@@ -115,14 +128,13 @@ namespace FlightManagementSystemAPI.Controllers
             }
             catch (RefundException ex)
             {
-                return NotFound(new ErrorModel(404, ex.Message));
+                return BadRequest(new ErrorModel(400, ex.Message));
             }
             catch (Exception ex)
             {
                 return StatusCode(500, new ErrorModel(500, ex.Message));
             }
         }
-
 
 
     }

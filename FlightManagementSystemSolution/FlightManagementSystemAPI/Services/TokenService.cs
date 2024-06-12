@@ -19,6 +19,8 @@ namespace FlightManagementSystemAPI.Services
             // encrypt the key 
             _key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_secretKey));
         }
+
+        #region GenerateToken
         public string GenerateToken(User user)
         {
             string token = string.Empty;
@@ -36,5 +38,6 @@ namespace FlightManagementSystemAPI.Services
             token = new JwtSecurityTokenHandler().WriteToken(myToken);
             return token;
         }
+        #endregion
     }
 }

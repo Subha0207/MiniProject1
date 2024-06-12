@@ -9,6 +9,7 @@ using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System;
+using FlightManagementSystemAPI.Model.DTOs;
 
 namespace FlightManagementSystemAPI.Repositories
 {
@@ -47,6 +48,10 @@ namespace FlightManagementSystemAPI.Repositories
             {
                 _logger.LogInformation($"Deleting sub-route with key: {key}");
                 var subRoute = await Get(key);
+                if (subRoute == null)
+                {
+                    throw new SubRouteNotFoundException("No subroute exists with given id");
+                }
                 _context.Remove(subRoute);
                 await _context.SaveChangesAsync(true);
                 _logger.LogInformation("Sub-route deleted successfully.");
@@ -55,13 +60,8 @@ namespace FlightManagementSystemAPI.Repositories
             catch (SubRouteNotFoundException ex)
             {
                 _logger.LogError(ex, "Error occurred while deleting sub-route: SubRoute not found.");
-                throw new SubRouteException("Error occurred while deleting sub-route. SubRoute not found.", ex);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error occurred while deleting sub-route.");
-                throw new SubRouteException("Error occurred while deleting sub-route.", ex);
-            }
+                throw;  }
+            
         }
         #endregion
         #region GetSubRoute
@@ -125,6 +125,12 @@ namespace FlightManagementSystemAPI.Repositories
             {
                 _logger.LogInformation($"Updating sub-route with SubRouteId: {item.SubRouteId}");
                 var subRoute = await Get(item.SubRouteId);
+                if (subRoute == null)
+                {
+                    
+                        throw new SubRouteNotFoundException("No subroute with given id");
+                    
+                }
                 _context.Entry(subRoute).State = EntityState.Detached;
                 _context.Update(item);
 
@@ -135,13 +141,9 @@ namespace FlightManagementSystemAPI.Repositories
             catch (SubRouteNotFoundException ex)
             {
                 _logger.LogError(ex, "Error while updating sub-route: " + ex.Message);
-                throw new SubRouteException("Error while updating sub-route: " + ex.Message, ex);
+                throw;
             }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error while updating sub-route.");
-                throw new SubRouteException("Error while updating sub-route", ex);
-            }
+          
         }
         #endregion
     }
